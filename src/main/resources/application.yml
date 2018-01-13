@@ -11,3 +11,4 @@ spring:
 
 server:
   context-path: /wechatgateway
+  port: 8888
