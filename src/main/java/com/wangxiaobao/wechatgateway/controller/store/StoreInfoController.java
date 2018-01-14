@@ -14,8 +14,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -44,6 +46,28 @@ public class StoreInfoController {
     }
     BeanUtils.copyProperties(storeInfoForm,storeInfo);
     StoreInfo result = storeInfoService.save(storeInfo);
+    return ResultVOUtil.success(result);
+  }
+
+  @PostMapping("/saveStoreMenu")
+  public ResultVO<StoreInfo> storeMenuSave(@RequestParam("merchantAccount") String merchantAccount,
+      @RequestParam("storeMenu") String storeMenu){
+
+    StoreInfo result = storeInfoService.storeMenuSave(merchantAccount,storeMenu);
+    return ResultVOUtil.success(result);
+  }
+
+  @PostMapping("/saveStorePhoto")
+  public ResultVO<StoreInfo> storePhotoSave(@RequestParam("merchantAccount") String merchantAccount,
+      @RequestParam("storePhoto") String storePhoto){
+
+    StoreInfo result = storeInfoService.storePhotoSave(merchantAccount,storePhoto);
+    return ResultVOUtil.success(result);
+  }
+
+  @GetMapping("/findByMerchantAccount")
+  public ResultVO<StoreInfo> findByMerchantAccount(@RequestParam("merchantAccount") String merchantAccount){
+    StoreInfo result = storeInfoService.findByMerchantAccount(merchantAccount);
     return ResultVOUtil.success(result);
   }
 }
