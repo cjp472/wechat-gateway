@@ -24,6 +24,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -53,9 +54,12 @@ import me.chanjar.weixin.common.util.http.URIUtil;
 @Slf4j
 public class OpenPlatformController {
 	public final Logger logger = LoggerFactory.getLogger(OpenPlatformController.class);
-	String appId = "wx2faa58ec608c1d69";
-	String appsecret = "77347a37924b2583b183e1b43900c439";
-	String redirectUrl = "http://kkg7c8.natappfree.cc";
+	@Value("${wechat.openplatform.appid}")
+	String appId;
+	@Value("${wechat.openplatform.appsecret}")
+	String appsecret;
+	@Value("${wechat.openplatform.redirectUrl}")
+	String redirectUrl;
 
 	// String appId = "wxde53154a5290b54d";
 	// String appsecret = "846e110a7c0e88488ca1ef915224f23d";
