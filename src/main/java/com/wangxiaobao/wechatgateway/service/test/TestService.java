@@ -25,6 +25,8 @@ import com.wangxiaobao.wechatgateway.utils.Constants;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @EnableConfigurationProperties(WxProperties.class)
 @Service
 public class TestService {
@@ -260,5 +262,37 @@ public class TestService {
 		} else {
 			return JsonResult.newInstanceMesFail(jsono.getString("errcode"));
 		}
+	}
+	
+	/**
+	 * 绑定小程序与商家公众号
+	 * @param wxAppid
+	 * @param authoriceAccessToken
+	 * @return
+	 */
+	public String bindWxamplink(String wxAppid,String authoriceAccessToken){
+		String url = "https://api.weixin.qq.com/cgi-bin/wxopen/wxamplink?access_token=";
+		url += authoriceAccessToken;
+		JSONObject params = new JSONObject();
+		params.put("appid", wxAppid);
+		params.put("notify_users", "0");
+		params.put("show_profile", "1");
+		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
+		return result;
+	}
+	
+	/**
+	 * 解绑小程序与商家公众号
+	 * @param wxAppid
+	 * @param authoriceAccessToken
+	 * @return
+	 */
+	public String bindWxampunlink(String wxAppid,String authoriceAccessToken){
+		String url = "https://api.weixin.qq.com/cgi-bin/wxopen/wxampunlink?access_token=";
+		url += authoriceAccessToken;
+		JSONObject params = new JSONObject();
+		params.put("appid", wxAppid);
+		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
+		return result;
 	}
 }

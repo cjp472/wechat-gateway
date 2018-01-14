@@ -1,0 +1,12 @@
+${PROJECT_NAME}:
+  labels:
+    io.rancher.container.pull_image: always
+  tty: true
+  image: "${DOCKER_REGISTRY}/${PROJECT_GROUP}/${PROJECT_NAME}:${CI_BUILD_REF_NAME}"
+  stdin_open: true
+  external_links:
+    - external-service/pay-mysql:pay-mysql
+    - external-service/pay-redis:pay-redis
+  volumes:
+    - /data/logs:/logs
+    - /data/logs/dc:/data/logs/dc
