@@ -56,6 +56,12 @@ public class StoreInfo {
   /** 是否能预订， 0不能 1能. */
   private int haveBooking = 0;
 
+  /** 门店菜品图片地址. */
+  private String storeMenu;
+
+  /** 门店图片地址. */
+  private String storePhoto;
+
   private Date createTime;
   private Date updateTime;
 }

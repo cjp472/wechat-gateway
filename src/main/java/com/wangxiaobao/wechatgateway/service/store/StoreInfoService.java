@@ -24,4 +24,20 @@ public class StoreInfoService {
   public StoreInfo findOne(String storeId){
     return storeInfoRepository.findOne(storeId);
   }
+
+  public StoreInfo findByMerchantAccount(String merchantAccount){
+    return storeInfoRepository.findByMerchantAccount(merchantAccount);
+  }
+
+  public StoreInfo storeMenuSave(String merchantAccount,String storeMenu){
+    StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount(merchantAccount);
+    storeInfo.setStoreMenu(storeMenu);
+    return storeInfoRepository.save(storeInfo);
+  }
+
+  public StoreInfo storePhotoSave(String merchantAccount,String storePhoto){
+    StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount(merchantAccount);
+    storeInfo.setStorePhoto(storePhoto);
+    return storeInfoRepository.save(storeInfo);
+  }
 }
