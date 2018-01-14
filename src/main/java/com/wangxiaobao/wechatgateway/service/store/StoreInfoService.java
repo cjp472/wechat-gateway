@@ -17,9 +17,11 @@ public class StoreInfoService {
   @Autowired
   private StoreInfoRepository storeInfoRepository;
 
-  public StoreInfo create(StoreInfo storeInfo){
-    String storeId = KeyUtil.genUniqueKey();
-    storeInfo.setStoreId(storeId);
+  public StoreInfo save(StoreInfo storeInfo){
     return storeInfoRepository.save(storeInfo);
+  }
+
+  public StoreInfo findOne(String storeId){
+    return storeInfoRepository.findOne(storeId);
   }
 }

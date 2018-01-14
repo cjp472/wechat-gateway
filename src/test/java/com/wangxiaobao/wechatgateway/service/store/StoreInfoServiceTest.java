@@ -1,7 +1,5 @@
 package com.wangxiaobao.wechatgateway.service.store;
 
-import static org.junit.Assert.*;
-
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -35,7 +33,7 @@ public class StoreInfoServiceTest {
     storeInfo.setStoreOfficehours("10-22");
     storeInfo.setStorePhone("88888888");
     storeInfo.setHaveParking(1);
-    StoreInfo result = storeInfoService.create(storeInfo);
+    StoreInfo result = storeInfoService.save(storeInfo);
     Assert.assertNotNull(result);
   }
 

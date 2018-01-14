@@ -18,6 +18,8 @@ create table `store_info` (
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
     primary key (`store_id`)
 );
+alter table store_info add unique key(store_name);
+alter table store_info add unique key(merchant_account);
 
 -- 菜品图片
 create table `store_menu` (

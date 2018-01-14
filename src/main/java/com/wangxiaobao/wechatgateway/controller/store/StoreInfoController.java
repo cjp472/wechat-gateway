@@ -5,16 +5,15 @@ import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.store.StoreInfoForm;
-import com.wangxiaobao.wechatgateway.repository.store.StoreInfoRepository;
 import com.wangxiaobao.wechatgateway.service.store.StoreInfoService;
+import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,16 +29,21 @@ public class StoreInfoController {
   @Autowired
   private StoreInfoService storeInfoService;
 
-  @PostMapping("/create")
-  public ResultVO<StoreInfo> create(@Valid StoreInfoForm storeInfoForm,BindingResult bindingResult){
+  @PostMapping("/save")
+  public ResultVO<StoreInfo> save(@Valid StoreInfoForm storeInfoForm,BindingResult bindingResult){
     if (bindingResult.hasErrors()) {
       log.error("【创建商家】参数不正确, storeInfoForm={}", storeInfoForm);
       throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
           bindingResult.getFieldError().getDefaultMessage());
     }
     StoreInfo storeInfo = new StoreInfo();
+    if(!StringUtils.isEmpty(storeInfoForm.getStoreId())){
+      storeInfo = storeInfoService.findOne(storeInfoForm.getStoreId());
+    }else{
+      storeInfoForm.setStoreId(KeyUtil.genUniqueKey());
+    }
     BeanUtils.copyProperties(storeInfoForm,storeInfo);
-    StoreInfo result = storeInfoService.create(storeInfo);
+    StoreInfo result = storeInfoService.save(storeInfo);
     return ResultVOUtil.success(result);
   }
 }
