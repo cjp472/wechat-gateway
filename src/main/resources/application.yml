@@ -1,4 +1,6 @@
 spring:
+  thymeleaf:
+    prefix: classpath:/templates
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: wxb
@@ -8,7 +10,15 @@ spring:
     show-sql: true
   jackson:
     default-property-inclusion: non_null
-
+  redis:
+    host: 10.31.146.112
+    port: 8009
+    password: ceshi789
+    timeout: 0
 server:
-  context-path: /wechatgateway
-  port: 8888
+  port: 8080
+logging:
+  level:
+    root: debug
+  
+  
