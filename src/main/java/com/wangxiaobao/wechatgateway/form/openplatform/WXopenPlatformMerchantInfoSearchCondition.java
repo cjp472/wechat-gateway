@@ -24,4 +24,8 @@ public class WXopenPlatformMerchantInfoSearchCondition{
 		this.authType = authType;
 		this.organizeId = organizeId;
 	}
+	public WXopenPlatformMerchantInfoSearchCondition() {
+		super();
+	}
+	
 }
