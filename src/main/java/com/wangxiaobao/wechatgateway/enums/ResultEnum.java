@@ -9,7 +9,7 @@ public enum ResultEnum {
 
     PARAM_ERROR(1, "参数不正确"),
 
-    PRODUCT_NOT_EXIST(10, "商品不存在"),
+    UNKNOW_ERROR(100, "未知错误"),
     ;
 
     private Integer code;

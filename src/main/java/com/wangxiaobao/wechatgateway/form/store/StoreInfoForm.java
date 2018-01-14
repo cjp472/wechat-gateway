@@ -1,10 +1,12 @@
 package com.wangxiaobao.wechatgateway.form.store;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by halleyzhang on 2018/1/13.
  */
+@Data
 public class StoreInfoForm {
 
   private String storeId;

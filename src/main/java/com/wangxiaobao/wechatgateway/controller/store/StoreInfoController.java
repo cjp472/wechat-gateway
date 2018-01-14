@@ -14,13 +14,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by halleyzhang on 2018/1/13.
  */
-@Controller
+@RestController
 @RequestMapping("/storeinfo")
 @Slf4j
 public class StoreInfoController {
@@ -31,7 +33,7 @@ public class StoreInfoController {
   @PostMapping("/create")
   public ResultVO<StoreInfo> create(@Valid StoreInfoForm storeInfoForm,BindingResult bindingResult){
     if (bindingResult.hasErrors()) {
-      log.error("【创建商家】参数不正确, orderForm={}", storeInfoForm);
+      log.error("【创建商家】参数不正确, storeInfoForm={}", storeInfoForm);
       throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
           bindingResult.getFieldError().getDefaultMessage());
     }

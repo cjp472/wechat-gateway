@@ -2,7 +2,9 @@ package com.wangxiaobao.wechatgateway.exception;
 
 
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
+import lombok.Getter;
 
+@Getter
 public class CommonException extends RuntimeException{
 
     private Integer code;
