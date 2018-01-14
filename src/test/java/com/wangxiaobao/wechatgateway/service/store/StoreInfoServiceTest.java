@@ -1,8 +1,7 @@
 package com.wangxiaobao.wechatgateway.service.store;
 
-import static org.junit.Assert.*;
-
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,16 +16,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
+@Transactional
 public class StoreInfoServiceTest {
 
   @Autowired
   private StoreInfoService storeInfoService;
 
   @Test
-  public void create() throws Exception {
-    /*StoreInfo storeInfo = new StoreInfo();
+  public void create(){
+    StoreInfo storeInfo = new StoreInfo();
+    storeInfo.setStoreId("1234560098989");
     storeInfo.setStoreName("销魂掌华阳店2");
-    storeInfo.setMerchantAccount("XHZHYD2");
+    storeInfo.setMerchantAccount("XHZHYD999");
     storeInfo.setStoreProvince("四川省");
     storeInfo.setStoreCity("成都市");
     storeInfo.setStoreDistrict("华阳");
@@ -35,8 +36,7 @@ public class StoreInfoServiceTest {
     storeInfo.setStoreOfficehours("10-22");
     storeInfo.setStorePhone("88888888");
     storeInfo.setHaveParking(1);
-    StoreInfo result = storeInfoService.create(storeInfo);
-    Assert.assertNotNull(result);*/
+    StoreInfo result = storeInfoService.save(storeInfo);
+    Assert.assertNotNull(result);
   }
-
 }
