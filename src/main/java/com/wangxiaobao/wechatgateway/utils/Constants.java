@@ -113,5 +113,7 @@ public class Constants {
 	 */
 	public static final String AUTHORIZER_TYPE_GONGZHONGHAO = "1";
 	public static final String AUTHORIZER_TYPE_XIAOCHENGXU = "2";
+	//accessToken过期时间
+	public static final long ACCESS_TOKEN_REDIS_TIMEOUT=7000;
 	
 }

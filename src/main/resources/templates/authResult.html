@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title></title>
+</head>
+<body>
+<script th:inline="javascript">
+    var authResult = [[${authResult}]];
+    if(authResult.indexOf("授权成功") >= 0){
+    	alert("授权成功")
+    }else{
+    	alert("授权失败")
+    }
+    window.location.href = redirectUrl;
+</script>
+</body>
+</html>

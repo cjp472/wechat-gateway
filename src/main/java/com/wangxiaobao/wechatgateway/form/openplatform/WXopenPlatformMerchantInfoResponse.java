@@ -19,5 +19,8 @@ public class WXopenPlatformMerchantInfoResponse {
 	private String authType;
 	//商户品牌id
 	private String organizeId;
-
+	//第三方平台appid
+	private String componentAppid;
+	//第三方平台accessToken
+	private String componentAccessToken;
 }

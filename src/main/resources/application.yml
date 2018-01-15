@@ -25,4 +25,4 @@ wechat:
   openplatform:
     appid: wx2faa58ec608c1d69
     appsecret: 77347a37924b2583b183e1b43900c439
-    redirectUrl: http://kkg7c8.natappfree.cc
+    redirectUrl: http://kkg7c8.natappfree.cc/wechatgateway
