@@ -14,4 +14,6 @@ public interface OpenPlatformXiaochengxuRepository extends JpaRepository<OpenPla
 	 * @return
 	 */
 	public List<OpenPlatformXiaochengxu> findByTopLimitAndIsValidateAndType(String topLimit,String isValidate,String type);
+
+	public OpenPlatformXiaochengxu findByCode(String code);
 }

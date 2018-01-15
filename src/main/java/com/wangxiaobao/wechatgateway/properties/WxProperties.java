@@ -15,4 +15,6 @@ import lombok.Data;
 public class WxProperties {
 	private String token;
 	private String encodingAesKey;
+	private String wx_modify_domain_url;
+	private String wx_setwebviewdomain_url;
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title></title>
+</head>
+<body>
+<script th:inline="javascript">
+    var authResult = [[${authResult}]];
+    if(authResult.indexOf("授权成功") >= 0){
+    	alert("授权成功");
+    	authorizationResult("0");
+    }else{
+    	alert("授权失败");
+    	authorizationResult("1");
+    }
+    function authorizationResult(result) {
+    	//安卓调用方法
+		try{
+			AppInterface.authorizationResult(result);
+		}catch(e){}
+		//ios调用方法
+		try{
+			window.webkit.messageHandlers.AppInterface.postMessage({body: result});
+		}catch(e){}
+    }
+
+</script>
+</body>
+</html>

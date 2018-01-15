@@ -18,7 +18,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
-import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoResponse;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoSearchCondition;
 import com.wangxiaobao.wechatgateway.service.openplatform.OpenPlatformXiaochengxuService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
@@ -213,6 +211,25 @@ public class OpenPlatformController {
 		return null;
 	}
 
+	/**
+	 * 公众号小程序授权回调
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("platform/auth/callBack")
+	public String platformCallBack(Model model,HttpServletRequest request) {
+		String authCode = request.getParameter("auth_code");
+		String organizeId = request.getParameter("organizeId");
+		// 授权账户类型1：公众号；2：小程序
+		String authType = request.getParameter("authType");
+		logger.info("返回的授权code：" + authCode);
+		String authorizationInfo = testService.apiQueryAuth(authCode, authType, organizeId, appId, appsecret);
+		String result = buildingAuthorizer(authorizationInfo, authType, organizeId);
+		model.addAttribute("authResult", result);
+		return "/authResult";
+	}
+
 	// 组装授权和创建开放平台
 	public String buildingAuthorizer(String authorizationInfo, String authType, String organizeId) {
 		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
@@ -229,15 +246,18 @@ public class OpenPlatformController {
 							jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser",
 							new Date(), result.getData().toString(), authType, organizeId);
 					wXopenPlatformMerchantInfoService.save(wxInfo);
-					//关联我们的小程序和商家的
-					OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService.findCanBindXiaochengxu();
-					if(null==openPlatformXiaochengxu){
+					// 关联我们的小程序和商家的
+					OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService
+							.findCanBindXiaochengxu();
+					if (null == openPlatformXiaochengxu) {
 						return "授权失败";
 					}
-					String result1 = testService.bindWxamplink(openPlatformXiaochengxu.getAppId(), jsono.getString("authorizer_access_token"));
+					String result1 = testService.bindWxamplink(openPlatformXiaochengxu.getAppId(),
+							jsono.getString("authorizer_access_token"));
 					JSONObject resultJson = JSONObject.parseObject(result1);
-					JsonResult jsonResult = JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
-					if(!JsonResult.APP_RETURN_SUCCESS.equals(jsonResult.getCode())){
+					JsonResult jsonResult = JsonResult.newInstance(resultJson.getString("errcode"),
+							resultJson.getString("errmsg"));
+					if (!JsonResult.APP_RETURN_SUCCESS.equals(jsonResult.getCode())) {
 						return "授权失败,绑定第三方平台小程序失败";
 					}
 					return "授权成功";
@@ -306,7 +326,9 @@ public class OpenPlatformController {
 				+ getPreAuthCode());
 		sbUrl.append("&auth_type=").append(authType);
 		String redirectUri = URIUtil.encodeURIComponent(
-				redirectUrl + "/index/auth/callBack?organizeId=" + organizeId + "&authType=" + authType);
+				redirectUrl + "/platform/auth/callBack?organizeId=" + organizeId + "&authType=" + authType);
+		// redirectUrl + "/index/auth/callBack?organizeId=" + organizeId +
+		// "&authType=" + authType);
 		sbUrl.append("&redirect_uri=").append(redirectUri);
 		model.addAttribute("redirectUrl", sbUrl.toString());
 		return "/test";
@@ -351,8 +373,23 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult createOpen(String wxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		return testService.createOpen(wxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
+	}
+
+	/**
+	 * 商户公众号与开放平台绑定
+	 * 
+	 * @param wxAppid
+	 * @param openAppid
+	 * @return
+	 */
+	@RequestMapping("/gongzhonghao/bindOpen")
+	@ResponseBody
+	public JsonResult bindOpen(String wxAppid, String openAppid) {
+		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
+				.getWXopenPlatformMerchantInfo(wxAppid);
+		return testService.bindOpen(wxAppid, openAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 	}
 
 	/**
@@ -365,7 +402,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult unbindOpen(String wxAppid, String openAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		JsonResult jsonResult = testService.unbindOpen(wxAppid, openAppid,
 				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		return jsonResult;
@@ -381,7 +418,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult getBindOpen(String wxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		return testService.getBindOpen(wxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 	}
 
@@ -395,13 +432,12 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult bindWxamplink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		String result = testService.bindWxamplink(xcxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		JSONObject resultJson = JSONObject.parseObject(result);
 		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
 	}
-	
-	
+
 	/**
 	 * @methodName: getBindOpen @Description: 解绑我们的小程序和商家的公众号 @param
 	 *              wxAppid @return JsonResult @createUser:
@@ -412,10 +448,15 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult unbindWxampunlink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		String result = testService.bindWxamplink(xcxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		JSONObject resultJson = JSONObject.parseObject(result);
 		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
 	}
-
+	
+	@RequestMapping("platform/auth/test")
+	public String test(Model model,HttpServletRequest request) {
+		model.addAttribute("authResult", "");
+		return "/authResult1";
+	}
 }

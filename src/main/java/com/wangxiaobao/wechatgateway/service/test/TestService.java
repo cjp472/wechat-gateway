@@ -235,6 +235,12 @@ public class TestService {
 					if(openAppid.equals(jsonO.getString("open_appid"))){
 						return JsonResult.newInstanceMesSuccess("授权成功");
 					}else{
+						//解绑
+						JsonResult jsonr = unbindOpen(wxAppid,jsonO.getString("open_appid"),authoriceAccessToken);
+						if("0".equals(jsonr.getCode())){
+							bindOpen(wxAppid,openAppid,authoriceAccessToken);
+							return JsonResult.newInstanceMesSuccess("授权成功");
+						}
 						return JsonResult.newInstanceMesFail("授权失败已绑定的开放平台和现有开放平台不一致");
 					}
 				}

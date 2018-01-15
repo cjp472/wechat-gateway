@@ -1,4 +1,4 @@
-package com.wangxiaobao.wechatgateway.entity.openplatform;
+package com.wangxiaobao.wechatgateway.form.xiaochengxu;
 
 import java.util.Date;
 
@@ -15,26 +15,15 @@ import lombok.Data;
  * @author liping_max
  *
  */
-@Entity
 @Data
-@DynamicUpdate
-@Table(name = "t_base_openplatform_xiaochengxu")
-public class OpenPlatformXiaochengxu {
-	@Id
-	@Column(name = "app_id", nullable = false)
+public class OpenPlatformXiaochengxuResponse {
 	private String appId;
-	@Column(name = "app_secret")
 	private String appSecret;
-	@Column(name = "top_limit")
 	private String topLimit;
-	@Column(name = "is_validate")
 	private String isValidate;
-	@Column(name = "type")
 	private String type;
-	@Column(name = "create_date")
 	private Date createDate;
-	@Column(name = "update_date")
 	private Date updateDate;
-	@Column(name = "code")
 	private String code;
+	private String componentAppId;
 }

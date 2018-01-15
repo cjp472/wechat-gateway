@@ -3,14 +3,19 @@ package com.wangxiaobao.wechatgateway.controller.openplatform;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
+import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoResponse;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoSearchCondition;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
+import com.wangxiaobao.wechatgateway.service.test.TestService;
 import com.wangxiaobao.wechatgateway.utils.CreateUUID;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 
@@ -21,6 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class WXopenPlatformMerchantInfoController {
 	@Autowired
 	private WXopenPlatformMerchantInfoService wXopenPlatformMerchantInfoService;
+	@Value("${wechat.openplatform.appid}")
+	String appId;
+	@Value("${wechat.openplatform.appsecret}")
+	String appsecret;
+	@Autowired
+	private TestService testService;
 	
 	@RequestMapping("/wxopenplatform/save")
 	@ResponseBody
@@ -46,7 +57,14 @@ public class WXopenPlatformMerchantInfoController {
 	public JsonResult findMerchantWx(WXopenPlatformMerchantInfoSearchCondition wxCondition){
 		List<WXopenPlatformMerchantInfo> wxList = wXopenPlatformMerchantInfoService.findByCondition(wxCondition);
 		if(null!=wxList&&wxList.size()>0){
-			return JsonResult.newInstanceDataSuccess(wxList.get(0));
+			WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wxList.get(0);
+			wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wXopenPlatformMerchantInfo.getWxAppid());
+			
+			WXopenPlatformMerchantInfoResponse wXopenPlatformMerchantInfoResponse = new WXopenPlatformMerchantInfoResponse();
+			BeanUtils.copyProperties(wxList.get(0), wXopenPlatformMerchantInfoResponse);
+			wXopenPlatformMerchantInfoResponse.setComponentAppid(appId);
+			wXopenPlatformMerchantInfoResponse.setComponentAccessToken(testService.getApiComponentToken(appId,appsecret));
+			return JsonResult.newInstanceDataSuccess(wXopenPlatformMerchantInfoResponse);
 		}
 		return JsonResult.newInstanceSuccess();
 	}
