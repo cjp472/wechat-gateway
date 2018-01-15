@@ -3,6 +3,7 @@ package com.wangxiaobao.wechatgateway.service.openplatform;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -23,6 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class WXopenPlatformMerchantInfoService {
+	@Value("${wechat.openplatform.appid}")
+	String appId;
+	@Value("${wechat.openplatform.appsecret}")
+	String appsecret;
 	@Autowired
 	RedisService redisService;
 	@Autowired
@@ -99,7 +104,7 @@ public class WXopenPlatformMerchantInfoService {
 	 *              liping_max @createDate: 2018年1月12日 下午6:12:01 @updateUser:
 	 *              liping_max @updateDate: 2018年1月12日 下午6:12:01 @throws
 	 */
-	public WXopenPlatformMerchantInfo getWXopenPlatformMerchantInfo(String wxAppId,String appId,String appsecret) {
+	public WXopenPlatformMerchantInfo getWXopenPlatformMerchantInfo(String wxAppId) {
 		WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo();
 		String wxInfoStr = redisService.get(Constants.MERCHANT_WX_OPENPLATFORM_KEY + wxAppId);
 		if (!StringUtils.isEmpty(wxInfoStr)) {

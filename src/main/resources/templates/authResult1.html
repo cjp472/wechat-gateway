@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+</head>
+<body>
+	调用客户端控件测试：
+	<button id="success" name="success" onclick="authorizationResult('0')">授权成功</button>
+	<button id="fial" name="fial" onclick="authorizationResult('1')">授权失败</button>
+
+	<script th:inline="javascript">
+		function authorizationResult(result) {
+			//安卓调用方法
+			try{
+				AppInterface.authorizationResult(result);
+			}catch(e){}
+			//ios调用方法
+			try{
+				window.webkit.messageHandlers.AppInterface.postMessage({body: result});
+			}catch(e){}
+		}
+	</script>
+</body>
+</html>

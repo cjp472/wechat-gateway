@@ -18,7 +18,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.portlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
@@ -375,7 +373,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult createOpen(String wxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		return testService.createOpen(wxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 	}
 
@@ -390,7 +388,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult bindOpen(String wxAppid, String openAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		return testService.bindOpen(wxAppid, openAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 	}
 
@@ -404,7 +402,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult unbindOpen(String wxAppid, String openAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		JsonResult jsonResult = testService.unbindOpen(wxAppid, openAppid,
 				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		return jsonResult;
@@ -420,7 +418,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult getBindOpen(String wxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		return testService.getBindOpen(wxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 	}
 
@@ -434,7 +432,7 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult bindWxamplink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		String result = testService.bindWxamplink(xcxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		JSONObject resultJson = JSONObject.parseObject(result);
 		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
@@ -450,10 +448,15 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult unbindWxampunlink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid, appId, appsecret);
+				.getWXopenPlatformMerchantInfo(wxAppid);
 		String result = testService.bindWxamplink(xcxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		JSONObject resultJson = JSONObject.parseObject(result);
 		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
 	}
-
+	
+	@RequestMapping("platform/auth/test")
+	public String test(Model model,HttpServletRequest request) {
+		model.addAttribute("authResult", "");
+		return "/authResult1";
+	}
 }

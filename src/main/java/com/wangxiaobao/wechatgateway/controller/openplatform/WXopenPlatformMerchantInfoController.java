@@ -58,7 +58,7 @@ public class WXopenPlatformMerchantInfoController {
 		List<WXopenPlatformMerchantInfo> wxList = wXopenPlatformMerchantInfoService.findByCondition(wxCondition);
 		if(null!=wxList&&wxList.size()>0){
 			WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wxList.get(0);
-			wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wXopenPlatformMerchantInfo.getWxAppid(),appId,appsecret);
+			wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wXopenPlatformMerchantInfo.getWxAppid());
 			
 			WXopenPlatformMerchantInfoResponse wXopenPlatformMerchantInfoResponse = new WXopenPlatformMerchantInfoResponse();
 			BeanUtils.copyProperties(wxList.get(0), wXopenPlatformMerchantInfoResponse);
