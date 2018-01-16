@@ -1,3 +1,17 @@
+-- 品牌信息
+create table `brand_info` (
+    `brand_id` varchar(32) not null comment '品牌id',
+    `org_id` varchar(32) not null comment '品牌在权限系统的ID',
+    `org_account` varchar(32) not null comment '品牌在权限系统的账号',
+    `logo_url` varchar(5120)  comment '品牌logo',
+    `create_time` timestamp not null default current_timestamp comment '创建时间',
+    `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
+    primary key (`brand_id`)
+);
+alter table brand_info add unique key(org_id);
+alter table brand_info add unique key(org_account);
+
+
 -- 门店信息
 create table `store_info` (
     `store_id` varchar(32) not null comment '门店id',

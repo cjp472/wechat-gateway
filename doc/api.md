@@ -18,6 +18,7 @@ GET /wechatgateway/storeinfo/findByMerchantAccount?merchantAccount=XHZHYD
     "data": {
         "storeId": "12345",
         "merchantAccount": "XHZHYD",
+        "merchantId": "123456",
         "storeName": "销魂掌华阳店",
         "storeProvince": "四川",
         "storeCity": "成都",
@@ -46,6 +47,7 @@ POST /wechatgateway/storeinfo/save
 参数
 ``` 
 merchantAccount:XHZHYD
+merchantId:123456
 storeProvince:四川
 storeCity:成都
 storeDistrict:华阳
@@ -65,6 +67,7 @@ storeName:销魂掌华阳店
     "data": {
         "storeId": "12345",
         "merchantAccount": "XHZHYD",
+        "merchantId": "123456",
         "storeName": "销魂掌华阳店",
         "storeProvince": "四川",
         "storeCity": "成都",
@@ -108,3 +111,56 @@ storePhoto: 移动端自定义格式
 ```
 
 返回 略
+
+### 查询品牌
+``` 
+GET /wechatgateway/brandinfo/findByOrgId?orgId=12345
+或
+GET /wechatgateway/brandinfo/findByAccount?orgAccount=XHZ
+```
+
+返回
+``` 
+{
+    "code": 0,
+    "msg": "成功",
+    "data": {
+        "brandId": "1516093835325110194",
+        "orgId": "12345",
+        "orgAccount": "XHZ",
+        "logoUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516103773318&di=b4ce0fae6c3db2dc600b76c22bd21acb&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fbainuo%2Fwh%3D720%2C436%2Fsign%3Dd035b0daa56eddc426b2bcfc0beb9ac9%2F9c16fdfaaf51f3de6a4e275b9ceef01f3a297915.jpg",
+        "createTime": 1516093835000,
+        "updateTime": 1516093835000
+    }
+}
+```
+
+### 保存品牌信息
+``` 
+POST /wechatgateway/brandinfo/save
+```
+
+参数
+``` 
+orgId:12345
+orgAccount:XHZ
+logoUrl:https://timgsa.baidu.com/timg?
+```
+
+参数存在 brandId 会执行修改
+
+返回
+``` 
+{
+    "code": 0,
+    "msg": "成功",
+    "data": {
+        "brandId": "1516093835325110194",
+        "orgId": "12345",
+        "orgAccount": "XHZ",
+        "logoUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516103773318&di=b4ce0fae6c3db2dc600b76c22bd21acb&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fbainuo%2Fwh%3D720%2C436%2Fsign%3Dd035b0daa56eddc426b2bcfc0beb9ac9%2F9c16fdfaaf51f3de6a4e275b9ceef01f3a297915.jpg",
+        "createTime": 1516093835000,
+        "updateTime": 1516093835000
+    }
+}
+```
