@@ -12,8 +12,12 @@ public class StoreInfoForm {
   private String storeId;
 
   /** 权限系统商家账号. */
-  @NotEmpty(message = "商家账号必填")
+  @NotEmpty(message = "商家权限系统账号必填")
   private String merchantAccount;
+
+  /** 权限系统商家ID. */
+  @NotEmpty(message = "商家权限系统ID必填")
+  private String merchantId;
 
   /** 门店名称. */
   @NotEmpty(message = "门店名称必填")

@@ -29,6 +29,10 @@ public class StoreInfoService {
     return storeInfoRepository.findByMerchantAccount(merchantAccount);
   }
 
+  public StoreInfo findByMerchantId(String merchantId){
+    return storeInfoRepository.findByMerchantId(merchantId);
+  }
+
   public StoreInfo storeMenuSave(String merchantAccount,String storeMenu){
     StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount(merchantAccount);
     storeInfo.setStoreMenu(storeMenu);

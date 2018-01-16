@@ -3,6 +3,7 @@ package com.wangxiaobao.wechatgateway.repository.store;
 import static org.junit.Assert.*;
 
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,6 +29,7 @@ public class StoreInfoRepositoryTest {
     storeInfo.setStoreId("12345");
     storeInfo.setStoreName("销魂掌华阳店");
     storeInfo.setMerchantAccount("XHZHYD");
+    storeInfo.setMerchantId("123456");
     storeInfo.setStoreProvince("四川省");
     storeInfo.setStoreCity("成都市");
     storeInfo.setStoreDistrict("华阳");
@@ -39,6 +41,4 @@ public class StoreInfoRepositoryTest {
     StoreInfo result = storeInfoRepository.save(storeInfo);
     Assert.assertNotNull(result);
   }
-
-
 }

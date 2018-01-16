@@ -70,4 +70,10 @@ public class StoreInfoController {
     StoreInfo result = storeInfoService.findByMerchantAccount(merchantAccount);
     return ResultVOUtil.success(result);
   }
+
+  @GetMapping("/findByMerchantId")
+  public ResultVO<StoreInfo> findByMerchantId(@RequestParam("merchantId") String merchantId){
+    StoreInfo result = storeInfoService.findByMerchantId(merchantId);
+    return ResultVOUtil.success(result);
+  }
 }

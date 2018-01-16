@@ -2,6 +2,7 @@
 create table `store_info` (
     `store_id` varchar(32) not null comment '门店id',
     `merchant_account` varchar(32) not null comment '门店在权限系统的账号',
+    `merchant_id` varchar(32) not null comment '门店在权限系统的ID',
     `store_name` varchar(32) not null comment '门店名称',
     `store_province` varchar(32) not null comment '门店省',
     `store_city` varchar(32) not null comment '门店市',
@@ -22,4 +23,6 @@ create table `store_info` (
 );
 alter table store_info add unique key(store_name);
 alter table store_info add unique key(merchant_account);
+alter table store_info add unique key(merchant_id);
 alter table store_info add index idx_merchantAccount (merchant_account);
+alter table store_info add index idx_merchantId (merchant_id);
