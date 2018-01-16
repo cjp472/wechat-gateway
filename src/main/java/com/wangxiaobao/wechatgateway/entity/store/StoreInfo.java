@@ -20,6 +20,9 @@ public class StoreInfo {
   /** 权限系统商家账号. */
   private String merchantAccount;
 
+  /** 权限系统商家ID. */
+  private String merchantId;
+
   /** 门店名称. */
   private String storeName;
 

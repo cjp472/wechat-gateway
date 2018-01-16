@@ -10,4 +10,6 @@ public interface StoreInfoRepository extends JpaRepository<StoreInfo,String> {
 
   StoreInfo findByMerchantAccount(String merchantAccount);
 
+  StoreInfo findByMerchantId(String merchantId);
+
 }

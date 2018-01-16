@@ -28,6 +28,7 @@ public class StoreInfoServiceTest {
     storeInfo.setStoreId("1234560098989");
     storeInfo.setStoreName("销魂掌华阳店2");
     storeInfo.setMerchantAccount("XHZHYD999");
+    storeInfo.setMerchantAccount("1234567");
     storeInfo.setStoreProvince("四川省");
     storeInfo.setStoreCity("成都市");
     storeInfo.setStoreDistrict("华阳");
