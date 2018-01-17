@@ -1,8 +1,5 @@
 package com.wangxiaobao.wechatgateway.utils;
 
-import static org.junit.Assert.*;
-
-import com.oracle.tools.packager.Log;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoCode;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
