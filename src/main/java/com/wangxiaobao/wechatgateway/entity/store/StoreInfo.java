@@ -38,6 +38,9 @@ public class StoreInfo {
   /** 门店地址. */
   private String storeAddress;
 
+  /** 门店坐标. */
+  private String storeLocation;
+
   /** 门店描述. */
   private String storeDescription;
 

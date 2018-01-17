@@ -1,8 +1,10 @@
 package com.wangxiaobao.wechatgateway.service.store;
 
+import com.wangxiaobao.wechatgateway.entity.geo.GeoCode;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.repository.store.StoreInfoRepository;
-import com.wangxiaobao.wechatgateway.utils.KeyUtil;
+import com.wangxiaobao.wechatgateway.utils.AmapUtil;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,9 @@ public class StoreInfoService {
 
   @Autowired
   private StoreInfoRepository storeInfoRepository;
+
+  @Autowired
+  private AmapUtil amapUtil;
 
   public StoreInfo save(StoreInfo storeInfo){
     return storeInfoRepository.save(storeInfo);
@@ -43,5 +48,23 @@ public class StoreInfoService {
     StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount(merchantAccount);
     storeInfo.setStorePhoto(storePhoto);
     return storeInfoRepository.save(storeInfo);
+  }
+
+  public void storeLocationSave(StoreInfo storeInfo){
+    String address = storeInfo.getStoreProvince()+storeInfo.getStoreCity()+storeInfo.getStoreDistrict()+storeInfo.getStoreAddress();
+    List<GeoCode> codes = amapUtil.getGeoCode(address);
+    if(null != codes){
+      storeInfo.setStoreLocation(codes.get(0).getLocation());
+      storeInfoRepository.save(storeInfo);
+    }
+  }
+
+  public List<StoreInfo> findByMerchantIds(List<String> merchantIds){
+    List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantIds);
+    return result;
+  }
+
+  public List<StoreInfo> findAll(){
+    return storeInfoRepository.findAll();
   }
 }

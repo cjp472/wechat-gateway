@@ -22,6 +22,7 @@ create table `store_info` (
     `store_city` varchar(32) not null comment '门店市',
     `store_district` varchar(32) not null comment '门店区',
     `store_address` varchar(32) not null comment '门店地址',
+    `store_location` varchar(32) comment '门店坐标',
     `store_description` varchar(128) not null comment '门店介绍',
     `store_phone` varchar(32) not null comment '门店电话',
     `store_officehours` varchar(32) not null comment '门店营业时间',
