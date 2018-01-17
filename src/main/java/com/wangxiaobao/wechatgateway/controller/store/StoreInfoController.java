@@ -65,10 +65,10 @@ public class StoreInfoController {
     BeanUtils.copyProperties(storeInfoForm,storeInfo);
     StoreInfo result = storeInfoService.save(storeInfo);
 
-    //如果门店坐标为空，从高德地图获取坐标
-    if(StringUtils.isEmpty(result.getStoreLocation())){
-      storeInfoService.storeLocationSave(result);
-    }
+    //如果门店坐标为空，从高德地图获取坐标  目前前端传坐标
+//    if(StringUtils.isEmpty(result.getStoreLocation())){
+//      storeInfoService.storeLocationSave(result);
+//    }
     return ResultVOUtil.success(result);
   }
 
@@ -112,18 +112,27 @@ public class StoreInfoController {
     //获取用户的坐标
     String destination = longitude+","+latitude;
 
-    //获取用户与每个门店距离
+    //从header里获取用户进入的小程序所在品牌的商家列表
     List<String> merchantIds = new ArrayList<>();
     for(Merchant merchant: plateformOrgUserInfo.getMerchant()){
       merchantIds.add(merchant.getMerchantId());
     }
+
+    //把没有地址的门店特殊处理，标记为未获取地址
+    List<StoreDistanceVO> storeDistances = new ArrayList<>();
     List<StoreInfo> stores = this.storeInfoService.findByMerchantIds(merchantIds);
     for(StoreInfo storeInfo:stores){
       if(StringUtils.isEmpty(storeInfo.getStoreLocation())){
         stores.remove(storeInfo);
+        StoreDistanceVO storeDistanceVO = new StoreDistanceVO();
+        BeanUtils.copyProperties(storeInfo,storeDistanceVO);
+        storeDistanceVO.setDistance("未获取距离");
+        storeDistanceVO.setStoreLocation("未获取坐标");
+        storeDistances.add(storeDistanceVO);
       }
     }
 
+    //配置了坐标的商家去高德地图获取与用户的距离
     String orgin = "";
     for(StoreInfo storeInfo:stores){
       orgin = orgin+"|"+storeInfo.getStoreLocation();//拼接每个门店的坐标批量查询
@@ -132,7 +141,6 @@ public class StoreInfoController {
     List<GeoDistance> distances = amapUtil.getDistance(orgin,destination);
 
     //把距离放回到商家返回给前端
-    List<StoreDistanceVO> storeDistances = new ArrayList<>();
     for(int i=0;i<stores.size();i++){
       StoreDistanceVO storeDistanceVO = new StoreDistanceVO();
       BeanUtils.copyProperties(stores.get(i),storeDistanceVO);
@@ -140,7 +148,7 @@ public class StoreInfoController {
       storeDistances.add(storeDistanceVO);
     }
 
-    //返回结果放入品牌信息
+    //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
     BrandInfo brandInfo = brandInfoService.findByOrgId(plateformOrgUserInfo.getOrgId());
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);

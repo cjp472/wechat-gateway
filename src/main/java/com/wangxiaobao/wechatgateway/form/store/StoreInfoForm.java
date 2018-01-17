@@ -45,6 +45,9 @@ public class StoreInfoForm {
   /** 门店logo. */
   private String storeLogo;
 
+  /** 门店坐标. */
+  private String storeLocation;
+
   /** 门店营业时间. */
   private String storeOfficehours;
 

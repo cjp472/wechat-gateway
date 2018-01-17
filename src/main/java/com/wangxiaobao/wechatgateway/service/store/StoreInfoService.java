@@ -51,17 +51,19 @@ public class StoreInfoService {
     return storeInfoRepository.save(storeInfo);
   }
 
-  public void storeLocationSave(StoreInfo storeInfo){
-    String address = storeInfo.getStoreProvince()+storeInfo.getStoreCity()+storeInfo.getStoreDistrict()+storeInfo.getStoreAddress();
-    if(StringUtils.isEmpty(address)){
-      return;
-    }
-    List<GeoCode> codes = amapUtil.getGeoCode(address);
-    if(null != codes){
-      storeInfo.setStoreLocation(codes.get(0).getLocation());
-      storeInfoRepository.save(storeInfo);
-    }
-  }
+
+//前端传坐标
+//  public void storeLocationSave(StoreInfo storeInfo){
+//    String address = storeInfo.getStoreProvince()+storeInfo.getStoreCity()+storeInfo.getStoreDistrict()+storeInfo.getStoreAddress();
+//    if(StringUtils.isEmpty(address)){
+//      return;
+//    }
+//    List<GeoCode> codes = amapUtil.getGeoCode(address);
+//    if(null != codes){
+//      storeInfo.setStoreLocation(codes.get(0).getLocation());
+//      storeInfoRepository.save(storeInfo);
+//    }
+//  }
 
   public List<StoreInfo> findByMerchantIds(List<String> merchantIds){
     List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantIds);
