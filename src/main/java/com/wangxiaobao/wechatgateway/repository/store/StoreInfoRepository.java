@@ -1,6 +1,7 @@
 package com.wangxiaobao.wechatgateway.repository.store;
 
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -12,4 +13,5 @@ public interface StoreInfoRepository extends JpaRepository<StoreInfo,String> {
 
   StoreInfo findByMerchantId(String merchantId);
 
+  List<StoreInfo> findByMerchantIdIn(List<String> merchantIds);
 }
