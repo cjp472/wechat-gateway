@@ -2,6 +2,8 @@ package com.wangxiaobao.wechatgateway.entity.header;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Zhoutong
  * @version V1.0
@@ -33,4 +35,13 @@ public class PlateformOrgUserInfo {
     private String plateformAppId;
     private String plateformOpenPlateformId;
     private String plateformAppType;
+    private List<Merchant> merchant;
+    @Data
+    public class Merchant{
+        private String merchantId;
+        private String merchantName;
+        private String merchantAccount;
+        private String orgId;
+        private String isOpen;
+    }
 }

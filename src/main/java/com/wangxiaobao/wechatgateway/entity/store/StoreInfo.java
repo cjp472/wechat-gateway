@@ -41,6 +41,9 @@ public class StoreInfo {
   /** 门店坐标. */
   private String storeLocation;
 
+  /** 门店logo. */
+  private String storeLogo;
+
   /** 门店描述. */
   private String storeDescription;
 

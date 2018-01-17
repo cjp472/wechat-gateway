@@ -1,13 +1,17 @@
 package com.wangxiaobao.wechatgateway.controller.store;
 
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
+import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
 import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
 import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
+import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo.Merchant;
+import com.wangxiaobao.wechatgateway.entity.store.BrandInfo;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.store.StoreInfoForm;
+import com.wangxiaobao.wechatgateway.service.store.BrandInfoService;
 import com.wangxiaobao.wechatgateway.service.store.StoreInfoService;
 import com.wangxiaobao.wechatgateway.utils.AmapUtil;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
@@ -36,6 +40,9 @@ public class StoreInfoController {
 
   @Autowired
   private StoreInfoService storeInfoService;
+
+  @Autowired
+  private BrandInfoService brandInfoService;
 
   @Autowired
   private AmapUtil amapUtil;
@@ -93,25 +100,51 @@ public class StoreInfoController {
     return ResultVOUtil.success(result);
   }
 
+  /**
+   * 配合黄页首页，获取用户与商户距离
+   * @param longitude
+   * @param latitude
+   * @param plateformOrgUserInfo
+   * @return
+   */
   @GetMapping("/getDistance")
-  public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude){
+  public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlateformOrgUserInfo plateformOrgUserInfo){
+    //获取用户的坐标
     String destination = longitude+","+latitude;
-    List<StoreInfo> stores = this.storeInfoService.findAll();
-    //获取用户与门店距离
+
+    //获取用户与每个门店距离
+    List<String> merchantIds = new ArrayList<>();
+    for(Merchant merchant: plateformOrgUserInfo.getMerchant()){
+      merchantIds.add(merchant.getMerchantId());
+    }
+    List<StoreInfo> stores = this.storeInfoService.findByMerchantIds(merchantIds);
+    for(StoreInfo storeInfo:stores){
+      if(StringUtils.isEmpty(storeInfo.getStoreLocation())){
+        stores.remove(storeInfo);
+      }
+    }
+
     String orgin = "";
     for(StoreInfo storeInfo:stores){
-      orgin = orgin+"|"+storeInfo.getStoreLocation();
+      orgin = orgin+"|"+storeInfo.getStoreLocation();//拼接每个门店的坐标批量查询
     }
     orgin = orgin.substring(1,orgin.length());
-
     List<GeoDistance> distances = amapUtil.getDistance(orgin,destination);
-    List<StoreDistanceVO> result = new ArrayList<>();
+
+    //把距离放回到商家返回给前端
+    List<StoreDistanceVO> storeDistances = new ArrayList<>();
     for(int i=0;i<stores.size();i++){
       StoreDistanceVO storeDistanceVO = new StoreDistanceVO();
       BeanUtils.copyProperties(stores.get(i),storeDistanceVO);
       storeDistanceVO.setDistance(distances.get(i).getDistance());
-      result.add(storeDistanceVO);
+      storeDistances.add(storeDistanceVO);
     }
+
+    //返回结果放入品牌信息
+    BrandInfo brandInfo = brandInfoService.findByOrgId(plateformOrgUserInfo.getOrgId());
+    BrandVO result = new BrandVO();
+    result.setBrandInfo(brandInfo);
+    result.setStores(storeDistances);
     return ResultVOUtil.success(result);
   }
 }
