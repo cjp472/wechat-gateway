@@ -24,6 +24,7 @@ GET /wechatgateway/storeinfo/findByMerchantAccount?merchantAccount=XHZHYD
         "storeCity": "成都",
         "storeDistrict": "华阳",
         "storeAddress": "车各庄1234",
+        "storeLocation": "104.062026,30.505954",
         "storeDescription": "好吃",
         "storePhone": "88888888",
         "storeOfficehours": "10-22",
@@ -75,11 +76,13 @@ storeName:销魂掌华阳店
         "storeAddress": "车各庄1234",
         "storeDescription": "好吃",
         "storePhone": "88888888",
+        "storeLocation": "104.062026,30.505954",
         "storeOfficehours": "10-22",
         "haveParking": 0,
         "haveWifi": 1,
         "havePrivateroom": 0,
         "haveBooking": 0,
+        "storeLogo": "{http://www.baidu.com123}",
         "storeMenu": "{http://www.baidu.com123}",
         "storePhoto": "{http://www.baidu.com321}",
         "createTime": 1515933666000,
@@ -164,3 +167,47 @@ logoUrl:https://timgsa.baidu.com/timg?
     }
 }
 ```
+
+### 获取用户与门店距离
+``` 
+GET /wechatgateway/storeinfo/getDistance?longitude=104.068359&latitude=30.538196
+```
+
+参数
+``` 
+longitude:104.068359
+latitude:30.538196
+```
+
+返回
+``` 
+{
+    "code": 0,
+    "msg": "成功",
+    "data": {
+        "brandInfo": {
+            "brandId": "1516093835325110194",
+            "orgId": "9236",
+            "orgAccount": "XHZ",
+            "orgName": "9236",
+            "logoUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516103773318&di=b4ce0fae6c3db2dc600b76c22bd21acb&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fbainuo%2Fwh%3D720%2C436%2Fsign%3Dd035b0daa56eddc426b2bcfc0beb9ac9%2F9c16fdfaaf51f3de6a4e275b9ceef01f3a297915.jpg",
+            "createTime": 1516093835000,
+            "updateTime": 1516181968000
+        },
+        "stores": [
+            {
+                "merchantId": "691",
+                "merchantAccount": "WCBBJ",
+                "storeName": "旺小宝（北京分公司）",
+                "storeProvince": "四川",
+                "storeCity": "成都",
+                "storeDistrict": "华阳",
+                "storeLocation": "104.062026,30.505954",
+                "storeAddress": "华福大道一段",
+                "distance": "4850"
+            }
+        ]
+    }
+}
+```
+

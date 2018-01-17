@@ -23,6 +23,9 @@ public class BrandInfo {
   /** 权限系统品牌账号. */
   private String orgAccount;
 
+  /** 权限系统品牌名称. */
+  private String orgName;
+
   /** 品牌logo url. */
   private String logoUrl;
 

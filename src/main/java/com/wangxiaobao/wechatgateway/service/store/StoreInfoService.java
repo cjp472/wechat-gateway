@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -52,6 +53,9 @@ public class StoreInfoService {
 
   public void storeLocationSave(StoreInfo storeInfo){
     String address = storeInfo.getStoreProvince()+storeInfo.getStoreCity()+storeInfo.getStoreDistrict()+storeInfo.getStoreAddress();
+    if(StringUtils.isEmpty(address)){
+      return;
+    }
     List<GeoCode> codes = amapUtil.getGeoCode(address);
     if(null != codes){
       storeInfo.setStoreLocation(codes.get(0).getLocation());

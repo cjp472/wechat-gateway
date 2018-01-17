@@ -20,8 +20,11 @@ public class BrandInfoForm {
   @NotEmpty(message = "品牌权限系统账号必填")
   private String orgAccount;
 
+  /** 权限系统品牌名称. */
+  @NotEmpty(message = "品牌权限系统名称必填")
+  private String orgName;
+
   /** 品牌logo url. */
-  @NotEmpty(message = "品牌logoUrl必填")
   private String logoUrl;
 
 }
