@@ -114,7 +114,52 @@ public class AmapUtilTest {
     log.info(codes.toString());
   }
 
+  @Test
+  public void parseAddress(){
+    String str = "{\n"
+        + "status: \"1\",\n"
+        + "info: \"OK\",\n"
+        + "infocode: \"10000\",\n"
+        + "regeocode: {\n"
+        + "formatted_address: \"四川省成都市都江堰市青城山镇东软大道1号成都东软学院\",\n"
+        + "addressComponent: {\n"
+        + "country: \"中国\",\n"
+        + "province: \"四川省\",\n"
+        + "city: \"成都市\",\n"
+        + "citycode: \"028\",\n"
+        + "district: \"都江堰市\",\n"
+        + "adcode: \"510181\",\n"
+        + "township: \"青城山镇\",\n"
+        + "towncode: \"510181110000\",\n"
+        + "neighborhood: {\n"
+        + "name: [ ],\n"
+        + "type: [ ]\n"
+        + "},\n"
+        + "building: {\n"
+        + "name: [ ],\n"
+        + "type: [ ]\n"
+        + "},\n"
+        + "streetNumber: {\n"
+        + "street: \"东软大道\",\n"
+        + "number: \"1号\",\n"
+        + "location: \"103.596471,30.8884389\",\n"
+        + "direction: \"Center\",\n"
+        + "distance: \"0\"\n"
+        + "},\n"
+        + "businessAreas: [\n"
+        + "{\n"
+        + "location: \"103.58584985964907,30.892009228070187\",\n"
+        + "name: \"青城山\",\n"
+        + "id: \"510181\"\n"
+        + "}\n"
+        + "]\n"
+        + "}\n"
+        + "}\n"
+        + "}";
+    amapUtil.parseAddress(str);
 
+
+  }
 
 
 }

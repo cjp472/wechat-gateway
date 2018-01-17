@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * Created by halleyzhang on 2018/1/17.
+ * 从高的地图返回的距离对象中获取存储距离
  */
 @Data
 public class GeoDistance {

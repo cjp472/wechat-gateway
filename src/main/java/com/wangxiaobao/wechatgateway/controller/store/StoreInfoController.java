@@ -3,6 +3,7 @@ package com.wangxiaobao.wechatgateway.controller.store;
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
 import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
 import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
+import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
 import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo.Merchant;
@@ -69,6 +70,7 @@ public class StoreInfoController {
 //    if(StringUtils.isEmpty(result.getStoreLocation())){
 //      storeInfoService.storeLocationSave(result);
 //    }
+    log.info("【保存商家】成功",result);
     return ResultVOUtil.success(result);
   }
 
@@ -77,6 +79,7 @@ public class StoreInfoController {
       @RequestParam("storeMenu") String storeMenu){
 
     StoreInfo result = storeInfoService.storeMenuSave(merchantAccount,storeMenu);
+    log.info("【保存菜品】成功",result);
     return ResultVOUtil.success(result);
   }
 
@@ -85,6 +88,7 @@ public class StoreInfoController {
       @RequestParam("storePhoto") String storePhoto){
 
     StoreInfo result = storeInfoService.storePhotoSave(merchantAccount,storePhoto);
+    log.info("【保存门店图片】成功",result);
     return ResultVOUtil.success(result);
   }
 
@@ -153,6 +157,12 @@ public class StoreInfoController {
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);
     result.setStores(storeDistances);
+
+    //获取用户的地址信息
+    GeoAddress geoAddress = amapUtil.getAddress(destination);
+    result.setUserAddress(geoAddress);
+    log.info("【获取用户地址】成功",geoAddress);
+
     return ResultVOUtil.success(result);
   }
 }

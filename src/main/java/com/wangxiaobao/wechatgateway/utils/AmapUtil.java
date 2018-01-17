@@ -3,9 +3,11 @@ package com.wangxiaobao.wechatgateway.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoCode;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
  * 高德地图工具类
  */
 @Service
+@Slf4j
 public class AmapUtil {
 
   @Autowired
@@ -55,6 +58,26 @@ public class AmapUtil {
     JSONArray jsonArray = dataJson.getJSONArray("results");
     List<GeoDistance> distances = JSON.parseArray(jsonArray.toJSONString(),GeoDistance.class);
     return distances;
+  }
+
+  /**
+   * 输入坐标从高德地图查询出地址信息
+   * @param location  用户坐标
+   * @return
+   */
+  public GeoAddress getAddress(String location){
+    String url = "http://restapi.amap.com/v3/geocode/regeo?output=json&location="+location+"&key=92d093befe769ff153a0c34f7477ed73&radius=1000&extensions=base";
+    String result = restTemplate.getForObject(url,String.class);
+    return this.parseAddress(result);
+  }
+
+  public GeoAddress parseAddress(String str){
+    GeoAddress result  = new GeoAddress();
+    JSONObject dataJson  = JSON.parseObject(str);
+    JSONObject jsonObject = dataJson.getJSONObject("regeocode");
+    result.setAddress(jsonObject.getString("formatted_address"));
+    result.setCity(jsonObject.getJSONObject("addressComponent").getString("city"));
+    return result;
   }
 
 }
