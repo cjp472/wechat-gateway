@@ -131,7 +131,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		return result;
 	}
 
-	public JSONObject commit(String wxAppid, String templateId, String organizeId) {
+	public JSONObject commit(String wxAppid, String templateId, String organizationAccount) {
 		String url = wxProperties.getWx_miniprogram_commit_url()
 				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		JSONObject param = new JSONObject();
@@ -139,7 +139,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		param.put("user_version", userVersion);
 		param.put("user_desc", "test");
 		JSONObject params = new JSONObject();
-		params.put("organizeId", organizeId);
+		params.put("organizationAccount", organizationAccount);
 		param.put("ext_json", params.toJSONString());
 		param.put("extAppid", wxAppid);
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
@@ -248,14 +248,14 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	  * @Description: TODO给小程序发模板
 	  * @param wxAppid
 	  * @param action
-	  * @param organizeId void
+	  * @param organizationAccount void
 	  * @createUser: liping_max
 	  * @createDate: 2018年1月17日 下午7:43:33
 	  * @updateUser: liping_max
 	  * @updateDate: 2018年1月17日 下午7:43:33
 	  * @throws
 	 */
-	public void initXiaochengxu(String wxAppid, String action, String organizeId,String userName) {
+	public void initXiaochengxu(String wxAppid, String action, String organizationAccount,String userName) {
 		// 1，设置小程序服务器域名---code为0或者85017都算成功
 		modifyDomain(wxAppid, action);
 		// 2，设置小程序业务域名
@@ -264,17 +264,18 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateService
 				.findWxMiniprogramTemplateDefaultByType(MiniprogramTemplateTypeEnum.PLATFORM_PAGE_TEMPLATE.getType());
 		// 为商家小程序上传模板
-		JSONObject commitJson = commit(wxAppid, wxMiniprogramTemplate.getTemplateId(), organizeId);
+		JSONObject commitJson = commit(wxAppid, wxMiniprogramTemplate.getTemplateId(), organizationAccount);
 		// 将商家上传的版本记录到数据库
 		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
 		organizeTemplate.setCreateDate(new Date());
 		organizeTemplate.setDraftId(wxMiniprogramTemplate.getDraftId());
 		organizeTemplate.setExtJson(commitJson.getString("ext_json"));
 		organizeTemplate.setMiniprogramTemplateId(KeyUtil.genUniqueKey());
-		organizeTemplate.setOrganizeId(organizeId);
+		organizeTemplate.setOrganizationAccount(organizationAccount);
 		organizeTemplate.setWxAppId(wxAppid);
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.UPLOAD.getStatus());
 		organizeTemplate.setIsOnline("0");
+		organizeTemplate.setIsNew("1");
 		//设置当前为new为1，其它为0
 		OrganizeTemplate organizeTemplateResult = organizeTemplateService.save(organizeTemplate);
 		if (null == organizeTemplateResult) {

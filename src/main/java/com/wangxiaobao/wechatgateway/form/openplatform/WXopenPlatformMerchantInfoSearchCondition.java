@@ -18,11 +18,11 @@ public class WXopenPlatformMerchantInfoSearchCondition{
 	//授权账号类型：1：公众号；2小程序
 	private String authType;
 	//商户品牌id
-	private String organizeId;
-	public WXopenPlatformMerchantInfoSearchCondition(String authType, String organizeId) {
+	private String organizationAccount;
+	public WXopenPlatformMerchantInfoSearchCondition(String authType, String organizationAccount) {
 		super();
 		this.authType = authType;
-		this.organizeId = organizeId;
+		this.organizationAccount = organizationAccount;
 	}
 	public WXopenPlatformMerchantInfoSearchCondition() {
 		super();

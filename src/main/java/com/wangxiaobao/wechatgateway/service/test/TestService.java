@@ -44,7 +44,7 @@ public class TestService {
 	 *              2017年9月13日 下午7:26:09 @updateUser: liping_max @updateDate:
 	 *              2017年9月13日 下午7:26:09 @throws
 	 */
-	public String apiQueryAuth(String authCode, String authType, String organizeId, String appId, String appsecret) {
+	public String apiQueryAuth(String authCode, String authType, String organizationAccount, String appId, String appsecret) {
 		String component_access_token = getApiComponentToken(appId, appsecret);
 		String url = "https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token="
 				+ component_access_token;
@@ -68,8 +68,8 @@ public class TestService {
 	  wXopenPlatformMerchantInfoService.deleteByWXAppId(jsono.getString(
 	  "authorizer_appid")); WXopenPlatformMerchantInfoForm wxForm = new
 	  WXopenPlatformMerchantInfoForm(); wxForm.setAuthType(authType);
-	  wxForm.setOrganizeId(organizeId);
-	  wXopenPlatformMerchantInfoService.deleteByOrganizeIdAndAuthType(wxForm);
+	  wxForm.setorganizationAccount(organizationAccount);
+	  wXopenPlatformMerchantInfoService.deleteByorganizationAccountAndAuthType(wxForm);
 	  
 	  WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo();
 	  wxInfo.setAuthoriceRefreshToken(jsono.getString(
@@ -78,7 +78,7 @@ public class TestService {
 	 * ); wxInfo.setCreateDate(new Date());
 	 * wxInfo.setWxAppid(jsono.getString("authorizer_appid"));
 	 * wxInfo.setWxOpenPlatformId(CreateUUID.getUuid());
-	 * wxInfo.setAuthType(authType); wxInfo.setOrganizeId(organizeId);
+	 * wxInfo.setAuthType(authType); wxInfo.setorganizationAccount(organizationAccount);
 	 * wxInfo.setOpenAppid(oldWxInfo.getOpenAppid());
 	 * wXopenPlatformMerchantInfoService.save(wxInfo);
 	 * redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY +

@@ -31,8 +31,8 @@ public class OrganizeTemplate {
 	private String miniprogramTemplateId;
 	@Column(name = "wx_app_id")
 	private String wxAppId;
-	@Column(name = "organize_id")
-	private String organizeId;
+	@Column(name = "organization_account")
+	private String organizationAccount;
 	@Column(name = "draft_id")
 	private String draftId;
 	@Column(name = "ext_json")

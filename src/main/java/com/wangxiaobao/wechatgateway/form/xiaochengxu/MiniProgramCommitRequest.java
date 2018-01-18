@@ -15,5 +15,5 @@ public class MiniProgramCommitRequest {
 	@NotEmpty(message="商家小程序Appid必填")
 	private String wxAppid;
 	@NotEmpty(message="平台id必填")
-	private String organizeId;
+	private String organizationAccount;
 }

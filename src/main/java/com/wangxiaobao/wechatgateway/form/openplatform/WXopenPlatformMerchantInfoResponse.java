@@ -18,7 +18,7 @@ public class WXopenPlatformMerchantInfoResponse {
 	//授权账号类型：1：公众号；2小程序
 	private String authType;
 	//商户品牌id
-	private String organizeId;
+	private String organizationAccount;
 	//第三方平台appid
 	private String componentAppid;
 	//第三方平台accessToken

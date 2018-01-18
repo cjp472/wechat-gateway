@@ -26,3 +26,19 @@ wechat:
     appid: wxc0e7c45bbe6d5459
     appsecret: bb7e865ed0710dbe7c6a9f77fb365dee
     redirectUrl: https://test.source3g.com/wechatgateway
+    token: wxtest
+    encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
+  miniprogram:   
+    requestdomain1: https://develop.source3g.com
+    requestdomain2: https://preview.source3g.com
+    wsrequestdomain1: https://develop.source3g.com
+    wsrequestdomain2: https://preview.source3g.com
+    uploaddomain1: https://develop.source3g.com
+    uploaddomain2: https://preview.source3g.com
+    downloaddomain1: https://develop.source3g.com
+    downloaddomain2: https://preview.source3g.com
+    webviewdomain1: https://develop.source3g.com
+    webviewdomain2: https://preview.source3g.com
+    #小程序版本号
+    userversion: V0.0.1
+    

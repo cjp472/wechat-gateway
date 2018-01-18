@@ -1,13 +1,15 @@
 package com.wangxiaobao.wechatgateway;
 
-import com.wangxiaobao.wechatgateway.utils.UserInfoMethodArgumentResolver;
 import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.wangxiaobao.wechatgateway.utils.UserInfoMethodArgumentResolver;
 
 @SpringBootApplication
 public class WechatGatewayApplication extends WebMvcConfigurerAdapter {

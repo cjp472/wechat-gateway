@@ -20,6 +20,7 @@ public class PlateformOrgUserInfo {
 
     private String orgUserId;
     private String orgId;
+    private String organizationAccount;
     private String orgName;
     private String orgUnionId;
     private String orgOpenId;

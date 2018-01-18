@@ -54,7 +54,7 @@ public class WXopenPlatformMerchantInfoService {
 	  * @throws
 	 */
 	public List<WXopenPlatformMerchantInfo> findByCondition(WXopenPlatformMerchantInfoSearchCondition wxCondition){
-		return wXopenPlatformMerchantInfoMapper.findByAuthTypeAndOrganizeId(wxCondition.getAuthType(),wxCondition.getOrganizeId());
+		return wXopenPlatformMerchantInfoMapper.findByAuthTypeAndOrganizationAccount(wxCondition.getAuthType(),wxCondition.getOrganizationAccount());
 	}
 	/**
 	  * @methodName: deleteByWXAppId
@@ -71,17 +71,17 @@ public class WXopenPlatformMerchantInfoService {
 	}
 	
 	/**
-	  * @methodName: deleteByOrganizeIdAndAuthType
+	  * @methodName: deleteByorganizationAccountAndAuthType
 	  * @Description: 根据wxAppId删除记录
-	  * @param organizeId
+	  * @param organizationAccount
 	  * @createUser: liping_max
 	  * @createDate: 2018年1月12日 下午4:46:48
 	  * @updateUser: liping_max
 	  * @updateDate: 2018年1月12日 下午4:46:48
 	  * @throws
 	 */
-	public void deleteByOrganizeIdAndAuthType(WXopenPlatformMerchantInfoForm wxForm){
-		wXopenPlatformMerchantInfoMapper.deleteInBatch(wXopenPlatformMerchantInfoMapper.findByAuthTypeAndOrganizeId(wxForm.getAuthType(),wxForm.getOrganizeId()));
+	public void deleteByorganizationAccountAndAuthType(WXopenPlatformMerchantInfoForm wxForm){
+		wXopenPlatformMerchantInfoMapper.deleteInBatch(wXopenPlatformMerchantInfoMapper.findByAuthTypeAndOrganizationAccount(wxForm.getAuthType(),wxForm.getOrganizationAccount()));
 	}
 	/**
 	  * @methodName: update

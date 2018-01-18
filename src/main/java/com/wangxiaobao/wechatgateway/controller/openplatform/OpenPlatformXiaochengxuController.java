@@ -1,5 +1,7 @@
 package com.wangxiaobao.wechatgateway.controller.openplatform;
 
+import java.util.Date;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -9,21 +11,29 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.controller.base.BaseController;
+import com.wangxiaobao.wechatgateway.entity.constantcode.ConstantCode;
+import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
+import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
+import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
+import com.wangxiaobao.wechatgateway.enums.MiniprogramTemplateTypeEnum;
+import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramCommitRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramGetAuditstatusRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramGetCategoryRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramSetweappsupportversionRequest;
-import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramSubmitAuditRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.OpenPlatformXiaochengxuResponse;
+import com.wangxiaobao.wechatgateway.service.constantcode.ConstantCodeService;
+import com.wangxiaobao.wechatgateway.service.miniprogramtemplate.WxMiniprogramTemplateService;
 import com.wangxiaobao.wechatgateway.service.openplatform.OpenPlatformXiaochengxuService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
+import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
+import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +44,12 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	private OpenPlatformXiaochengxuService openPlatformXiaochengxuService;
 	@Autowired
 	private WXopenPlatformMerchantInfoService wxPlatformMerchantInfoService;
+	@Autowired
+	private ConstantCodeService constantCodeService;
+	@Autowired
+	private WxMiniprogramTemplateService wxMiniprogramTemplateService;
+	@Autowired
+	private OrganizeTemplateService organizeTemplateService;
 
 	@RequestMapping("/xiaochengxu/findXiaochengxuByCode")
 	public JsonResult findXiaochengxuByCode(String code) {
@@ -89,8 +105,9 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.commit(miniProgramCommitRequest.getWxAppid(),
-				miniProgramCommitRequest.getTemplateId(), miniProgramCommitRequest.getOrganizeId()));
+		return JsonResult
+				.newInstanceDataSuccess(openPlatformXiaochengxuService.commit(miniProgramCommitRequest.getWxAppid(),
+						miniProgramCommitRequest.getTemplateId(), miniProgramCommitRequest.getOrganizationAccount()));
 	}
 
 	/**
@@ -129,38 +146,52 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 
 	/**
 	 * @methodName: submitAudit @Description: 将第三方提交的代码包提交审核 @param
-	 * request @return JsonResult @createUser: liping_max @createDate:
-	 * 2018年1月16日 下午4:54:36 @updateUser: liping_max @updateDate: 2018年1月16日
-	 * 下午4:54:36 @throws
+	 *              request @return JsonResult @createUser:
+	 *              liping_max @createDate: 2018年1月16日 下午4:54:36 @updateUser:
+	 *              liping_max @updateDate: 2018年1月16日 下午4:54:36 @throws
 	 */
 	@RequestMapping("/miniprogram/submitaudit")
-	public JsonResult submitAudit(@Valid MiniProgramSubmitAuditRequest request, BindingResult bindingResult) {
+	public JsonResult submitAudit(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult,PlateformOrgUserInfo plateformOrgUserInfo) {
 		if (bindingResult.hasErrors()) {
-			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramSubmitAuditRequest=【】", request);
+			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramGetCategoryRequest=【】", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		
-		JSONObject jsonO = new JSONObject();
-		JSONArray jsonA = new JSONArray();
-		JSONObject jsonItem = new JSONObject();
-		jsonItem.put("first_class", request.getFirstClass());
-		// address为上个接口返回的结果
-		jsonItem.put("address", "pages/home");
-		jsonItem.put("second_class", request.getSecondClass());
-		jsonItem.put("first_id", request.getFirstId());
-		jsonItem.put("second_id", request.getSecondId());
-		jsonItem.put("title", request.getTitle());
-		jsonA.add(jsonItem);
-		jsonO.put("item_list", jsonA);
-		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), jsonO));
+		// 获取商家小程序账号需要配置的address和类目
+		ConstantCode constantCode = new ConstantCode("templatePage", "yellowpages");
+		constantCode = constantCodeService.findConstantCode(constantCode);
+		WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateService
+				.findWxMiniprogramTemplateDefaultByType(MiniprogramTemplateTypeEnum.PLATFORM_PAGE_TEMPLATE.getType());
+		JSONObject submitauditparamJson = JSONObject.parseObject(constantCode.getValue());
+		JSONObject jsonObject = openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), submitauditparamJson);
+		//将之前的发布设为旧
+		OrganizeTemplate orTemplate = new OrganizeTemplate();
+		orTemplate.setIsNew("1");
+		orTemplate.setOrganizationAccount(plateformOrgUserInfo.getOrganizationAccount());
+		OrganizeTemplate organizeTemplateOld = organizeTemplateService.findOrganizeTemplateBy(orTemplate);
+		organizeTemplateOld.setIsNew("0");
+		organizeTemplateOld.setStatus(OrganizeTemplateStatusEnum.CANCEL.getStatus());
+		organizeTemplateService.save(organizeTemplateOld);
+		//保存新的商户模板信息
+		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		organizeTemplate.setCreateDate(new Date());
+		organizeTemplate.setDraftId(wxMiniprogramTemplate.getDraftId());
+		organizeTemplate.setExtJson("");
+		organizeTemplate.setMiniprogramTemplateId(KeyUtil.genUniqueKey());
+		organizeTemplate.setOrganizationAccount(plateformOrgUserInfo.getOrgId());
+		organizeTemplate.setWxAppId(request.getWxAppid());
+		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
+		organizeTemplate.setIsOnline("0");
+		organizeTemplate.setIsNew("1");
+		organizeTemplateService.save(organizeTemplate);
+		return JsonResult.newInstanceSuccess();
 	}
 
 	/**
 	 * @methodName: getAuditstatus @Description: TODO查询某个指定版本的审核状态 @param
-	 * request @param bindingResult @return JsonResult @createUser:
-	 * liping_max @createDate: 2018年1月16日 下午7:31:09 @updateUser:
-	 * liping_max @updateDate: 2018年1月16日 下午7:31:09 @throws
+	 *              request @param bindingResult @return JsonResult @createUser:
+	 *              liping_max @createDate: 2018年1月16日 下午7:31:09 @updateUser:
+	 *              liping_max @updateDate: 2018年1月16日 下午7:31:09 @throws
 	 */
 	@RequestMapping("/miniprogram/getAuditstatus")
 	public JsonResult getAuditstatus(@Valid MiniProgramGetAuditstatusRequest request, BindingResult bindingResult) {
@@ -174,21 +205,15 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		return JsonResult
 				.newInstanceDataSuccess(openPlatformXiaochengxuService.getAuditstatus(url, request.getAuditid()));
 	}
-	
+
 	/**
-	  * @methodName: getLatestAuditstatus
-	  * @Description: TODO查询最新一次提交的审核状态
-	  * @param request
-	  * @param bindingResult
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年1月16日 下午7:59:49
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年1月16日 下午7:59:49
-	  * @throws
+	 * @methodName: getLatestAuditstatus @Description: TODO查询最新一次提交的审核状态 @param
+	 * request @param bindingResult @return JsonResult @createUser:
+	 * liping_max @createDate: 2018年1月16日 下午7:59:49 @updateUser:
+	 * liping_max @updateDate: 2018年1月16日 下午7:59:49 @throws
 	 */
 	@RequestMapping("/miniprogram/getLatestAuditstatus")
-	public JsonResult getLatestAuditstatus(@Valid MiniProgramGetCategoryRequest request,BindingResult bindingResult){
+	public JsonResult getLatestAuditstatus(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			log.error("【查询某个指定版本的审核状态】参数不正确, MiniProgramGetCategoryRequest=【】", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
@@ -196,24 +221,17 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		}
 		String url = wxProperties.getWx_miniprogram_get_latest_auditstatus_url() + wxPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(request.getWxAppid()).getAuthoriceAccessToken();
-		return JsonResult
-				.newInstanceDataSuccess(openPlatformXiaochengxuService.getLatestAuditstatus(url));
+		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.getLatestAuditstatus(url));
 	}
-	
+
 	/**
-	  * @methodName: release
-	  * @Description: TODO发布已通过审核的小程序
-	  * @param request
-	  * @param bindingResult
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年1月16日 下午8:03:51
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年1月16日 下午8:03:51
-	  * @throws
+	 * @methodName: release @Description: TODO发布已通过审核的小程序 @param request @param
+	 * bindingResult @return JsonResult @createUser: liping_max @createDate:
+	 * 2018年1月16日 下午8:03:51 @updateUser: liping_max @updateDate: 2018年1月16日
+	 * 下午8:03:51 @throws
 	 */
 	@RequestMapping("/miniprogram/release")
-	public JsonResult release(@Valid MiniProgramGetCategoryRequest request,BindingResult bindingResult){
+	public JsonResult release(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			log.error("【发布已通过审核的小程序】参数不正确, MiniProgramGetCategoryRequest=【】", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
@@ -221,24 +239,18 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		}
 		String url = wxProperties.getWx_miniprogram_release_url() + wxPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(request.getWxAppid()).getAuthoriceAccessToken();
-		return JsonResult
-				.newInstanceDataSuccess(openPlatformXiaochengxuService.getLatestAuditstatus(url));
+		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.getLatestAuditstatus(url));
 	}
-	
+
 	/**
-	  * @methodName: setweappsupportversion
-	  * @Description: TODO设置最低基础库版本
-	  * @param request
-	  * @param bindingResult
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年1月16日 下午8:25:14
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年1月16日 下午8:25:14
-	  * @throws
+	 * @methodName: setweappsupportversion @Description: TODO设置最低基础库版本 @param
+	 * request @param bindingResult @return JsonResult @createUser:
+	 * liping_max @createDate: 2018年1月16日 下午8:25:14 @updateUser:
+	 * liping_max @updateDate: 2018年1月16日 下午8:25:14 @throws
 	 */
 	@RequestMapping("/miniprogram/setweappsupportversion")
-	public JsonResult setweappsupportversion(@Valid MiniProgramSetweappsupportversionRequest request,BindingResult bindingResult){
+	public JsonResult setweappsupportversion(@Valid MiniProgramSetweappsupportversionRequest request,
+			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			log.error("【设置最低基础库版本】参数不正确, MiniProgramSetweappsupportversionRequest=【】", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
@@ -246,7 +258,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		}
 		String url = wxProperties.getWx_miniprogram_setweappsupportversion_url() + wxPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(request.getWxAppid()).getAuthoriceAccessToken();
-		return JsonResult
-				.newInstanceDataSuccess(openPlatformXiaochengxuService.setweappsupportversion(url,request.getVersion()));
+		return JsonResult.newInstanceDataSuccess(
+				openPlatformXiaochengxuService.setweappsupportversion(url, request.getVersion()));
 	}
 }

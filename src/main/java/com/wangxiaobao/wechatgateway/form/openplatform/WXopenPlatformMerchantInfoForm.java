@@ -24,5 +24,5 @@ public class WXopenPlatformMerchantInfoForm implements Serializable{
 	//授权账号类型：1：公众号；2小程序
 	private String authType;
 	//商户品牌id
-	private String organizeId;
+	private String organizationAccount;
 }

@@ -46,8 +46,8 @@ public class WXopenPlatformMerchantInfo implements Serializable {
 	@Column(name="auth_type")
 	private String authType;
 	//商户品牌id
-	@Column(name="organize_id")
-	private String organizeId;
+	@Column(name="organization_account")
+	private String organizationAccount;
 	@Column(name="nick_name")
 	private String nickName;
 	@Column(name="head_img")
@@ -62,7 +62,7 @@ public class WXopenPlatformMerchantInfo implements Serializable {
 	}
 	public WXopenPlatformMerchantInfo(String wxOpenPlatformId, String wxAppid, String componentVerifyTicket,
 			String authoriceAccessToken, String authoriceRefreshToken, String createUser, Date createDate,
-			String updateUser, Date updateDate, String openAppid, String authType, String organizeId, String nickName,
+			String updateUser, Date updateDate, String openAppid, String authType, String organizationAccount, String nickName,
 			String headImg, String verifyTypeInfo, String userName) {
 		super();
 		this.wxOpenPlatformId = wxOpenPlatformId;
@@ -76,7 +76,7 @@ public class WXopenPlatformMerchantInfo implements Serializable {
 		this.updateDate = updateDate;
 		this.openAppid = openAppid;
 		this.authType = authType;
-		this.organizeId = organizeId;
+		this.organizationAccount = organizationAccount;
 		this.nickName = nickName;
 		this.headImg = headImg;
 		this.verifyTypeInfo = verifyTypeInfo;
