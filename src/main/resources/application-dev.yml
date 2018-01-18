@@ -15,14 +15,10 @@ spring:
     port: 8009
     password: ceshi789
     timeout: 0
-  application:
-    name: wechatgateway
 server:
   context-path: /wechatgateway
   port: 8080
 logging:
-  path: /logs/${spring.application.name}/${HOSTNAME:localhost}
-  file: ${spring.application.name}.log
   level:
     root: debug
 wechat:

@@ -10,3 +10,5 @@ ${PROJECT_NAME}:
   volumes:
     - /data/logs:/logs
     - /data/logs/dc:/data/logs/dc
+  environment:
+     ENV_NAME: ${ENV_NAME}

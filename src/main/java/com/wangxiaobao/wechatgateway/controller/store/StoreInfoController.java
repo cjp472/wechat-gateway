@@ -70,7 +70,7 @@ public class StoreInfoController {
 //    if(StringUtils.isEmpty(result.getStoreLocation())){
 //      storeInfoService.storeLocationSave(result);
 //    }
-    log.info("【保存商家】成功",result);
+    log.info("【保存商家】成功 storeInfoForm={} storeInfo={}",storeInfoForm,result);
     return ResultVOUtil.success(result);
   }
 
@@ -79,7 +79,7 @@ public class StoreInfoController {
       @RequestParam("storeMenu") String storeMenu){
 
     StoreInfo result = storeInfoService.storeMenuSave(merchantAccount,storeMenu);
-    log.info("【保存菜品】成功",result);
+    log.info("【保存菜品】成功 merchantAccount={} storeMenu={} result={}",merchantAccount,storeMenu,result);
     return ResultVOUtil.success(result);
   }
 
@@ -88,7 +88,7 @@ public class StoreInfoController {
       @RequestParam("storePhoto") String storePhoto){
 
     StoreInfo result = storeInfoService.storePhotoSave(merchantAccount,storePhoto);
-    log.info("【保存门店图片】成功",result);
+    log.info("【保存门店图片】成功 merchantAccount={} storePhoto={} result={}",merchantAccount,storePhoto,result);
     return ResultVOUtil.success(result);
   }
 
@@ -161,7 +161,7 @@ public class StoreInfoController {
     //获取用户的地址信息
     GeoAddress geoAddress = amapUtil.getAddress(destination);
     result.setUserAddress(geoAddress);
-    log.info("【获取用户地址】成功",geoAddress);
+    log.info("【获取用户地址】成功 address={}",geoAddress);
 
     return ResultVOUtil.success(result);
   }
