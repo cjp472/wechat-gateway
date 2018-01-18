@@ -50,6 +50,7 @@ deploy:dev_env:
   script:
     - cd docker
     - sed -i 's#${PROJECT_NAME}#'$PROJECT_NAME'#g' docker-compose.yml
+    - sed -i 's#${ENV_NAME}#'dev-env'#g' docker-compose.yml
     - rancher-compose --debug --url ${RANCHER_URL_DEV_ENV} --access-key ${ACCESS_KEY_DEV_ENV} --secret-key ${SECRET_KEY_DEV_ENV} -p ${PROJECT_GROUP} up -d --force-upgrade --confirm-upgrade
   only:
     - master
