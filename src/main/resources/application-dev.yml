@@ -1,0 +1,35 @@
+spring:
+  thymeleaf:
+    prefix: classpath:/templates
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: wxb
+    password: wxbroot123456
+    url: jdbc:mysql://10.31.146.112:3306/wechat_gateway?characterEncoding=utf-8&useSSL=false
+  jpa:
+    show-sql: true
+  jackson:
+    default-property-inclusion: non-null
+  redis:
+    host: 10.31.146.112
+    port: 8009
+    password: ceshi789
+    timeout: 0
+server:
+  context-path: /wechatgateway
+  port: 8080
+logging:
+  level:
+    root: debug
+wechat:
+  openplatform:
+    appid: wx2faa58ec608c1d69
+    appsecret: 77347a37924b2583b183e1b43900c439
+    redirectUrl: http://kkg7c8.natappfree.cc/wechatgateway
+  miniprogram:   
+    requestdomain: https://dev.wangxiaobao.co
+    wsrequestdomain: https://dev.wangxiaobao.co
+    uploaddomain: https://dev.wangxiaobao.co
+    downloaddomain: https://dev.wangxiaobao.co
+    webviewdomain1: https://dev.wangxiaobao.co
+    webviewdomain2: https://www.wangxiaobao.co

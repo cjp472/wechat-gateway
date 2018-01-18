@@ -27,11 +27,13 @@ JAVA_CMD=`which java`
 JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom $JAVA_OPTS"
 SPRING_OPTS="$SPRING_OPTS"
 
-if [ "$ENV_NAME" == "" -o "$ENV_NAME" == "test" ]; then
+if [ "dev-env" = "$ENV_NAME" ]; then
+    SPRING_OPTS="--spring.profiles.active=dev $SPRING_OPTS"
+elif [ "test-env" = "$ENV_NAME" ]; then
     SPRING_OPTS="--spring.profiles.active=test $SPRING_OPTS"
-elif [ "$ENV_NAME" == "preview" ]; then
+elif [ "preview-env" = "$ENV_NAME" ]; then
     SPRING_OPTS="--spring.profiles.active=preview $SPRING_OPTS"
-elif [ "$ENV_NAME" == "prod" ]; then
+elif [ "ktv-app" = "$ENV_NAME" ]; then
     SPRING_OPTS="--spring.profiles.active=prod $SPRING_OPTS"
 fi
 
