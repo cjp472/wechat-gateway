@@ -171,7 +171,7 @@ public class TestService {
 		JSONObject jsono = JSONObject.parseObject(result);
 		if ("0".equals(jsono.getString("errcode"))) {
 			return JsonResult.newInstanceDataSuccess(jsono.getString("open_appid"));
-		} else if("89000".equals(jsono.getString("errcode"))){
+		} else if("89000".equals(jsono.getString("errcode"))||"48001".equals(jsono.getString("errcode"))){
 			JsonResult result1 = getBindOpen(wxAppid,authoriceAccessToken);
 			if(JsonResult.APP_RETURN_SUCCESS.equals(result1.getCode())){
 				JSONObject jsonO = (JSONObject) result1.getData();
@@ -268,6 +268,29 @@ public class TestService {
 		} else {
 			return JsonResult.newInstanceMesFail(jsono.getString("errcode"));
 		}
+	}
+	
+	/**
+	  * @methodName: getAuthorizerInfo
+	  * @Description: TODO获取授权方详情
+	  * @param componentAppid
+	  * @param authorizerAppid
+	  * @param authoriceAccessToken
+	  * @return String
+	  * @createUser: liping_max
+	  * @createDate: 2018年1月17日 下午8:09:23
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年1月17日 下午8:09:23
+	  * @throws
+	 */
+	public String getAuthorizerInfo(String componentAppid,String authorizerAppid,String authoriceAccessToken){
+		String authorizerInfoUrl = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token="
+				+ authoriceAccessToken;
+		JSONObject params = new JSONObject();
+		params.put("component_appid", componentAppid);
+		params.put("authorizer_appid", authorizerAppid);
+		String result = HttpClientUtils.executeByJSONPOST(authorizerInfoUrl, params.toJSONString(), 50000);
+		return result;
 	}
 	
 	/**

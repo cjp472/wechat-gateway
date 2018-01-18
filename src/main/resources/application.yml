@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: wechatgateway
   thymeleaf:
     prefix: classpath:/templates
   datasource:
@@ -17,19 +19,27 @@ spring:
     timeout: 0
 server:
   context-path: /wechatgateway
-  port: 8080
+  port: 8081
 logging:
+  path: /logs/${spring.application.name}
+  file: ${spring.application.name}.log
   level:
     root: debug
 wechat:
   openplatform:
-    appid: wx2faa58ec608c1d69
-    appsecret: 77347a37924b2583b183e1b43900c439
-    redirectUrl: http://kkg7c8.natappfree.cc/wechatgateway
+    appid: wxc0e7c45bbe6d5459
+    appsecret: bb7e865ed0710dbe7c6a9f77fb365dee
+    redirectUrl: http://liping.nat200.top//wechatgateway
   miniprogram:   
-    requestdomain: https://dev.wangxiaobao.co
-    wsrequestdomain: https://dev.wangxiaobao.co
-    uploaddomain: https://dev.wangxiaobao.co
-    downloaddomain: https://dev.wangxiaobao.co
-    webviewdomain1: https://dev.wangxiaobao.co
-    webviewdomain2: https://www.wangxiaobao.co
+    requestdomain1: https://develop.source3g.com
+    requestdomain2: https://preview.source3g.com
+    wsrequestdomain1: https://develop.source3g.com
+    wsrequestdomain2: https://preview.source3g.com
+    uploaddomain1: https://develop.source3g.com
+    uploaddomain2: https://preview.source3g.com
+    downloaddomain1: https://develop.source3g.com
+    downloaddomain2: https://preview.source3g.com
+    webviewdomain1: https://develop.source3g.com
+    webviewdomain2: https://preview.source3g.com
+    #小程序版本号
+    userversion: V0.0.1
