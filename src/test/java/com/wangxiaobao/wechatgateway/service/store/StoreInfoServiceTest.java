@@ -1,14 +1,14 @@
 package com.wangxiaobao.wechatgateway.service.store;
 
-import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import javax.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -24,7 +24,7 @@ public class StoreInfoServiceTest {
 
   @Test
   public void create(){
-    StoreInfo storeInfo = new StoreInfo();
+    /*StoreInfo storeInfo = new StoreInfo();
     storeInfo.setStoreId("1234560098989");
     storeInfo.setStoreName("销魂掌华阳店2");
     storeInfo.setMerchantAccount("XHZHYD999");
@@ -38,6 +38,6 @@ public class StoreInfoServiceTest {
     storeInfo.setStorePhone("88888888");
     storeInfo.setHaveParking(1);
     StoreInfo result = storeInfoService.save(storeInfo);
-    Assert.assertNotNull(result);
+    Assert.assertNotNull(result);*/
   }
 }

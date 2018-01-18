@@ -74,9 +74,9 @@ public class OpenPlatformController {
 	String appsecret;
 	@Value("${wechat.openplatform.redirectUrl}")
 	String redirectUrl;
-	@Value("${wechat.eventmessage.token}")
+	@Value("${wechat.openplatform.token}")
 	String token;
-	@Value("${wechat.eventmessage.encodingAesKey}")
+	@Value("${wechat.openplatform.encodingAesKey}")
 	String encodingAesKey;
 
 	// String appId = "wxde53154a5290b54d";

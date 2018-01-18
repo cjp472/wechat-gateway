@@ -11,9 +11,9 @@ spring:
   jackson:
     default-property-inclusion: non_null
   redis:
-    host: 10.174.88.243
-    port: 6379
-    password: ceshi
+    host: 10.31.146.112
+    port: 8009
+    password: ceshi789
     timeout: 0
 server:
   context-path: /wechatgateway
