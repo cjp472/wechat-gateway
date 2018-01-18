@@ -20,6 +20,9 @@ public class StoreInfo {
   /** 权限系统商家账号. */
   private String merchantAccount;
 
+  /** 权限系统商家ID. */
+  private String merchantId;
+
   /** 门店名称. */
   private String storeName;
 
@@ -34,6 +37,12 @@ public class StoreInfo {
 
   /** 门店地址. */
   private String storeAddress;
+
+  /** 门店坐标. */
+  private String storeLocation;
+
+  /** 门店logo. */
+  private String storeLogo;
 
   /** 门店描述. */
   private String storeDescription;
@@ -55,6 +64,12 @@ public class StoreInfo {
 
   /** 是否能预订， 0不能 1能. */
   private int haveBooking = 0;
+
+  /** 门店菜品图片地址. */
+  private String storeMenu;
+
+  /** 门店图片地址. */
+  private String storePhoto;
 
   private Date createTime;
   private Date updateTime;

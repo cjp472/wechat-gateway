@@ -10,6 +10,8 @@ public enum ResultEnum {
     PARAM_ERROR(1, "参数不正确"),
     RETURN_ERROR(2, "返回异常"),
 
+    HEADER_GAIN_ERROR(2,"获取header失败"),
+
     UNKNOW_ERROR(100, "未知错误"),
     ;
 
