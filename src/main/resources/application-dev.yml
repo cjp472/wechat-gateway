@@ -23,8 +23,8 @@ logging:
     root: debug
 wechat:
   openplatform:
-    appid: wx2faa58ec608c1d69
-    appsecret: 77347a37924b2583b183e1b43900c439
+    appid: wx545e2458a2b577e8
+    appsecret: c9222a297364f15438cd90142dbc2a60
     redirectUrl: http://kkg7c8.natappfree.cc/wechatgateway
     token: wxtest
     encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
