@@ -19,7 +19,7 @@ spring:
     name: wechatgateway
 server:
   context-path: /wechatgateway
-  port: 8080
+  port: 8081
 logging:
   path: /logs/${spring.application.name}/${HOSTNAME:localhost}
   file: ${spring.application.name}.log
@@ -44,3 +44,8 @@ wechat:
     webviewdomain1: https://develop.source3g.com
     webviewdomain2: https://preview.source3g.com
     userversion: V0.0.1
+fleetingtime:
+  merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
+push:
+  url: http://develop.source3g.com:57560/push/push
+  prefix: Dev

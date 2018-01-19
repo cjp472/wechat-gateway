@@ -1,5 +1,6 @@
 package com.wangxiaobao.wechatgateway.repository.store;
 
+import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -40,11 +44,11 @@ public class StoreInfoRepositoryTest {
 
   @Test
   public void findByMerchantIdIn() {
-    /*List<String> merchantId = new ArrayList();
+    List<String> merchantId = new ArrayList();
     merchantId.add("123456");
     merchantId.add("1234561");
     List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantId);
-    log.info(result.toString());*/
+    log.info(result.toString());
 
   }
 }
