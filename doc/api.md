@@ -211,3 +211,95 @@ latitude:30.538196
 }
 ```
 
+### 保存广告
+``` 
+POST /wechatgateway/adinfo/save
+```
+参数
+
+``` 
+adName:广告3
+adType:0
+storeId:12345
+```
+
+返回
+``` 
+{
+    "code": 0,
+    "msg": "成功",
+    "data": {
+        "adId": "1516352831383641402",
+        "adName": "广告3",
+        "adType": 0,
+        "storeId": "12345",
+        "createTime": 1516352838000,
+        "updateTime": 1516352838000
+    }
+}
+```
+### 通过门店ID获取广告列表
+``` 
+GET /wechatgateway/adinfo/getByStoreId?storeId=12345
+```
+
+### 通过广告ID获取广告
+``` 
+GET /wechatgateway/adinfo/getById?adId=12345
+```
+
+### 保存广告图片
+``` 
+POST /wechatgateway/adDetail/save
+```
+参数
+``` 
+adId:1516352831383641402
+detailUrl:https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg
+```
+返回
+``` 
+{
+    "code": 0,
+    "msg": "成功",
+    "data": {
+        "detailId": "1516355711441314276",
+        "adId": "1516352831383641402",
+        "detailUrl": "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg"
+    }
+}
+```
+
+### 通过广告ID获取图片
+
+```
+GET /wechatgateway/adDetail/getByAdId?adId=1234
+```
+返回
+``` 
+{
+    "code": 0,
+    "msg": "成功",
+    "data": [
+        {
+            "detailId": "1516355711441314276",
+            "adId": "1516352831383641402",
+            "detailUrl": "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg",
+            "createTime": 1516355708000,
+            "updateTime": 1516355708000
+        },
+        {
+            "detailId": "1516355831836111215",
+            "adId": "1516352831383641402",
+            "detailUrl": "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg",
+            "createTime": 1516355828000,
+            "updateTime": 1516355828000
+        }
+    ]
+}
+```
+
+### 通过图片ID删除图片
+``` 
+GET /wechatgateway/adDetail/delete?detailId=1516354826607934901
+```

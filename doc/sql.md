@@ -11,16 +11,16 @@ create table `ad_info` (
 alter table ad_info add index idx_storeId (store_id);
 
 -- 广告详情
-create table `ad_detial` (
-    `detial_id` varchar(32) not null comment '广告详情id',
+create table `ad_detail` (
+    `detail_id` varchar(32) not null comment '广告详情id',
     `ad_id` varchar(32) not null comment '广告id',
-    `detial_name` varchar(32)  comment '广告详情名称',
+    `detail_name` varchar(32)  comment '广告详情名称',
     `detail_url` varchar(5120) not null comment '广告详情url',
     `create_time` timestamp not null default current_timestamp comment '创建时间',
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
-    primary key (`detial_id`)
+    primary key (`detail_id`)
 );
-alter table ad_detial add index idx_adId (ad_id);
+alter table ad_detail add index idx_adId (ad_id);
 
 
 -- 品牌信息

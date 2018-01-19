@@ -1,6 +1,5 @@
 package com.wangxiaobao.wechatgateway.entity.ad;
 
-import com.wangxiaobao.wechatgateway.enums.ad.AdTypeEnum;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,7 +19,8 @@ public class AdInfo {
 
   private String adName;
 
-  private Integer adType = AdTypeEnum.PICTURE.getCode();
+  /** 广告类型 0图片 1视频. */
+  private int adType = 0;
 
   private String storeId;
 
