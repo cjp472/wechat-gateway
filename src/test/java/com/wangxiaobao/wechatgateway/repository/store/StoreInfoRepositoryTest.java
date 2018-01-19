@@ -49,6 +49,5 @@ public class StoreInfoRepositoryTest {
     merchantId.add("1234561");
     List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantId);
     log.info(result.toString());
-
   }
 }
