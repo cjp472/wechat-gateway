@@ -177,7 +177,16 @@ public class StoreInfoController {
 
     return ResultVOUtil.success(result);
   }
-
+  /**
+    * @methodName: updateStoreTimes
+    * @Description: 更新商户倒计时配置
+    * @Params: [storeTimesForm, bindingResult]
+    * @Return: com.wangxiaobao.wechatgateway.VO.ResultVO<com.wangxiaobao.wechatgateway.entity.store.StoreInfo>
+    * @createUser: ZhouTong
+    * @createDate: 2018/1/19 15:40
+    * @updateUser: ZhouTong
+    * @updateDate: 2018/1/19 15:40
+    */
   @PostMapping("/updateStoreTimes")
   public ResultVO<StoreInfo>  updateStoreTimes(@Validated StoreTimesForm storeTimesForm,BindingResult bindingResult) throws Exception{
     if(bindingResult.hasErrors())
