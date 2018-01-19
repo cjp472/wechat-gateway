@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.constantcode.ConstantCode;
 import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
@@ -108,7 +109,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		JSONObject modifyDomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(modifyDomainJson.getString("errcode"))
-				|| !"85017".equals(modifyDomainJson.getString("errcode"))) {
+				&& !"85017".equals(modifyDomainJson.getString("errcode"))) {
 			log.error("设置商家小程序【】服务器域名异常【】", wxAppid, modifyDomainJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), modifyDomainJson.getString("errmsg"));
 		}
@@ -124,7 +125,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		JSONObject setwebviewdomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(setwebviewdomainJson.getString("errcode"))
-				|| !"89019".equals(setwebviewdomainJson.getString("errcode"))) {
+				&& !"89019".equals(setwebviewdomainJson.getString("errcode"))) {
 			log.error("设置商家小程序【】业务域名异常【】", wxAppid, setwebviewdomainJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), setwebviewdomainJson.getString("errmsg"));
 		}
@@ -139,18 +140,23 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		param.put("user_version", userVersion);
 		param.put("user_desc", "test");
 		JSONObject params = new JSONObject();
-		params.put("organizationAccount", organizationAccount);
+		params.put("organizeId", organizationAccount);
 		param.put("ext_json", params.toJSONString());
-		param.put("extAppid", wxAppid);
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
-		result.put("ext_json", params.toJSONString());
+//		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(result.getString("errcode"))) {
 			log.error("为商家小程序【】上传模板异常【】", wxAppid, result.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), result.getString("errmsg"));
 		}
 		return result;
 	}
-
+public static void main(String[] args) {
+	JSONObject jsono = new JSONObject();
+	JSONArray jsonA= new JSONArray();
+	JSONObject json = new JSONObject();
+	json.put("", "");
+}
+	
 	/**
 	 * @methodName: getCategory @Description: TODO获取授权小程序帐号的可选类目 @param
 	 *              url @return JSONObject @createUser: liping_max @createDate:
