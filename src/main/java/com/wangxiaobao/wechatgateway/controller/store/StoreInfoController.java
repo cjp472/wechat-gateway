@@ -182,8 +182,14 @@ public class StoreInfoController {
   public ResultVO<StoreInfo>  updateStoreTimes(@Validated StoreTimesForm storeTimesForm,BindingResult bindingResult) throws Exception{
     if(bindingResult.hasErrors())
         throw new CommonException(1,bindingResult.getFieldError().getDefaultMessage());
-    if(storeTimesForm.getIsOpenTime() == 1 && !StringUtils.hasText(storeTimesForm.getPromise()) && !StringUtils.hasText(storeTimesForm.getPromise()))
-      throw new CommonException(1,"请配置商家承诺");
+    if(storeTimesForm.getIsOpenTime() == 1 ){
+      if(!StringUtils.hasText(storeTimesForm.getPromise())) {
+        throw new CommonException(1, "请配置商家承诺");
+      }
+      if(storeTimesForm.getPromise().length() > 50) {
+        throw new CommonException(1, "商家承诺不能大于50个字");
+      }
+    }
     StoreInfo storeInfo = storeInfoService.findByMerchantId(storeTimesForm.getMerchantId());
     if(storeInfo == null)
       throw new CommonException(1,"没有找到该商家信息为空");
