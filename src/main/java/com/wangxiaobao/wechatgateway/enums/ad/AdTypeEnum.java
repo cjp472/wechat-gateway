@@ -9,11 +9,11 @@ public enum AdTypeEnum implements CodeEnum {
     VIDEO(1, "视频"),
     ;
 
-    private Integer code;
+    private int code;
 
     private String message;
 
-    AdTypeEnum(Integer code, String message) {
+    AdTypeEnum(int code, String message) {
         this.code = code;
         this.message = message;
     }

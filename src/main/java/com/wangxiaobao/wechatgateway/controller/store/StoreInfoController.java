@@ -165,7 +165,7 @@ public class StoreInfoController {
     }
 
     //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
-    BrandInfo brandInfo = brandInfoService.findByOrgId(plateformOrgUserInfo.getOrgId());
+    BrandInfo brandInfo = brandInfoService.findByOrgAccount(plateformOrgUserInfo.getOrganizationAccount());
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);
     result.setStores(storeDistances);
