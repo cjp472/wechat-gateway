@@ -127,6 +127,7 @@ public class StoreInfoController {
   public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlateformOrgUserInfo plateformOrgUserInfo){
     //获取用户的坐标
     String destination = longitude+","+latitude;
+    log.info("【header参数】 result={}",plateformOrgUserInfo);
 
     //从header里获取用户进入的小程序所在品牌的商家列表
     List<String> merchantIds = new ArrayList<>();
