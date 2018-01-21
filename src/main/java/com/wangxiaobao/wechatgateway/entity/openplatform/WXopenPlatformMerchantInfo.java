@@ -11,6 +11,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Data;
+
+/**
+ * 管理授权给我们第三方平台的小程序信息
+ */
 @Entity
 @Data
 @DynamicUpdate
@@ -23,12 +27,28 @@ public class WXopenPlatformMerchantInfo implements Serializable {
 	@Id
 	@Column(name="wx_open_platform_id")
 	private String wxOpenPlatformId;
+
+	/**
+	 * 小程序ID
+	 */
 	@Column(name="wx_appid")
 	private String wxAppid;
+
+	/**
+	 * 微信对第三方平台的主动验证码。10分钟发一次，此处不存储
+	 */
 	@Column(name="component_verify_ticket")
 	private String componentVerifyTicket;
+
+	/**
+	 * 操作商家小程序的授权码，每个小程序都有一个授权码用于操作商家小程序
+	 */
 	@Column(name="authorice_access_token")
 	private String authoriceAccessToken;
+
+	/**
+	 * 每个商家的固定token，用于刷新每个商家的authorice_access_token
+	 */
 	@Column(name="authorice_refresh_token")
 	private String authoriceRefreshToken;
 	@Column(name="create_user")
@@ -40,6 +60,9 @@ public class WXopenPlatformMerchantInfo implements Serializable {
 	@Column(name="update_date")
 	private java.util.Date updateDate;
 	//公众号创建的开放平台的appId
+	/**
+	 * 为了绑定商家的公众号和小程序获取unionID，自动为商家创建的隐形开放平台ID
+	 */
 	@Column(name="open_appid")
 	private String openAppid;
 	//授权账号类型：1：公众号；2小程序
@@ -48,12 +71,28 @@ public class WXopenPlatformMerchantInfo implements Serializable {
 	//商户品牌id
 	@Column(name="organization_account")
 	private String organizationAccount;
+
+	/**
+	 * 商家公众号或小程序名字
+	 */
 	@Column(name="nick_name")
 	private String nickName;
+
+	/**
+	 * 商家公众号或小程序头像
+	 */
 	@Column(name="head_img")
 	private String headImg;
+
+	/**
+	 * 商家授权类型
+	 */
 	@Column(name="verify_type_info")
 	private String verifyTypeInfo;
+
+	/**
+	 * 商家公众号或小程序的原始ID
+	 */
 	@Column(name="user_name")
 	private String userName;
 	
