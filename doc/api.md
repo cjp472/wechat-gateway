@@ -52,10 +52,11 @@ storeDescription:好吃
 storePhone:88888888
 storeOfficehours:10-22
 haveWifi:1
-storeName:销魂掌华阳店10
+storeName:销魂掌华阳店10  //必填
 storeLogo:https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg
-brandAccount:BOSS3
-storeType:0
+brandAccount:BOSS3  //必填
+storeType:0  //必填  0：未合作  1：合作 
+merchantAccount:WCBBJ  //如果storeType为1，merchantAccount必填
 
 返回：
 {
@@ -172,12 +173,12 @@ storeDescription:好吃
 storePhone:88888888
 storeOfficehours:10-22
 haveWifi:1
-storeName:销魂掌华阳店11
+storeName:销魂掌华阳店11  //必填
 storeLogo:https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg
-brandAccount:BOSS3
-storeType:0
-merchantId:1234
-merchantAccount:XHZHY11
+brandAccount:BOSS3  //必填
+storeType:1  //必填 商家账号登陆APP，创建门店信息时，storeType必须为1 表示合作
+merchantId:1234  
+merchantAccount:XHZHY11  //必填
 
 返回：
 {
@@ -294,13 +295,11 @@ GET /wechatgateway/brandinfo/findByAccount?orgAccount=XHZ
 POST /wechatgateway/brandinfo/save
 
 参数
-orgAccount:BOSS3
+orgAccount:BOSS3  //品牌账号必填
 logoUrl:https://adv.wangxiaobao.cc/Fq-a4sS6WKohGbpj8nG_rB2LdojU
-orgName:雪花大集团
+orgName:雪花大集团 //品牌名称必填
 orgId:9236
-brandId:1516093835325110194
-
-参数存在 brandId 会执行修改
+brandId:1516093835325110194 //主键，如果有是更新，没有为新建
 
 返回
 {
@@ -365,9 +364,9 @@ POST /wechatgateway/adinfo/save
 
 参数
  
-adName:广告2
-adType:0
-merchantAccount:WCBBJ
+adName:广告2 //必填
+adType:0 //必填 0为图片类型 1为视频类型
+merchantAccount:WCBBJ //必填
 
 返回
 {
@@ -432,11 +431,11 @@ POST /wechatgateway/adDetail/save
 ```
 参数
 ``` 
-adId:1516618016074716763
-detailUrl:https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg
-detailKey:1111111
-detailSize:1024000
-isneedwifi:1
+adId:1516618016074716763 //必填 广告ID
+detailUrl:https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=439339977,98971476&fm=27&gp=0.jpg  //必填
+detailKey:1111111 //必填 七牛key
+detailSize:1024000 //必填 广告大小 KB
+isneedwifi:1 //必填  0：不需要wifi下载 1：需要wifi下载
 ```
 返回
 ``` 
