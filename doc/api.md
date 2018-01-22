@@ -1,8 +1,38 @@
 # API
 
-<a href="#1">品牌创建门店</a>
+<a href="#1">品牌创建门店</a>  
+
 <a href="#2">品牌删除门店</a>
+
 <a href="#3">品牌查询门店</a>
+
+<a href="#4">商家创建门店</a>
+
+<a href="#5">商家查询门店</a>
+
+<a href="#6">保存门店菜品图片</a>
+
+<a href="#7">保存门店菜品图片</a>
+
+<a href="#8">查询品牌信息</a>
+
+<a href="#9">保存品牌信息</a>
+
+<a href="#10">获取用户与门店距离</a>
+
+<a href="#11">保存广告</a>
+
+<a href="#12">通过广告ID获取广告</a>
+
+<a href="#13">通过商家账号获取广告列表</a>
+
+<a href="#14">保存广告图片</a>
+
+<a href="#15">通过广告ID获取图片</a>
+
+<a href="#16">通过图片ID删除图片</a>
+
+
 
 
 <a name="1">品牌创建门店</a>
@@ -125,6 +155,7 @@ GET /wechatgateway/storeinfo/findByBrandAccount?brandAccount=BOSS3
 
 ```
 
+<a name="4">商家创建门店</a>
 ### 商家创建门店
 ``` 
 POST /wechatgateway/storeinfo/saveFromMerchant
@@ -175,6 +206,7 @@ merchantAccount:XHZHY11
 
 ```
 
+<a name="5">商家查询门店</a>
 ### 商家查询门店
 
 ```
@@ -209,6 +241,7 @@ GET /wechatgateway/storeinfo/findByMerchantAccount?merchantAccount=XHZHYD
 }
 ```
 
+<a name="6">保存门店菜品图片</a>
 ### 保存门店菜品图片
 ```
 POST /wechatgateway/storeinfo/saveStoreMenu 
@@ -219,6 +252,7 @@ storeMenu: 移动端自定义格式
 
 ```
 
+<a name="7">保存门店菜品图片</a>
 ### 保存门店图片
 ``` 
 POST /wechatgateway/storeinfo/saveStorePhoto
@@ -229,7 +263,7 @@ storePhoto: 移动端自定义格式
 
 返回 略
 ```
-
+<a name="8">查询品牌信息</a>
 ### 查询品牌信息
 ``` 
 GET /wechatgateway/brandinfo/findByOrgId?orgId=12345
@@ -251,6 +285,7 @@ GET /wechatgateway/brandinfo/findByAccount?orgAccount=XHZ
 }
 ```
 
+<a name="9">保存品牌信息</a>
 ### 保存品牌信息
 ``` 
 POST /wechatgateway/brandinfo/save
@@ -280,6 +315,7 @@ brandId:1516093835325110194
 }
 ```
 
+<a name="10">获取用户与门店距离</a>
 ### 获取用户与门店距离
 ``` 
 GET /wechatgateway/storeinfo/getDistance?longitude=104.068359&latitude=30.538196
@@ -319,6 +355,7 @@ latitude:30.538196
 }
 ```
 
+<a name="11">保存广告</a>
 ### 保存广告
 ``` 
 POST /wechatgateway/adinfo/save
@@ -341,11 +378,14 @@ merchantAccount:WCBBJ
     }
 }
 ```
+
+<a name="12">通过广告ID获取广告</a>
 ### 通过广告ID获取广告
 ``` 
 GET /wechatgateway/adinfo/getById?adId=12345
 ```
 
+<a name="13">通过商家账号获取广告列表</a>
 ### 通过商家账号获取广告列表
 ``` 
 GET /wechatgateway/adinfo/getByMerchantAccount?merchantAccount=WCBBJ
@@ -382,6 +422,7 @@ GET /wechatgateway/adinfo/getByMerchantAccount?merchantAccount=WCBBJ
 
 ```
 
+<a name="14">保存广告图片</a>
 ### 保存广告图片
 ``` 
 POST /wechatgateway/adDetail/save
@@ -410,6 +451,7 @@ isneedwifi:1
 }
 ```
 
+<a name="15">通过广告ID获取图片</a>
 ### 通过广告ID获取图片
 
 ```
@@ -439,6 +481,7 @@ GET /wechatgateway/adDetail/getByAdId?adId=1234
 }
 ```
 
+<a name="16">通过图片ID删除图片</a>
 ### 通过图片ID删除图片
 ``` 
 GET /wechatgateway/adDetail/delete?detailId=1516354826607934901
