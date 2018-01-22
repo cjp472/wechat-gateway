@@ -1,6 +1,7 @@
 package com.wangxiaobao.wechatgateway.entity.ad;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import lombok.Data;
@@ -24,7 +25,8 @@ public class AdInfo {
 
   private String storeId;
 
+  private String merchantAccount;
+
   private Date createTime;
   private Date updateTime;
-
 }

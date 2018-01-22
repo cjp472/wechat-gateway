@@ -1,12 +1,16 @@
 package com.wangxiaobao.wechatgateway.controller.ad;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
 import com.wangxiaobao.wechatgateway.entity.ad.AdDetail;
+import com.wangxiaobao.wechatgateway.entity.ad.AdInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.ad.AdDetailForm;
 import com.wangxiaobao.wechatgateway.service.ad.AdDetailService;
 import com.wangxiaobao.wechatgateway.service.ad.AdService;
+import com.wangxiaobao.wechatgateway.service.push.PushService;
+import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
 import java.util.List;
@@ -32,6 +36,12 @@ public class AdDetailController {
   @Autowired
   private AdDetailService adDetailService;
 
+  @Autowired
+  private PushService pushService;
+
+  @Autowired
+  private AdService adService;
+
   @RequestMapping("/getByAdId")
   public ResultVO<List<AdDetail>> getByAdId(@RequestParam("adId") String adId){
     List<AdDetail> adDetails = adDetailService.findByAdId(adId);
@@ -54,7 +64,13 @@ public class AdDetailController {
     }
     BeanUtils.copyProperties(adDetailForm,adDetail);
     AdDetail result = adDetailService.save(adDetail);
-    log.info("保存商家广告 成功 result={}",result);
+    log.info("【保存商家广告】 成功 result={}",result);
+
+    //TODO 调用推送，让桌牌重新获取广告详情列表
+    AdInfo adInfo = adService.findOne(adDetailForm.getAdId());
+
+    JsonResult jsonResult=pushService.pushMessage(adInfo.getMerchantAccount(),"UPDATE_MERCHANT_ADS",adInfo.toString());
+    log.info("【保存商家广告】 推送桌牌 result={}",jsonResult);
     return ResultVOUtil.success(result);
   }
 

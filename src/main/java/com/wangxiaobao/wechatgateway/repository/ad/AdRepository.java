@@ -11,4 +11,5 @@ public interface AdRepository extends JpaRepository<AdInfo,String>{
 
   List<AdInfo> findByStoreId(String storeId);
 
+  List<AdInfo> findByMerchantAccount(String merchantAccount);
 }

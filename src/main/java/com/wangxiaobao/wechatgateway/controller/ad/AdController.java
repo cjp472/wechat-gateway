@@ -1,13 +1,17 @@
 package com.wangxiaobao.wechatgateway.controller.ad;
 
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
+import com.wangxiaobao.wechatgateway.VO.ad.AdVO;
+import com.wangxiaobao.wechatgateway.entity.ad.AdDetail;
 import com.wangxiaobao.wechatgateway.entity.ad.AdInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.ad.AdForm;
+import com.wangxiaobao.wechatgateway.service.ad.AdDetailService;
 import com.wangxiaobao.wechatgateway.service.ad.AdService;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
+import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +36,9 @@ public class AdController {
   @Autowired
   private AdService adService;
 
+  @Autowired
+  private AdDetailService adDetailService;
+
   @PostMapping("/save")
   public ResultVO<AdInfo> save(@Valid AdForm adForm,BindingResult bindingResult){
     if (bindingResult.hasErrors()) {
@@ -51,16 +58,32 @@ public class AdController {
     return ResultVOUtil.success(result);
   }
 
-  @GetMapping("/getByStoreId")
-  public ResultVO<List<AdInfo>> getByStoreId(@RequestParam("storeId") String storeId){
-    List<AdInfo> result = adService.findByStoreId(storeId);
-    return ResultVOUtil.success(result);
-  }
-
   @GetMapping("/getById")
   public ResultVO<AdInfo> getById(@RequestParam("adId") String adId){
     AdInfo result = this.adService.findOne(adId);
     return ResultVOUtil.success(result);
   }
+
+  @PostMapping("/delete")
+  public void delete(@RequestParam("adId") String adId){
+    adService.delete(adId);
+  }
+
+  @GetMapping("/getByMerchantAccount")
+  public ResultVO<List<AdVO>> getByMerchantAccount(@RequestParam("merchantAccount") String merchantAccount){
+    List<AdVO> result = new ArrayList<>();
+
+    //获取账号下的广告列表
+    List<AdInfo> ads = adService.findByMerchantAccount(merchantAccount);
+    for(AdInfo adInfo:ads){
+      AdVO adVO = new AdVO();
+      adVO.setAdInfo(adInfo);
+      List<AdDetail> details = adDetailService.findByAdId(adInfo.getAdId());
+      adVO.setAdDetails(details);
+      result.add(adVO);
+    }
+    return ResultVOUtil.success(result);
+  }
+
 
 }
