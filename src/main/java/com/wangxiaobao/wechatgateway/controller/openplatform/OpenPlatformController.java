@@ -227,20 +227,23 @@ public class OpenPlatformController {
 					default:
 						break;
 					}
+					return "success";
 				} else {
 					logger.info("微信平台未推送内容到服务器");
+					return "success";
 				}
 			} catch (IOException e) {
 				logger.error("接收处理微信平台推送内容异常" + e.getMessage());
 				e.printStackTrace();
+				return "success";
 			}
 		} else {
 			logger.info("返回的授权code：" + authCode);
 			String authorizationInfo = testService.apiQueryAuth(authCode, authType, organizationAccount, appId,
 					appsecret);
-			return buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+			buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+			return "success";
 		}
-		return null;
 	}
 
 	@RequestMapping("/event/{APPID}/callBack")
@@ -256,29 +259,37 @@ public class OpenPlatformController {
 			if (null != resultXml) {
 				Map<String, String> map = WxUtil.readStringXmlOut(resultXml);
 				String msgType = map.get("MsgType");
-				String toUserName = map.get("ToUserName");
-				// component_verify_ticket:微信平台定时推送；authorized：微信公众号授权第三方平台；unauthorized：微信公众号取消授权第三方平台
-				switch (msgType) {
-				case "weapp_audit_success":
-					logger.info("微信商家小程序【】审核成功回调",APPID);
-					try {
-						organizeTemplateService.updateOrganizeTemplateStatus(APPID,OrganizeTemplateStatusEnum.SUCCESS.getStatus());
-					} catch (Exception e) {
-						log.error("微信商家小程序【】更新审核状态为成功失败",APPID);
-					}finally {
+				String event = map.get("Event");
+				//处理事件消息
+				if("event".equals(msgType)){
+					String toUserName = map.get("ToUserName");
+					// component_verify_ticket:微信平台定时推送；authorized：微信公众号授权第三方平台；unauthorized：微信公众号取消授权第三方平台
+					switch (event) {
+					case "weapp_audit_success":
+						logger.info("微信商家小程序【】审核成功回调",APPID);
+						try {
+							organizeTemplateService.updateOrganizeTemplateStatus(APPID,OrganizeTemplateStatusEnum.SUCCESS.getStatus());
+							openPlatformXiaochengxuService.release(APPID);
+							organizeTemplateService.updateOrganizeTemplateIsOnline(APPID, "1");
+						} catch (Exception e) {
+							log.error("微信商家小程序【】更新审核状态为成功失败",APPID,e.getMessage());
+						}finally {
+							return "success";
+						}
+					case "weapp_audit_fail":
+						logger.info("微信商家小程序【】审核成功回调",APPID);
+						try {
+							organizeTemplateService.updateOrganizeTemplateStatus(APPID,OrganizeTemplateStatusEnum.FAIL.getStatus());
+						} catch (Exception e) {
+							log.error("微信商家小程序【】更新审核状态为失败失败",APPID,e.getMessage());
+						}finally {
+							return "success";
+						}
+					default:
 						return "success";
 					}
-				case "":
-					logger.info("微信商家小程序【】审核成功回调",APPID);
-					try {
-						organizeTemplateService.updateOrganizeTemplateStatus(APPID,OrganizeTemplateStatusEnum.FAIL.getStatus());
-					} catch (Exception e) {
-						log.error("微信商家小程序【】更新审核状态为失败失败",APPID);
-					}finally {
-						return "success";
-					}
-				default:
-					return "success";
+				}else{
+					//处理通知消息
 				}
 			} else {
 				logger.info("微信平台未推送内容到服务器");
@@ -370,6 +381,13 @@ public class OpenPlatformController {
 						.findByCondition(wxCondition);
 				// 当前公众号没有绑定小程序，可以跟换公众号
 				if (null == wxInfoResponses) {
+					wxCondition.setAuthType(Constants.AUTHORIZER_TYPE_GONGZHONGHAO);
+					List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
+							.findByCondition(wxCondition);
+					//更新微信公众号需要将之前的删除
+					if(null!=wxInfoList&&!wxInfoList.get(0).getWxAppid().equals(jsono.getString("authorizer_appid"))){
+						wXopenPlatformMerchantInfoService.deleteByWXAppId(wxInfoList.get(0).getWxAppid());
+					}
 					// 创建商户公众号的开放平台
 					JsonResult result = testService.createOpen(jsono.getString("authorizer_appid"),
 							jsono.getString("authorizer_access_token"));
@@ -415,14 +433,20 @@ public class OpenPlatformController {
 			JsonResult result = testService.bindOpen(jsono.getString("authorizer_appid"),
 					wxInfoResponses.get(0).getOpenAppid(), jsono.getString("authorizer_access_token"));
 			if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
-				WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(),
-						jsono.getString("authorizer_appid"), null, jsono.getString("authorizer_access_token"),
-						jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser", new Date(),
-						wxInfoResponses.get(0).getOpenAppid(), authType, organizationAccount,
-						authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
-						authorizerInfoJson.getString("verify_type_info"), authorizerInfoJson.getString("user_name"));
-				wXopenPlatformMerchantInfoService.save(wxInfo);
-				openPlatformXiaochengxuService.initXiaochengxu(wxInfo.getWxAppid(), "add", organizationAccount,
+				String wxAppid = "";
+				if(null==oldWxInfo){
+					WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(),
+							jsono.getString("authorizer_appid"), null, jsono.getString("authorizer_access_token"),
+							jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser", new Date(),
+							wxInfoResponses.get(0).getOpenAppid(), authType, organizationAccount,
+							authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
+							authorizerInfoJson.getString("verify_type_info"), authorizerInfoJson.getString("user_name"));
+					wXopenPlatformMerchantInfoService.save(wxInfo);
+					wxAppid = wxInfo.getWxAppid();
+				}else{
+					wxAppid = oldWxInfo.getWxAppid();
+				}
+				openPlatformXiaochengxuService.initXiaochengxu(wxAppid, "add", organizationAccount,
 						authorizerInfoJson.getString("nick_name"));
 			}
 			return result.getMessage();
@@ -503,69 +527,9 @@ public class OpenPlatformController {
 	public JsonResult getMiniprogramAuthorizerInfo(String wxAppId) {
 		// String authoriceAccessToken = testService.getApiComponentToken(appId,
 		// appsecret);
-		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppId);
-		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_SEC_FORMAT);
-		MiniProgramAuthInfoResponse response = new MiniProgramAuthInfoResponse();
-		List<OrganizeTemplate> organizeTemplates = organizeTemplateService
-				.selectOrganizeTemplateByorganizationAccount(wxInfo.getOrganizationAccount(), "1");
-		if (null != organizeTemplates && organizeTemplates.size() <= 0) {
-			return JsonResult.newInstanceSuccess();
-		} else if (organizeTemplates.size() == 1) {
-			OrganizeTemplate organizeTemplate = organizeTemplates.get(0);
-			// 当前版本是最新版本
-			response.setNickName(wxInfo.getNickName());
-			// 查询版本
-			WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateService
-					.findByDraftId(organizeTemplate.getDraftId());
-			if (organizeTemplate.getIsOnline().equals("1")) {
-				// 已发布
-				response.setUserVersion(wxMiniprogramTemplate.getUserVersion());
-				response.setStatus("线上版本为最新版");
-				response.setUpdateDate(sdf.format(organizeTemplate.getUpdateDate()));
-			} else {
-				// 未发布
-				if (organizeTemplate.getStatus().equals(OrganizeTemplateStatusEnum.AUDITING.getStatus())) {
-					response.setUserVersion("正在等待微信审核");
-					response.setStatus("无");
-					response.setUpdateDate("无");
-				} else if (organizeTemplate.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
-					response.setUserVersion("微信审核失败");
-					// TODO 需要查询数据库
-					response.setStatusMessage("微信认为你不帅");
-					response.setStatus("无");
-					response.setUpdateDate("无");
-				}
-			}
-			response.setUpdateMiniprogramTemplateId(organizeTemplate.getMiniprogramTemplateId());
-		} else {
-			response.setNickName(wxInfo.getNickName());
-			for (OrganizeTemplate organizeT : organizeTemplates) {
-				if (organizeT.getIsOnline().equals("1")) {
-					// 查询版本
-					WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateService
-							.findByDraftId(organizeT.getDraftId());
-					response.setUserVersion(wxMiniprogramTemplate.getUserVersion());
-				} else {
-					WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateService
-							.findByDraftId(organizeT.getDraftId());
-					String statueName = "";
-					if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.AUDITING.getStatus())) {
-						statueName = "正在等待微信审核";
-					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.SUCCESS.getStatus())) {
-						statueName = "微信审核成功";
-					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.UPLOAD.getStatus())) {
-						statueName = "平台已上传，等待提交审核";
-					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
-						statueName = "微信审核失败";
-					}
-					response.setUpdateDate(sdf.format(wxMiniprogramTemplate.getUpdateDate()));
-					response.setStatus("最新版本(" + wxMiniprogramTemplate.getUserVersion() + ")微信" + statueName);
-					response.setStatusMessage("微信觉得你不够帅");
-				}
-			}
-		}
-
-		return JsonResult.newInstanceDataSuccess(response);
+		String resultStr = testService.getMiniprogramAuthorizerInfo(wxAppId);
+		JSONObject json = JSONObject.parseObject(resultStr);
+		return JsonResult.newInstanceDataSuccess(json);
 	}
 
 	/**

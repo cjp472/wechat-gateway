@@ -17,10 +17,10 @@ import lombok.Data;
 @Table(name="t_base_wx_miniprogram_template")
 public class WxMiniprogramTemplate {
 	@Id
-	@Column(name="draft_id")
-	private String draftId;
 	@Column(name="template_id")
 	private String templateId;
+	@Column(name="draft_id")
+	private String draftId;
 	@Column(name="user_version")
 	private String userVersion;
 	@Column(name="user_desc")

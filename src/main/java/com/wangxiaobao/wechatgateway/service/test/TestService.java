@@ -1,6 +1,8 @@
 package com.wangxiaobao.wechatgateway.service.test;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,10 +19,16 @@ import org.xml.sax.InputSource;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
+import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
+import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
+import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
+import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramAuthInfoResponse;
 import com.wangxiaobao.wechatgateway.properties.WxProperties;
+import com.wangxiaobao.wechatgateway.repository.miniprogramtemplate.WxMiniprogramTemplateRepository;
+import com.wangxiaobao.wechatgateway.repository.organizetemplate.OrganizeTemplateRepository;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
 import com.wangxiaobao.wechatgateway.service.redis.RedisService;
 import com.wangxiaobao.wechatgateway.utils.Constants;
@@ -39,6 +47,10 @@ public class TestService {
 	WXopenPlatformMerchantInfoService wXopenPlatformMerchantInfoService;
 	@Autowired
 	WxProperties wxProperties;
+	@Autowired
+	private OrganizeTemplateRepository organizeTemplateRepository;
+	@Autowired
+	private WxMiniprogramTemplateRepository wxMiniprogramTemplateRepository;
 
 	/**
 	 * @methodName: apiQueryAuth @Description: 使用授权码换取公众号或小程序的接口调用凭据和授权信息 @param
@@ -253,7 +265,7 @@ public class TestService {
 			}else{
 				return JsonResult.newInstanceMesFail("授权失败"+jsono.toJSONString());
 			}
-		} else if (wxAppid.equals(wxInfo.getOpenAppid())) {
+		} else if (wxAppid.equals(wxInfo.getWxAppid())) {
 			return JsonResult.newInstanceMesSuccess("授权成功");
 		} else {
 			logger.info("该小程序已经绑定了其它开放平台");
@@ -333,5 +345,68 @@ public class TestService {
 		params.put("appid", wxAppid);
 		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
 		return result;
+	}
+	
+	public String getMiniprogramAuthorizerInfo(String wxAppId){
+		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppId);
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_SEC_FORMAT);
+		MiniProgramAuthInfoResponse response = new MiniProgramAuthInfoResponse();
+		List<OrganizeTemplate> organizeTemplates = organizeTemplateRepository.findByorganizationAccountOrIsNew(wxInfo.getOrganizationAccount(), "1");
+		if (null != organizeTemplates && organizeTemplates.size() <= 0) {
+			return new JSONObject().toJSONString();
+		} else if (organizeTemplates.size() == 1) {
+			OrganizeTemplate organizeTemplate = organizeTemplates.get(0);
+			// 当前版本是最新版本
+			response.setNickName(wxInfo.getNickName());
+			// 查询版本
+			WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateRepository.findByTemplateId(organizeTemplate.getTemplateId());
+			if (organizeTemplate.getIsOnline().equals("1")) {
+				// 已发布
+				response.setUserVersion(wxMiniprogramTemplate.getUserVersion());
+				response.setStatus("线上版本为最新版");
+				response.setUpdateDate(sdf.format(organizeTemplate.getUpdateDate()));
+			} else {
+				// 未发布
+				if (organizeTemplate.getStatus().equals(OrganizeTemplateStatusEnum.AUDITING.getStatus())) {
+					response.setUserVersion("正在等待微信审核");
+					response.setStatus("无");
+					response.setUpdateDate("无");
+				} else if (organizeTemplate.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
+					response.setUserVersion("微信审核失败");
+					// TODO 需要查询数据库
+					response.setStatusMessage("微信认为你不帅");
+					response.setStatus("无");
+					response.setUpdateDate("无");
+				}
+			}
+			response.setUpdateMiniprogramTemplateId(organizeTemplate.getMiniprogramTemplateId());
+		} else {
+			response.setNickName(wxInfo.getNickName());
+			for (OrganizeTemplate organizeT : organizeTemplates) {
+				if (organizeT.getIsOnline().equals("1")) {
+					// 查询版本
+					WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateRepository
+							.findByTemplateId(organizeT.getTemplateId());
+					response.setUserVersion(wxMiniprogramTemplate.getUserVersion());
+				} else {
+					WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateRepository
+							.findByTemplateId(organizeT.getTemplateId());
+					String statueName = "";
+					if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.AUDITING.getStatus())) {
+						statueName = "正在等待微信审核";
+					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.SUCCESS.getStatus())) {
+						statueName = "微信审核成功";
+					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.UPLOAD.getStatus())) {
+						statueName = "平台已上传，等待提交审核";
+					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
+						statueName = "微信审核失败";
+					}
+					response.setUpdateDate(sdf.format(wxMiniprogramTemplate.getUpdateDate()));
+					response.setStatus("最新版本(" + wxMiniprogramTemplate.getUserVersion() + ")微信" + statueName);
+					response.setStatusMessage("微信觉得你不够帅");
+				}
+			}
+		}
+		return JSONObject.toJSONString(response);
 	}
 }

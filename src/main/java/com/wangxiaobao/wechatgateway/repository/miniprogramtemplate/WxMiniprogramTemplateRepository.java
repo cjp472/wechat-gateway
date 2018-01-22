@@ -9,5 +9,5 @@ public interface WxMiniprogramTemplateRepository extends JpaRepository<WxMinipro
 
 	public WxMiniprogramTemplate findByTypeAndIsDefault(String type,String isDefault);
 	
-	public WxMiniprogramTemplate findByDraftId(String draftId);
+	public WxMiniprogramTemplate findByTemplateId(String draftId);
 }

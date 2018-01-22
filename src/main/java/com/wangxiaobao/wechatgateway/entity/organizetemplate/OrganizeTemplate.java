@@ -33,8 +33,8 @@ public class OrganizeTemplate {
 	private String wxAppId;
 	@Column(name = "organization_account")
 	private String organizationAccount;
-	@Column(name = "draft_id")
-	private String draftId;
+	@Column(name = "template_id")
+	private String templateId;
 	@Column(name = "ext_json")
 	private String extJson;
 	@Column(name = "create_date")

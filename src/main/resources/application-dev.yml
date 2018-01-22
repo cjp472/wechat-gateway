@@ -16,7 +16,7 @@ spring:
     password: ceshi789
     timeout: 0
 server:
-  context-path: /wechatgateway
+  context-path: /miniprogram/wechatgateway
   port: 8080
 logging:
   level:
