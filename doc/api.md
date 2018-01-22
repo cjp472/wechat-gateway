@@ -1,5 +1,44 @@
 # API
+## 品牌管理门店
+- <a href="#1">品牌创建门店</a>  
 
+- <a href="#2">品牌删除门店</a>
+
+- <a href="#3">品牌查询门店</a>
+
+- <a href="#9">保存品牌信息</a>
+
+- <a href="#8">查询品牌信息</a>
+
+
+## 商家管理门店
+- <a href="#4">商家创建门店</a>
+
+- <a href="#5">商家查询门店</a>
+
+- <a href="#6">保存门店菜品图片</a>
+
+- <a href="#7">保存门店菜品图片</a>
+
+## 商家广告
+- <a href="#11">保存广告</a>
+
+- <a href="#12">通过广告ID获取广告</a>
+
+- <a href="#13">通过商家账号获取广告列表</a>
+
+- <a href="#14">保存广告图片</a>
+
+- <a href="#15">通过广告ID获取图片</a>
+
+- <a href="#16">通过图片ID删除图片</a>
+
+## 小程序黄页获取集团
+- <a href="#10">获取用户与门店距离</a>
+
+
+
+<a name="1">品牌创建门店</a>
 ### 品牌创建门店
 ```
 POST /wechatgateway/storeinfo/saveFromBrand
@@ -46,12 +85,13 @@ storeType:0
 
 ```
 
+<a name="2">品牌删除门店</a>
 ### 品牌删除门店
 ``` 
 POST /wechatgateway/storeinfo/delete?storeId=1516613025071432490
 
 ```
-
+<a name="3">品牌查询门店</a>
 ### 品牌查询门店
 ``` 
 GET /wechatgateway/storeinfo/findByBrandAccount?brandAccount=BOSS3
@@ -118,6 +158,7 @@ GET /wechatgateway/storeinfo/findByBrandAccount?brandAccount=BOSS3
 
 ```
 
+<a name="4">商家创建门店</a>
 ### 商家创建门店
 ``` 
 POST /wechatgateway/storeinfo/saveFromMerchant
@@ -168,6 +209,7 @@ merchantAccount:XHZHY11
 
 ```
 
+<a name="5">商家查询门店</a>
 ### 商家查询门店
 
 ```
@@ -202,6 +244,7 @@ GET /wechatgateway/storeinfo/findByMerchantAccount?merchantAccount=XHZHYD
 }
 ```
 
+<a name="6">保存门店菜品图片</a>
 ### 保存门店菜品图片
 ```
 POST /wechatgateway/storeinfo/saveStoreMenu 
@@ -212,6 +255,7 @@ storeMenu: 移动端自定义格式
 
 ```
 
+<a name="7">保存门店菜品图片</a>
 ### 保存门店图片
 ``` 
 POST /wechatgateway/storeinfo/saveStorePhoto
@@ -222,7 +266,7 @@ storePhoto: 移动端自定义格式
 
 返回 略
 ```
-
+<a name="8">查询品牌信息</a>
 ### 查询品牌信息
 ``` 
 GET /wechatgateway/brandinfo/findByOrgId?orgId=12345
@@ -244,14 +288,17 @@ GET /wechatgateway/brandinfo/findByAccount?orgAccount=XHZ
 }
 ```
 
+<a name="9">保存品牌信息</a>
 ### 保存品牌信息
 ``` 
 POST /wechatgateway/brandinfo/save
 
 参数
-orgId:12345
-orgAccount:XHZ
-logoUrl:https://timgsa.baidu.com/timg?
+orgAccount:BOSS3
+logoUrl:https://adv.wangxiaobao.cc/Fq-a4sS6WKohGbpj8nG_rB2LdojU
+orgName:雪花大集团
+orgId:9236
+brandId:1516093835325110194
 
 参数存在 brandId 会执行修改
 
@@ -261,15 +308,17 @@ logoUrl:https://timgsa.baidu.com/timg?
     "msg": "成功",
     "data": {
         "brandId": "1516093835325110194",
-        "orgId": "12345",
-        "orgAccount": "XHZ",
-        "logoUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516103773318&di=b4ce0fae6c3db2dc600b76c22bd21acb&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fbainuo%2Fwh%3D720%2C436%2Fsign%3Dd035b0daa56eddc426b2bcfc0beb9ac9%2F9c16fdfaaf51f3de6a4e275b9ceef01f3a297915.jpg",
+        "orgId": "9236",
+        "orgAccount": "BOSS3",
+        "orgName": "雪花大集团",
+        "logoUrl": "https://adv.wangxiaobao.cc/Fq-a4sS6WKohGbpj8nG_rB2LdojU",
         "createTime": 1516093835000,
-        "updateTime": 1516093835000
+        "updateTime": 1516441246000
     }
 }
 ```
 
+<a name="10">获取用户与门店距离</a>
 ### 获取用户与门店距离
 ``` 
 GET /wechatgateway/storeinfo/getDistance?longitude=104.068359&latitude=30.538196
@@ -309,6 +358,7 @@ latitude:30.538196
 }
 ```
 
+<a name="11">保存广告</a>
 ### 保存广告
 ``` 
 POST /wechatgateway/adinfo/save
@@ -331,11 +381,14 @@ merchantAccount:WCBBJ
     }
 }
 ```
+
+<a name="12">通过广告ID获取广告</a>
 ### 通过广告ID获取广告
 ``` 
 GET /wechatgateway/adinfo/getById?adId=12345
 ```
 
+<a name="13">通过商家账号获取广告列表</a>
 ### 通过商家账号获取广告列表
 ``` 
 GET /wechatgateway/adinfo/getByMerchantAccount?merchantAccount=WCBBJ
@@ -372,6 +425,7 @@ GET /wechatgateway/adinfo/getByMerchantAccount?merchantAccount=WCBBJ
 
 ```
 
+<a name="14">保存广告图片</a>
 ### 保存广告图片
 ``` 
 POST /wechatgateway/adDetail/save
@@ -400,6 +454,7 @@ isneedwifi:1
 }
 ```
 
+<a name="15">通过广告ID获取图片</a>
 ### 通过广告ID获取图片
 
 ```
@@ -429,6 +484,7 @@ GET /wechatgateway/adDetail/getByAdId?adId=1234
 }
 ```
 
+<a name="16">通过图片ID删除图片</a>
 ### 通过图片ID删除图片
 ``` 
 GET /wechatgateway/adDetail/delete?detailId=1516354826607934901
