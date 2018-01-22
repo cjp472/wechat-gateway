@@ -8,21 +8,23 @@ import org.hibernate.validator.constraints.Range;
  * Created by halleyzhang on 2018/1/13.
  */
 @Data
-public class StoreInfoForm {
+public class StoreInfoFormForBrand {
 
   private String storeId;
-
-  /** 权限系统商家账号. */
-  @NotEmpty(message = "商家权限系统账号必填")
-  private String merchantAccount;
-
-  /** 权限系统商家ID. */
-  @NotEmpty(message = "商家权限系统ID必填")
-  private String merchantId;
 
   /** 门店名称. */
   @NotEmpty(message = "门店名称必填")
   private String storeName;
+
+  /** 门店类型 0未合作 1合作. */
+  @Range(min=0,max=1)
+  private int storeType;
+
+  @NotEmpty(message = "门店所属品牌账号必填")
+  private String brandAccount;
+
+
+  private String merchantAccount;
 
   /** 门店省. */
   private String storeProvince;

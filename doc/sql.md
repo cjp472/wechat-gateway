@@ -3,12 +3,13 @@ create table `ad_info` (
     `ad_id` varchar(32) not null comment '广告id',
     `ad_name` varchar(32) not null comment '广告名称',
     `ad_type` tinyint(3) not null default '0' comment '广告类型 默认图片广告',
-    `store_id` varchar(32) not null comment '门店id',
+    `store_id` varchar(32) comment '门店id',
+    `merchant_account` varchar(32) not null comment '商家账号',
     `create_time` timestamp not null default current_timestamp comment '创建时间',
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
     primary key (`ad_id`)
 );
-alter table ad_info add index idx_storeId (store_id);
+alter table ad_info add index idx_storeId (mercahant_account);
 
 -- 广告详情
 create table `ad_detail` (
@@ -16,6 +17,9 @@ create table `ad_detail` (
     `ad_id` varchar(32) not null comment '广告id',
     `detail_name` varchar(32)  comment '广告详情名称',
     `detail_url` varchar(5120) not null comment '广告详情url',
+    `detail_key` varchar(64)  comment '七牛key',
+    `detail_size` varchar(32) comment '文件大小',
+    `isNeedWifi` tinyint(3)  default '0' comment '是否需要wifi下载，默认否',
     `create_time` timestamp not null default current_timestamp comment '创建时间',
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
     primary key (`detail_id`)
@@ -41,8 +45,10 @@ alter table brand_info add unique key(org_account);
 -- 门店信息
 create table `store_info` (
     `store_id` varchar(32) not null comment '门店id',
-    `merchant_account` varchar(32) not null comment '门店在权限系统的账号',
-    `merchant_id` varchar(32) not null comment '门店在权限系统的ID',
+    `merchant_account` varchar(32)  comment '门店在权限系统的账号',
+    `merchant_id` varchar(32)  comment '门店在权限系统的ID',
+    `brand_account` varchar(32) not null comment '品牌在权限系统的账号',
+    `store_type` tinyint(3) not null default '0' comment '是否合作，默认未合作商家',
     `store_name` varchar(32) not null comment '门店名称',
     `store_province` varchar(32) not null comment '门店省',
     `store_city` varchar(32) not null comment '门店市',

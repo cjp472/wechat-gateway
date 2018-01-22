@@ -24,7 +24,7 @@ logging:
   path: /logs/${spring.application.name}/${HOSTNAME:localhost}
   file: ${spring.application.name}.log
   level:
-    root: debug
+    root: info
 wechat:
   openplatform:
     appid: wx2faa58ec608c1d69

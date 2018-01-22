@@ -28,7 +28,7 @@ public class BrandInfoService {
     return brandInfoRepository.findByOrgId(orgId);
   }
 
-  public BrandInfo findByOrgAccount(String orgAccount){
+  public BrandInfo findByBrandAccount(String orgAccount){
     return brandInfoRepository.findByOrgAccount(orgAccount);
   }
 

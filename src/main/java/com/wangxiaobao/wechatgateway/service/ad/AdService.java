@@ -29,4 +29,11 @@ public class AdService {
     return adRepository.findByStoreId(storeId);
   }
 
+  public void delete(String adId) {
+    adRepository.delete(adId);
+  }
+
+  public List<AdInfo> findByMerchantAccount(String merchantAccount) {
+    return adRepository.findByMerchantAccount(merchantAccount);
+  }
 }
