@@ -329,6 +329,7 @@ public class TestService {
 			log.error("授权失败,绑定第三方平台小程序失败");
 			throw new CommonException(jsonO.getInteger("errcode"), "授权失败:"+jsonO.getString("errmsg"));
 		}
+		jsonO.put("errcode", "0");
 		return jsonO;
 	}
 	
