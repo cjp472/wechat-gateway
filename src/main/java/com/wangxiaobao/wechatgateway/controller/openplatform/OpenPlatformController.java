@@ -498,7 +498,7 @@ public class OpenPlatformController {
 		sbUrl.append("https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=" + appId + "&pre_auth_code="
 				+ getPreAuthCode());
 		sbUrl.append("&auth_type=").append(authType);
-		String redirectUri = URIUtil.encodeURIComponent(redirectUrl + "/platform/auth/callBack?organizationAccount="
+		String redirectUri = URIUtil.encodeURIComponent(redirectUrl + "/wechatgateway/platform/auth/callBack?organizationAccount="
 				+ organizationAccount + "&authType=" + authType);
 		// redirectUrl + "/index/auth/callBack?organizationAccount=" +
 		// organizationAccount +
