@@ -24,11 +24,11 @@ public class AdDetailServiceTest {
 
   @Test
   public void save() throws Exception {
-    AdDetail adDetail = new AdDetail();
+    /*AdDetail adDetail = new AdDetail();
     adDetail.setAdId("1234");
     adDetail.setDetailId("1234");
     adDetail.setDetailUrl("http://www.sohu.com");
-    adDetailRepository.save(adDetail);
+    adDetailRepository.save(adDetail);*/
 
   }
 
