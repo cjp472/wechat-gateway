@@ -57,7 +57,7 @@ public class BrandInfoController {
 
   @GetMapping("findByAccount")
   public ResultVO<BrandInfo> findByOrgAccount(@RequestParam("orgAccount") String orgAccount){
-    BrandInfo result = brandInfoService.findByOrgAccount(orgAccount);
+    BrandInfo result = brandInfoService.findByBrandAccount(orgAccount);
     return ResultVOUtil.success(result);
   }
 }

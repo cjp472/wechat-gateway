@@ -14,4 +14,6 @@ public interface StoreInfoRepository extends JpaRepository<StoreInfo,String> {
   StoreInfo findByMerchantId(String merchantId);
 
   List<StoreInfo> findByMerchantIdIn(List<String> merchantIds);
+
+  List<StoreInfo> findByBrandAccount(String brandAccount);
 }

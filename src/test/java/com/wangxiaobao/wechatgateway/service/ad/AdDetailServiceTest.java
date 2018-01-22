@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import com.wangxiaobao.wechatgateway.entity.ad.AdDetail;
 import com.wangxiaobao.wechatgateway.repository.ad.AdDetailRepository;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
+@Transactional
 public class AdDetailServiceTest {
 
   @Autowired
@@ -24,11 +26,14 @@ public class AdDetailServiceTest {
 
   @Test
   public void save() throws Exception {
-    /*AdDetail adDetail = new AdDetail();
-    adDetail.setAdId("1234");
-    adDetail.setDetailId("1234");
-    adDetail.setDetailUrl("http://www.sohu.com");
-    adDetailRepository.save(adDetail);*/
+//    AdDetail adDetail = new AdDetail();
+//    adDetail.setAdId("1234");
+//    adDetail.setDetailId("1234");
+//    adDetail.setDetailUrl("http://www.sohu.com");
+//    adDetail.setDetailKey("122");
+//    adDetail.setDetailSize(1111);
+//    adDetail.setIsneedwifi(0);
+//    adDetailRepository.save(adDetail);
 
   }
 

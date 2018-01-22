@@ -23,6 +23,15 @@ public class AdDetail {
 
   private String detailUrl;
 
+  /** 七牛key .*/
+  private String detailKey;
+
+  /** 文件大小 单位KB.*/
+  private int detailSize;
+
+  /** 是否需要wifi 0不需要 1需要.*/
+  private int isneedwifi;
+
   private Date createTime;
   private Date updateTime;
 

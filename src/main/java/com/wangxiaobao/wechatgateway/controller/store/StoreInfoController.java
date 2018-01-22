@@ -7,12 +7,12 @@ import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
 import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
-import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo.Merchant;
 import com.wangxiaobao.wechatgateway.entity.store.BrandInfo;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
-import com.wangxiaobao.wechatgateway.form.store.StoreInfoForm;
+import com.wangxiaobao.wechatgateway.form.store.StoreInfoFormForBrand;
+import com.wangxiaobao.wechatgateway.form.store.StoreInfoFormForMerchant;
 import com.wangxiaobao.wechatgateway.form.store.StoreTimesForm;
 import com.wangxiaobao.wechatgateway.service.push.PushService;
 import com.wangxiaobao.wechatgateway.service.store.BrandInfoService;
@@ -60,47 +60,83 @@ public class StoreInfoController {
   @Value("${fleetingtime.merchantInfoBySn}")
   private String merchantInfoBySnUrl;
 
-  @PostMapping("/save")
-  public ResultVO<StoreInfo> save(@Valid StoreInfoForm storeInfoForm,BindingResult bindingResult){
+  @PostMapping("/saveFromBrand")
+  public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult){
     if (bindingResult.hasErrors()) {
-      log.error("【创建商家】参数不正确, storeInfoForm={}", storeInfoForm);
+      log.error("【品牌创建商家】参数不正确, storeInfoFormForBrand={}", storeInfoFormForBrand);
+      throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+          bindingResult.getFieldError().getDefaultMessage());
+    }
+
+    if (storeInfoFormForBrand.getStoreType()==1 && StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
+      log.error("【品牌创建商家】商家账号为空, storeInfoFormForBrand={}", storeInfoFormForBrand);
+      throw new CommonException(ResultEnum.ACCOUNT_IS_NULL);
+    }
+
+    //验证账号是否合法 TODO
+    //验证账号下是否有桌牌 TODO
+
+    StoreInfo storeInfo = new StoreInfo();
+
+    //如果storeId为空，生成storeId，否则查询出最新的storeInfo用于更新
+    if(!StringUtils.isEmpty(storeInfoFormForBrand.getStoreId())){
+      storeInfo = storeInfoService.findOne(storeInfoFormForBrand.getStoreId());
+    }else{
+      storeInfoFormForBrand.setStoreId(KeyUtil.genUniqueKey());
+    }
+    BeanUtils.copyProperties(storeInfoFormForBrand,storeInfo);
+    StoreInfo result = storeInfoService.save(storeInfo);
+
+    log.info("【品牌创建商家】成功 storeInfoFormForBrand={} storeInfo={}",storeInfoFormForBrand,result);
+    return ResultVOUtil.success(result);
+  }
+
+  //delete store
+  @PostMapping("/delete")
+  public ResultVO delete(@RequestParam("storeId") String storeId){
+    storeInfoService.delete(storeId);
+    return ResultVOUtil.success();
+  }
+
+  @PostMapping("/saveFromMerchant")
+  public ResultVO<StoreInfo> saveFromMerchant(@Valid StoreInfoFormForMerchant storeInfoFormForMerchant,BindingResult bindingResult){
+    if (bindingResult.hasErrors()) {
+      log.error("【商家创建商家】参数不正确, storeInfoFormForMerchant={}", storeInfoFormForMerchant);
       throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
           bindingResult.getFieldError().getDefaultMessage());
     }
     StoreInfo storeInfo = new StoreInfo();
 
     //如果storeId为空，生成storeId，否则查询出最新的storeInfo用于更新
-    if(!StringUtils.isEmpty(storeInfoForm.getStoreId())){
-      storeInfo = storeInfoService.findOne(storeInfoForm.getStoreId());
+    if(!StringUtils.isEmpty(storeInfoFormForMerchant.getStoreId())){
+      storeInfo = storeInfoService.findOne(storeInfoFormForMerchant.getStoreId());
     }else{
-      storeInfoForm.setStoreId(KeyUtil.genUniqueKey());
+      storeInfoFormForMerchant.setStoreId(KeyUtil.genUniqueKey());
     }
-    BeanUtils.copyProperties(storeInfoForm,storeInfo);
+    BeanUtils.copyProperties(storeInfoFormForMerchant,storeInfo);
+    //商家创建，类型为合作商家
+    storeInfo.setStoreType(1);
     StoreInfo result = storeInfoService.save(storeInfo);
 
-    //如果门店坐标为空，从高德地图获取坐标  目前前端传坐标
-//    if(StringUtils.isEmpty(result.getStoreLocation())){
-//      storeInfoService.storeLocationSave(result);
-//    }
-    log.info("【保存商家】成功 storeInfoForm={} storeInfo={}",storeInfoForm,result);
+    log.info("【商家创建商家】成功 storeInfoFormForMerchant={} storeInfo={}",storeInfoFormForMerchant,result);
     return ResultVOUtil.success(result);
   }
 
   @PostMapping("/saveStoreMenu")
-  public ResultVO<StoreInfo> storeMenuSave(@RequestParam("merchantAccount") String merchantAccount,
+  public ResultVO<StoreInfo> storeMenuSave(@RequestParam("storeId") String storeId,
       @RequestParam("storeMenu") String storeMenu){
 
-    StoreInfo result = storeInfoService.storeMenuSave(merchantAccount,storeMenu);
-    log.info("【保存菜品】成功 merchantAccount={} storeMenu={} result={}",merchantAccount,storeMenu,result);
+    StoreInfo result = storeInfoService.storeMenuSave(storeId,storeMenu);
+    log.info("【保存菜品】成功 storeId={} storeMenu={} result={}",storeId,storeMenu,result);
     return ResultVOUtil.success(result);
   }
 
   @PostMapping("/saveStorePhoto")
-  public ResultVO<StoreInfo> storePhotoSave(@RequestParam("merchantAccount") String merchantAccount,
+  public ResultVO<StoreInfo> storePhotoSave(@RequestParam("storeId") String storeId,
       @RequestParam("storePhoto") String storePhoto){
 
-    StoreInfo result = storeInfoService.storePhotoSave(merchantAccount,storePhoto);
-    log.info("【保存门店图片】成功 merchantAccount={} storePhoto={} result={}",merchantAccount,storePhoto,result);
+    StoreInfo result = storeInfoService.storePhotoSave(storeId,storePhoto);
+    log.info("【保存门店图片】成功 storeId={} storePhoto={} result={}",storeId,storePhoto,result);
     return ResultVOUtil.success(result);
   }
 
@@ -113,6 +149,13 @@ public class StoreInfoController {
   @GetMapping("/findByMerchantId")
   public ResultVO<StoreInfo> findByMerchantId(@RequestParam("merchantId") String merchantId){
     StoreInfo result = storeInfoService.findByMerchantId(merchantId);
+    return ResultVOUtil.success(result);
+  }
+
+  //TODO findByBrandAccount
+  @GetMapping("/findByBrandAccount")
+  public ResultVO<List<StoreInfo>> findByBrandAccount(@RequestParam("brandAccount") String brandAccount){
+    List<StoreInfo> result = storeInfoService.findByBrandAccount(brandAccount);
     return ResultVOUtil.success(result);
   }
 
@@ -129,15 +172,9 @@ public class StoreInfoController {
     String destination = longitude+","+latitude;
     log.info("【header参数】 result={}",plateformOrgUserInfo);
 
-    //从header里获取用户进入的小程序所在品牌的商家列表
-    List<String> merchantIds = new ArrayList<>();
-    for(Merchant merchant: plateformOrgUserInfo.getMerchant()){
-      merchantIds.add(merchant.getMerchantId());
-    }
-
     //把没有地址的门店特殊处理，标记为未获取地址
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
-    List<StoreInfo> stores = this.storeInfoService.findByMerchantIds(merchantIds);
+    List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
     for(StoreInfo storeInfo:stores){
       if(StringUtils.isEmpty(storeInfo.getStoreLocation())){
         stores.remove(storeInfo);
@@ -166,7 +203,7 @@ public class StoreInfoController {
     }
 
     //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
-    BrandInfo brandInfo = brandInfoService.findByOrgAccount(plateformOrgUserInfo.getOrganizationAccount());
+    BrandInfo brandInfo = brandInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);
     result.setStores(storeDistances);
@@ -201,12 +238,12 @@ public class StoreInfoController {
         throw new CommonException(1, "商家承诺不能大于50个字");
       }
     }
-    StoreInfo storeInfo = storeInfoService.findByMerchantId(storeTimesForm.getMerchantId());
+    StoreInfo storeInfo = storeInfoService.findByMerchantAccount(storeTimesForm.getMerchantAccount());
     if(storeInfo == null)
       throw new CommonException(1,"没有找到该商家信息为空");
     BeanUtils.copyProperties(storeTimesForm,storeInfo);
     storeInfo = storeInfoService.save(storeInfo);
-    JsonResult jsonResult=pushService.pushStoreUpdateTimesMessage(storeInfo.getMerchantId(), JSONObject.toJSONString(storeInfo));
+    JsonResult jsonResult=pushService.pushStoreUpdateTimesMessage(storeInfo.getMerchantAccount(), JSONObject.toJSONString(storeInfo));
     log.info("更新商家倒计时推送消息返回:{}",jsonResult);
     return ResultVOUtil.success(storeInfo);
   }

@@ -17,12 +17,11 @@ public class AdForm {
   @NotEmpty(message = "广告名必填")
   private String adName;
 
-  /** 广告类型. */
+  /** 广告类型.  0图片  1视频*/
   @Range(min=0,max=1)
   private int adType = AdTypeEnum.PICTURE.getCode();
 
-  /** 门店id必填. */
-  @NotEmpty(message = "门店id必填")
-  private String storeId;
+  @NotEmpty(message = "商家账号不为空")
+  private String merchantAccount;
 
 }

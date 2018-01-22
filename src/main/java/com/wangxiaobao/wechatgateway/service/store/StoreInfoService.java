@@ -39,38 +39,23 @@ public class StoreInfoService {
     return storeInfoRepository.findByMerchantId(merchantId);
   }
 
-  public StoreInfo storeMenuSave(String merchantAccount,String storeMenu){
-    StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount(merchantAccount);
+  public StoreInfo storeMenuSave(String storeId,String storeMenu){
+    StoreInfo storeInfo = storeInfoRepository.findOne(storeId);
     storeInfo.setStoreMenu(storeMenu);
     return storeInfoRepository.save(storeInfo);
   }
 
-  public StoreInfo storePhotoSave(String merchantAccount,String storePhoto){
-    StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount(merchantAccount);
+  public StoreInfo storePhotoSave(String storeId,String storePhoto){
+    StoreInfo storeInfo = storeInfoRepository.findOne(storeId);
     storeInfo.setStorePhoto(storePhoto);
     return storeInfoRepository.save(storeInfo);
   }
 
-
-//前端传坐标
-//  public void storeLocationSave(StoreInfo storeInfo){
-//    String address = storeInfo.getStoreProvince()+storeInfo.getStoreCity()+storeInfo.getStoreDistrict()+storeInfo.getStoreAddress();
-//    if(StringUtils.isEmpty(address)){
-//      return;
-//    }
-//    List<GeoCode> codes = amapUtil.getGeoCode(address);
-//    if(null != codes){
-//      storeInfo.setStoreLocation(codes.get(0).getLocation());
-//      storeInfoRepository.save(storeInfo);
-//    }
-//  }
-
-  public List<StoreInfo> findByMerchantIds(List<String> merchantIds){
-    List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantIds);
-    return result;
+  public List<StoreInfo> findByBrandAccount(String brandAccount) {
+    return storeInfoRepository.findByBrandAccount(brandAccount);
   }
 
-  public List<StoreInfo> findAll(){
-    return storeInfoRepository.findAll();
+  public void delete(String storeId){
+    storeInfoRepository.delete(storeId);
   }
 }
