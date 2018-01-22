@@ -20,6 +20,7 @@ import lombok.Data;
  * @Company:成都国胜天丰技术有限责任公司
  * @author liping_max
  * @date 2018年1月17日 下午3:28:02
+ * 管理商家小程序的版本
  */
 @Entity
 @Data
@@ -29,12 +30,26 @@ public class OrganizeTemplate {
 	@Id
 	@Column(name = "miniprogram_template_id")
 	private String miniprogramTemplateId;
+
+	/**
+	 * 商家小程序的ID
+	 */
 	@Column(name = "wx_app_id")
 	private String wxAppId;
+
+	/**
+	 * 商家在权限系统的品牌账号
+	 */
 	@Column(name = "organization_account")
 	private String organizationAccount;
+	/**
+	 * 商家绑定模版小程序的版本号 TemplateID
+	 */
 	@Column(name = "template_id")
 	private String templateId;
+	/**
+	 * 商家小程序入口的关键字，用于识别商家，目前放商家品牌账号
+	 */
 	@Column(name = "ext_json")
 	private String extJson;
 	@Column(name = "create_date")

@@ -2,6 +2,7 @@ package com.wangxiaobao.wechatgateway;
 
 import java.util.List;
 
+import com.wangxiaobao.wechatgateway.utils.LoginUserInfoMethodArgumentResolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -26,5 +27,6 @@ public class WechatGatewayApplication extends WebMvcConfigurerAdapter {
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		super.addArgumentResolvers(argumentResolvers);
 		argumentResolvers.add(new UserInfoMethodArgumentResolver());
+		argumentResolvers.add(new LoginUserInfoMethodArgumentResolver());
 	}
 }

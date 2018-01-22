@@ -40,3 +40,8 @@ wechat:
     webviewdomain1: https://develop.source3g.com
     webviewdomain2: https://preview.source3g.com
     userversion: V0.0.1
+fleetingtime:
+  merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
+push:
+  url: http://develop.source3g.com:57560/push/push
+  prefix: Dev

@@ -24,6 +24,10 @@ public class ConstantCode{
 	@Id
 	@Column(name="constant_code_id")
 	private String constantCodeId;
+
+	/**
+	 * 模版类型
+	 */
 	@Column(name="type")
 	private String type;
 	@Column(name="value")

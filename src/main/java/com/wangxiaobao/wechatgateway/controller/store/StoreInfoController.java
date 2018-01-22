@@ -1,5 +1,6 @@
 package com.wangxiaobao.wechatgateway.controller.store;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
 import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
 import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
@@ -12,9 +13,12 @@ import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.store.StoreInfoForm;
+import com.wangxiaobao.wechatgateway.form.store.StoreTimesForm;
+import com.wangxiaobao.wechatgateway.service.push.PushService;
 import com.wangxiaobao.wechatgateway.service.store.BrandInfoService;
 import com.wangxiaobao.wechatgateway.service.store.StoreInfoService;
 import com.wangxiaobao.wechatgateway.utils.AmapUtil;
+import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
 import java.util.ArrayList;
@@ -23,13 +27,16 @@ import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -44,9 +51,14 @@ public class StoreInfoController {
 
   @Autowired
   private BrandInfoService brandInfoService;
-
+  @Autowired
+  private PushService pushService;
+  @Autowired
+  private RestTemplate restTemplate;
   @Autowired
   private AmapUtil amapUtil;
+  @Value("${fleetingtime.merchantInfoBySn}")
+  private String merchantInfoBySnUrl;
 
   @PostMapping("/save")
   public ResultVO<StoreInfo> save(@Valid StoreInfoForm storeInfoForm,BindingResult bindingResult){
@@ -115,6 +127,7 @@ public class StoreInfoController {
   public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlateformOrgUserInfo plateformOrgUserInfo){
     //获取用户的坐标
     String destination = longitude+","+latitude;
+    log.info("【header参数】 result={}",plateformOrgUserInfo);
 
     //从header里获取用户进入的小程序所在品牌的商家列表
     List<String> merchantIds = new ArrayList<>();
@@ -153,7 +166,7 @@ public class StoreInfoController {
     }
 
     //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
-    BrandInfo brandInfo = brandInfoService.findByOrgId(plateformOrgUserInfo.getOrgId());
+    BrandInfo brandInfo = brandInfoService.findByOrgAccount(plateformOrgUserInfo.getOrganizationAccount());
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);
     result.setStores(storeDistances);
@@ -162,7 +175,66 @@ public class StoreInfoController {
     GeoAddress geoAddress = amapUtil.getAddress(destination);
     result.setUserAddress(geoAddress);
     log.info("【获取用户地址】成功 address={}",geoAddress);
+    log.info("【获取用户附近门店】成功 result={}",result);
 
     return ResultVOUtil.success(result);
+  }
+  /**
+    * @methodName: updateStoreTimes
+    * @Description: 更新商户倒计时配置
+    * @Params: [storeTimesForm, bindingResult]
+    * @Return: com.wangxiaobao.wechatgateway.VO.ResultVO<com.wangxiaobao.wechatgateway.entity.store.StoreInfo>
+    * @createUser: ZhouTong
+    * @createDate: 2018/1/19 15:40
+    * @updateUser: ZhouTong
+    * @updateDate: 2018/1/19 15:40
+    */
+  @PostMapping("/updateStoreTimes")
+  public ResultVO<StoreInfo>  updateStoreTimes(@Validated StoreTimesForm storeTimesForm,BindingResult bindingResult) throws Exception{
+    if(bindingResult.hasErrors())
+        throw new CommonException(1,bindingResult.getFieldError().getDefaultMessage());
+    if(storeTimesForm.getIsOpenTime() == 1 ){
+      if(!StringUtils.hasText(storeTimesForm.getPromise())) {
+        throw new CommonException(1, "请配置商家承诺");
+      }
+      if(storeTimesForm.getPromise().length() > 50) {
+        throw new CommonException(1, "商家承诺不能大于50个字");
+      }
+    }
+    StoreInfo storeInfo = storeInfoService.findByMerchantId(storeTimesForm.getMerchantId());
+    if(storeInfo == null)
+      throw new CommonException(1,"没有找到该商家信息为空");
+    BeanUtils.copyProperties(storeTimesForm,storeInfo);
+    storeInfo = storeInfoService.save(storeInfo);
+    JsonResult jsonResult=pushService.pushStoreUpdateTimesMessage(storeInfo.getMerchantId(), JSONObject.toJSONString(storeInfo));
+    log.info("更新商家倒计时推送消息返回:{}",jsonResult);
+    return ResultVOUtil.success(storeInfo);
+  }
+  /**
+    * @methodName: findStoreInfoBySn
+    * @Description: 通过SN获取商户信息
+    * @Params: [sn]
+    * @Return: com.wangxiaobao.wechatgateway.VO.ResultVO<com.wangxiaobao.wechatgateway.entity.store.StoreInfo>
+    * @createUser: ZhouTong
+    * @createDate: 2018/1/19 11:46
+    * @updateUser: ZhouTong
+    * @updateDate: 2018/1/19 11:46
+    */
+  @GetMapping("/findStoreInfoBySn")
+  public ResultVO<StoreInfo>  findStoreInfoBySn(String sn) throws Exception{
+    if(!StringUtils.hasText(sn))
+      throw new CommonException(1,"SN不能为空");
+    String result = null;
+    try {
+      result = restTemplate.getForObject(merchantInfoBySnUrl + "?sn=" + sn, String.class);
+    }catch (Exception e){
+       log.error("通过SN查询商家信息异常",e);
+      throw new CommonException(1,"远程调用获取商家信息异常");
+    }
+    JsonResult jsonResult=JSONObject.parseObject(result,JsonResult.class);
+    JSONObject jsonObject=(JSONObject)jsonResult.getData();
+    String mechantAccount = jsonObject.getString("merchantAccount");
+    StoreInfo storeInfo = storeInfoService.findByMerchantAccount(mechantAccount);
+    return ResultVOUtil.success(storeInfo);
   }
 }

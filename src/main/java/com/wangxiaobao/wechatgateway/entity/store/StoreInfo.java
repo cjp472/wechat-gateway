@@ -70,6 +70,12 @@ public class StoreInfo {
 
   /** 门店图片地址. */
   private String storePhoto;
+  /** 是否开启倒计时 0否 1是*/
+  private int isOpenTime = 0;
+  /** 倒计时时间 默认:1分钟*/
+  private int times = 1;
+  /** 商家承诺 */
+  private String promise;
 
   private Date createTime;
   private Date updateTime;

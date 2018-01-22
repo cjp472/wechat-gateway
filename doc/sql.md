@@ -1,3 +1,28 @@
+-- 广告信息
+create table `ad_info` (
+    `ad_id` varchar(32) not null comment '广告id',
+    `ad_name` varchar(32) not null comment '广告名称',
+    `ad_type` tinyint(3) not null default '0' comment '广告类型 默认图片广告',
+    `store_id` varchar(32) not null comment '门店id',
+    `create_time` timestamp not null default current_timestamp comment '创建时间',
+    `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
+    primary key (`ad_id`)
+);
+alter table ad_info add index idx_storeId (store_id);
+
+-- 广告详情
+create table `ad_detail` (
+    `detail_id` varchar(32) not null comment '广告详情id',
+    `ad_id` varchar(32) not null comment '广告id',
+    `detail_name` varchar(32)  comment '广告详情名称',
+    `detail_url` varchar(5120) not null comment '广告详情url',
+    `create_time` timestamp not null default current_timestamp comment '创建时间',
+    `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
+    primary key (`detail_id`)
+);
+alter table ad_detail add index idx_adId (ad_id);
+
+
 -- 品牌信息
 create table `brand_info` (
     `brand_id` varchar(32) not null comment '品牌id',
