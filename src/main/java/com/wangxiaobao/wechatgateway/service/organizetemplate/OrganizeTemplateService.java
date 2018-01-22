@@ -62,7 +62,9 @@ public class OrganizeTemplateService extends BaseService {
 		organizeTemplate.setOrganizationAccount(wxInfo.getOrganizationAccount());
 		organizeTemplate.setIsNew("1");
 		OrganizeTemplate organizeTemplate2 = findOrganizeTemplateBy(organizeTemplate);
-		organizeTemplate2.setIsOnline(isNew);
-		save(organizeTemplate2);
+		if(null!=organizeTemplate2){
+			organizeTemplate2.setIsNew(isNew);
+			save(organizeTemplate2);
+		}
 	}
 }
