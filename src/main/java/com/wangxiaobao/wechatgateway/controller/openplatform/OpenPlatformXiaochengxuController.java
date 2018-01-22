@@ -154,7 +154,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	 */
 	@RequestMapping("/miniprogram/submitaudit")
 	public JsonResult submitAudit(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult,
-			PlateformOrgUserInfo plateformOrgUserInfo) {
+			PlateformOrgUserInfo plateformOrgUserInfo,String organizationAccount) {
 		if (bindingResult.hasErrors()) {
 			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramGetCategoryRequest=【】", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
@@ -182,7 +182,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		// 将之前的发布设为旧
 		OrganizeTemplate orTemplate = new OrganizeTemplate();
 		orTemplate.setIsNew("1");
-		orTemplate.setOrganizationAccount(plateformOrgUserInfo.getOrganizationAccount());
+		orTemplate.setOrganizationAccount(organizationAccount);
 		OrganizeTemplate organizeTemplateOld = organizeTemplateService.findOrganizeTemplateBy(orTemplate);
 		if(null!=organizeTemplateOld){
 			organizeTemplateOld.setIsNew("0");
@@ -195,7 +195,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		organizeTemplate.setTemplateId(wxMiniprogramTemplate.getTemplateId());
 		organizeTemplate.setExtJson("");
 		organizeTemplate.setMiniprogramTemplateId(KeyUtil.genUniqueKey());
-		organizeTemplate.setOrganizationAccount(plateformOrgUserInfo.getOrganizationAccount());
+		organizeTemplate.setOrganizationAccount(organizationAccount);
 		organizeTemplate.setWxAppId(request.getWxAppid());
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplate.setIsOnline("0");
