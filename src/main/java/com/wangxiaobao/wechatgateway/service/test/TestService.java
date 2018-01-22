@@ -401,10 +401,10 @@ public class TestService {
 						statueName = "平台已上传，等待提交审核";
 					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
 						statueName = "微信审核失败";
+						response.setStatusMessage("审核异常");
 					}
 					response.setUpdateDate(sdf.format(wxMiniprogramTemplate.getUpdateDate()));
 					response.setStatus("最新版本(" + wxMiniprogramTemplate.getUserVersion() + ")微信" + statueName);
-					response.setStatusMessage("微信觉得你不够帅");
 				}
 			}
 		}
