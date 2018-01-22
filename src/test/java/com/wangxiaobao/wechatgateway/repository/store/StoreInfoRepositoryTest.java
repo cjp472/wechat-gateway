@@ -44,10 +44,10 @@ public class StoreInfoRepositoryTest {
 
   @Test
   public void findByMerchantIdIn() {
-    List<String> merchantId = new ArrayList();
+    /*List<String> merchantId = new ArrayList();
     merchantId.add("123456");
     merchantId.add("1234561");
     List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantId);
-    log.info(result.toString());
+    log.info(result.toString());*/
   }
 }

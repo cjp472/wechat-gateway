@@ -20,14 +20,10 @@ import lombok.Data;
 @Table(name="t_base_wx_miniprogram_template")
 public class WxMiniprogramTemplate {
 	@Id
-	@Column(name="draft_id")
-	private String draftId;
-
-	/**
-	 * 模版小程序代码模版编号，微信生成
-	 */
 	@Column(name="template_id")
 	private String templateId;
+	@Column(name="draft_id")
+	private String draftId;
 
 	/**
 	 * 模版小程序代码版本号，我们手动填入

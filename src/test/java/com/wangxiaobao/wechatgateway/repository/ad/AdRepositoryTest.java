@@ -26,14 +26,14 @@ public class AdRepositoryTest {
   @Test
   public void save(){
 
-    AdInfo adInfo = new AdInfo();
+    /*AdInfo adInfo = new AdInfo();
     adInfo.setAdId("123");
     adInfo.setStoreId("1516242512987535603");
     adInfo.setMerchantAccount("test");
     adInfo.setAdType(0);
     adInfo.setAdName("我就菜品");
     adInfo.setAdType(AdTypeEnum.PICTURE.getCode());
-    adRepository.save(adInfo);
+    adRepository.save(adInfo);*/
   }
 
 }

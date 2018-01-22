@@ -42,13 +42,11 @@ public class OrganizeTemplate {
 	 */
 	@Column(name = "organization_account")
 	private String organizationAccount;
-
 	/**
 	 * 商家绑定模版小程序的版本号 TemplateID
 	 */
-	@Column(name = "draft_id")
-	private String draftId;
-
+	@Column(name = "template_id")
+	private String templateId;
 	/**
 	 * 商家小程序入口的关键字，用于识别商家，目前放商家品牌账号
 	 */

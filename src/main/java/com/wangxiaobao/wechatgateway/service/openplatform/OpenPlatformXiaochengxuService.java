@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.constantcode.ConstantCode;
 import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
@@ -24,6 +26,7 @@ import com.wangxiaobao.wechatgateway.service.base.BaseService;
 import com.wangxiaobao.wechatgateway.service.constantcode.ConstantCodeService;
 import com.wangxiaobao.wechatgateway.service.miniprogramtemplate.WxMiniprogramTemplateService;
 import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
+import com.wangxiaobao.wechatgateway.service.test.TestService;
 import com.wangxiaobao.wechatgateway.utils.Constants;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
@@ -108,7 +111,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		JSONObject modifyDomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(modifyDomainJson.getString("errcode"))
-				|| !"85017".equals(modifyDomainJson.getString("errcode"))) {
+				&& !"85017".equals(modifyDomainJson.getString("errcode"))) {
 			log.error("设置商家小程序【】服务器域名异常【】", wxAppid, modifyDomainJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), modifyDomainJson.getString("errmsg"));
 		}
@@ -124,7 +127,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		JSONObject setwebviewdomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(setwebviewdomainJson.getString("errcode"))
-				|| !"89019".equals(setwebviewdomainJson.getString("errcode"))) {
+				&& !"89019".equals(setwebviewdomainJson.getString("errcode"))) {
 			log.error("设置商家小程序【】业务域名异常【】", wxAppid, setwebviewdomainJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), setwebviewdomainJson.getString("errmsg"));
 		}
@@ -139,18 +142,31 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		param.put("user_version", userVersion);
 		param.put("user_desc", "test");
 		JSONObject params = new JSONObject();
-		params.put("organizationAccount", organizationAccount);
+		params.put("organizeId", organizationAccount);
 		param.put("ext_json", params.toJSONString());
-		param.put("extAppid", wxAppid);
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
-		result.put("ext_json", params.toJSONString());
+//		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(result.getString("errcode"))) {
 			log.error("为商家小程序【】上传模板异常【】", wxAppid, result.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), result.getString("errmsg"));
 		}
 		return result;
 	}
-
+public static void main(String[] args) {
+	JSONObject jsono = new JSONObject();
+	JSONArray jsonA= new JSONArray();
+	JSONObject json = new JSONObject();
+	json.put("firstClass", "餐饮");
+	json.put("secondClass", "菜谱");
+	json.put("firstId", 220);
+	json.put("secondId", 225);
+	json.put("address", "pages/home");
+	json.put("title", "首页");
+	jsonA.add(json);
+	jsono.put("item_list", jsonA);
+	System.out.println(jsono.toJSONString());
+}
+	
 	/**
 	 * @methodName: getCategory @Description: TODO获取授权小程序帐号的可选类目 @param
 	 *              url @return JSONObject @createUser: liping_max @createDate:
@@ -187,7 +203,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		String result = HttpClientUtils.executeByJSONPOST(url, json.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		JSONObject resultJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(resultJson.getString("errcode"))
-				|| !"89019".equals(resultJson.getString("errcode"))) {
+				&& !"89019".equals(resultJson.getString("errcode"))&&!"85009".equals(resultJson.getString("errcode"))) {
 			log.error("设置商家小程序【】业务域名异常【】", wxAppid, resultJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), resultJson.getString("errmsg"));
 		}
@@ -224,7 +240,9 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	 *              下午8:01:36 @updateUser: liping_max @updateDate: 2018年1月16日
 	 *              下午8:01:36 @throws
 	 */
-	public JSONObject release(String url) {
+	public JSONObject release(String wxAppid) {
+		String url = "https://api.weixin.qq.com/wxa/release?access_token="+
+				wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		JSONObject param = new JSONObject();
 		JSONObject result = restTemplate.postForObject(url, param.toJSONString(), JSONObject.class);
 		return result;
@@ -236,7 +254,9 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	 *              liping_max @createDate: 2018年1月16日 下午8:28:55 @updateUser:
 	 *              liping_max @updateDate: 2018年1月16日 下午8:28:55 @throws
 	 */
-	public JSONObject setweappsupportversion(String url, String version) {
+	public JSONObject setweappsupportversion(String wxAppid, String version) {
+		String url = wxProperties.getWx_miniprogram_setweappsupportversion_url() + wxPlatformMerchantInfoService
+				.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		JSONObject param = new JSONObject();
 		param.put("version", version);
 		JSONObject result = restTemplate.postForObject(url, param.toJSONString(), JSONObject.class);
@@ -268,7 +288,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		// 将商家上传的版本记录到数据库
 		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
 		organizeTemplate.setCreateDate(new Date());
-		organizeTemplate.setDraftId(wxMiniprogramTemplate.getDraftId());
+		organizeTemplate.setTemplateId(wxMiniprogramTemplate.getTemplateId());
 		organizeTemplate.setExtJson(commitJson.getString("ext_json"));
 		organizeTemplate.setMiniprogramTemplateId(KeyUtil.genUniqueKey());
 		organizeTemplate.setOrganizationAccount(organizationAccount);
@@ -277,6 +297,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		organizeTemplate.setIsOnline("0");
 		organizeTemplate.setIsNew("1");
 		//设置当前为new为1，其它为0
+		organizeTemplateService.updateOrganizeTemplateIsNew(wxAppid,"0");
 		OrganizeTemplate organizeTemplateResult = organizeTemplateService.save(organizeTemplate);
 		if (null == organizeTemplateResult) {
 			log.error("将商家小程序【】版本上传的版本记录到数据库失败", wxAppid);
@@ -286,6 +307,18 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		ConstantCode constantCode = new ConstantCode("templatePage", "yellowpages");
 		constantCode = constantCodeService.findConstantCode(constantCode);
 		JSONObject submitauditparamJson = JSONObject.parseObject(constantCode.getValue());
+		//设置tag，将小程序名字设置到tag里面
+		WXopenPlatformMerchantInfo wxInfo = wxPlatformMerchantInfoService.getByWXAppId(wxAppid);
+		String tag = wxInfo.getNickName();
+		JSONArray itemListJsonA = submitauditparamJson.getJSONArray("item_list");
+		for(int i=0;i<itemListJsonA.size();i++){
+			JSONObject itemJson = itemListJsonA.getJSONObject(i);
+			if(StringUtils.isEmpty(itemJson.getString("tag"))){
+				itemJson.put("tag", tag);
+			}else{
+				itemJson.put("tag", itemJson.getString("tag")+" "+tag);
+			}
+		}
 		// 将第三方提交的代码包提交审核
 		submitAudit(wxAppid, submitauditparamJson);
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());

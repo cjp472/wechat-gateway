@@ -50,6 +50,18 @@ public class RedisService{
         });
         return result;
     }
+    
+    public boolean del(final String key){
+    	boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
+
+            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+                connection.del(serializer.serialize(key));
+                return true;
+            }
+        });
+        return result;
+    }
 
     public String get(final String key){  
         String result = redisTemplate.execute(new RedisCallback<String>() {  

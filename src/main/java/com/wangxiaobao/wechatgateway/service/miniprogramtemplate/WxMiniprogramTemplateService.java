@@ -29,7 +29,7 @@ public class WxMiniprogramTemplateService {
 		return wxMiniprogramTemplateRepository.findByTypeAndIsDefault(type, "1");
 	}
 	
-	public WxMiniprogramTemplate findByDraftId(String draftId){
-		return wxMiniprogramTemplateRepository.findByDraftId(draftId);
+	public WxMiniprogramTemplate findByTemplateId(String templateId){
+		return wxMiniprogramTemplateRepository.findByTemplateId(templateId);
 	}
 }

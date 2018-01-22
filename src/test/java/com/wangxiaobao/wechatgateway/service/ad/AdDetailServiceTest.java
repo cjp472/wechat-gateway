@@ -26,14 +26,14 @@ public class AdDetailServiceTest {
 
   @Test
   public void save() throws Exception {
-    AdDetail adDetail = new AdDetail();
-    adDetail.setAdId("1234");
-    adDetail.setDetailId("1234");
-    adDetail.setDetailUrl("http://www.sohu.com");
-    adDetail.setDetailKey("122");
-    adDetail.setDetailSize(1111);
-    adDetail.setIsneedwifi(0);
-    adDetailRepository.save(adDetail);
+//    AdDetail adDetail = new AdDetail();
+//    adDetail.setAdId("1234");
+//    adDetail.setDetailId("1234");
+//    adDetail.setDetailUrl("http://www.sohu.com");
+//    adDetail.setDetailKey("122");
+//    adDetail.setDetailSize(1111);
+//    adDetail.setIsneedwifi(0);
+//    adDetailRepository.save(adDetail);
 
   }
 
