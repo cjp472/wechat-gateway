@@ -13,6 +13,7 @@ public enum ResultEnum {
     HEADER_GAIN_ERROR(2,"获取header失败"),
     STORE_NOT_FOUNTD(4,"门店未找到"),
     ACCOUNT_IS_NULL(5,"账号为空"),
+    BRAND_NOT_FOUND(6,"未获取品牌账号"),
 
     UNKNOW_ERROR(100, "未知错误"),
     ;
