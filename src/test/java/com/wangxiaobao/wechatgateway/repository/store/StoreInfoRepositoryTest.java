@@ -43,11 +43,15 @@ public class StoreInfoRepositoryTest {
   }
 
   @Test
-  public void findByMerchantIdIn() {
-    /*List<String> merchantId = new ArrayList();
-    merchantId.add("123456");
-    merchantId.add("1234561");
-    List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantId);
-    log.info(result.toString());*/
+  public void findByMerchantAccount() {
+    StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount("WCBBJ");
+    log.info(storeInfo.toString());
+  }
+
+  @Test
+  public void findByBrandAccount(){
+    List<StoreInfo> stores  = storeInfoRepository.findByBrandAccount("BOSS3");
+    log.info(stores.toString());
+
   }
 }

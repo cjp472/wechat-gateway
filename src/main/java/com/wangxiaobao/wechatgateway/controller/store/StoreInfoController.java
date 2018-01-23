@@ -172,18 +172,25 @@ public class StoreInfoController {
     String destination = longitude+","+latitude;
     log.info("【header参数】 result={}",plateformOrgUserInfo);
 
-    //把没有地址的门店特殊处理，标记为未获取地址
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
     List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
+
+    //把没有地址的门店特殊处理，标记为未获取地址
+    List<StoreInfo> noLocationStores = new ArrayList<>();
     for(StoreInfo storeInfo:stores){
       if(StringUtils.isEmpty(storeInfo.getStoreLocation())){
-        stores.remove(storeInfo);
         StoreDistanceVO storeDistanceVO = new StoreDistanceVO();
         BeanUtils.copyProperties(storeInfo,storeDistanceVO);
         storeDistanceVO.setDistance("未获取距离");
         storeDistanceVO.setStoreLocation("未获取坐标");
         storeDistances.add(storeDistanceVO);
+        noLocationStores.add(storeInfo);
       }
+    }
+
+    //删除没有地址的门店
+    for(StoreInfo storeInfo:noLocationStores){
+      stores.remove(storeInfo);
     }
 
     //配置了坐标的商家去高德地图获取与用户的距离
