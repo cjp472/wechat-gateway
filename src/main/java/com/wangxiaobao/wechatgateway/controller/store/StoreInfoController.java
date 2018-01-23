@@ -1,5 +1,25 @@
 package com.wangxiaobao.wechatgateway.controller.store;
 
+import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo.Merchant;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
 import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
@@ -7,7 +27,7 @@ import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
 import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo;
-import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
+import com.wangxiaobao.wechatgateway.entity.header.PlatformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.store.BrandInfo;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
@@ -22,23 +42,8 @@ import com.wangxiaobao.wechatgateway.utils.AmapUtil;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -61,6 +66,8 @@ public class StoreInfoController {
   private AmapUtil amapUtil;
   @Value("${fleetingtime.merchantInfoBySn}")
   private String merchantInfoBySnUrl;
+  @Value("${fleetingtime.merchantSnCount}")
+  private String merchantSnCountUrl;
 
   @PostMapping("/saveFromBrand")
   public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult,LoginUserInfo loginUserInfo){
@@ -76,8 +83,26 @@ public class StoreInfoController {
       throw new CommonException(ResultEnum.ACCOUNT_IS_NULL);
     }
 
-    //验证账号是否合法 TODO
-    //验证账号下是否有桌牌 TODO
+    //验证账号是否合法
+    if (!StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
+      List<Merchant> merchants = loginUserInfo.getMerchant();
+      boolean hit = false;
+      for(Merchant merchant:merchants){
+        if(merchant.getMerchantAccount().equals(storeInfoFormForBrand.getMerchantAccount())){
+          hit = true;
+        }
+      }
+      if(!hit){
+        log.error("【品牌创建商家】门店账号不合法, storeInfoFormForBrand={}", storeInfoFormForBrand);
+        throw new CommonException(ResultEnum.MERCHANTACCOUT_INVALID);
+      }
+    }
+    //验证账号下是否有桌牌
+    ResultVO<Integer> snCount = restTemplate.getForObject(merchantSnCountUrl + "?merchantAccount=" + storeInfoFormForBrand.getMerchantAccount(), ResultVO.class);
+    if(snCount.getData()<=0){
+      log.error("【品牌创建商家】门店账号下无桌牌，不可绑定, storeInfoFormForBrand={}", storeInfoFormForBrand);
+      throw new CommonException(ResultEnum.NO_MORE_TABLECARD);
+    }
 
     StoreInfo storeInfo = new StoreInfo();
 
@@ -166,19 +191,19 @@ public class StoreInfoController {
    * 配合黄页首页，获取用户与商户距离
    * @param longitude
    * @param latitude
-   * @param plateformOrgUserInfo
+   * @param platformOrgUserInfo
    * @return
    */
   @GetMapping("/getDistance")
-  public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlateformOrgUserInfo plateformOrgUserInfo){
+  public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlatformOrgUserInfo platformOrgUserInfo){
     //获取用户的坐标
     String destination = longitude+","+latitude;
-    log.info("【header参数】 result={}",plateformOrgUserInfo);
-    if(null == plateformOrgUserInfo.getOrganizationAccount()){
+    log.info("【header参数】 result={}",platformOrgUserInfo);
+    if(null == platformOrgUserInfo.getOrganizationAccount()){
       throw new CommonException(ResultEnum.BRAND_NOT_FOUND);
     }
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
-    List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
+    List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
 
     //把没有地址的门店特殊处理，标记为未获取地址
     List<StoreInfo> noLocationStores = new ArrayList<>();
@@ -222,7 +247,7 @@ public class StoreInfoController {
     }
 
     //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
-    BrandInfo brandInfo = brandInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
+    BrandInfo brandInfo = brandInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);
     result.setStores(storeDistances);

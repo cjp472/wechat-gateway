@@ -1,10 +1,9 @@
 package com.wangxiaobao.wechatgateway.entity.header;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
 
 @Data
 public class LoginUserInfo implements Serializable {
@@ -27,4 +26,13 @@ public class LoginUserInfo implements Serializable {
     private String brandName;
     private String areaAccount;
     private String areaName;
+    private List<Merchant> merchant;
+    @Data
+    public static class Merchant{
+        private String merchantId;
+        private String merchantName;
+        private String merchantAccount;
+        private String orgId;
+        private String isOpen;
+    }
 }
