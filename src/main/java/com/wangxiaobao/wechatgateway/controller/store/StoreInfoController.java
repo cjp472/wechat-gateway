@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -171,7 +172,10 @@ public class StoreInfoController {
     //获取用户的坐标
     String destination = longitude+","+latitude;
     log.info("【header参数】 result={}",plateformOrgUserInfo);
-
+    if(null == plateformOrgUserInfo.getOrganizationAccount()){
+      throw new CommonException(ResultEnum.BRAND_NOT_FOUND);
+    }
+    plateformOrgUserInfo.setOrganizationAccount("XDHPP");
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
     List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
 
@@ -194,19 +198,26 @@ public class StoreInfoController {
     }
 
     //配置了坐标的商家去高德地图获取与用户的距离
-    String orgin = "";
-    for(StoreInfo storeInfo:stores){
-      orgin = orgin+"|"+storeInfo.getStoreLocation();//拼接每个门店的坐标批量查询
-    }
-    orgin = orgin.substring(1,orgin.length());
-    List<GeoDistance> distances = amapUtil.getDistance(orgin,destination);
+    if(!CollectionUtils.isEmpty(stores)){
+      String orgin = "";
+      for(StoreInfo storeInfo:stores){
+        orgin = orgin+"|"+storeInfo.getStoreLocation();//拼接每个门店的坐标批量查询
+      }
 
-    //把距离放回到商家返回给前端
-    for(int i=0;i<stores.size();i++){
-      StoreDistanceVO storeDistanceVO = new StoreDistanceVO();
-      BeanUtils.copyProperties(stores.get(i),storeDistanceVO);
-      storeDistanceVO.setDistance(distances.get(i).getDistance());
-      storeDistances.add(storeDistanceVO);
+      List<GeoDistance> distances = new ArrayList<>();
+      if(StringUtils.hasText(orgin)){
+        orgin = orgin.substring(1,orgin.length());
+        distances = amapUtil.getDistance(orgin,destination);
+      }
+      //把距离放回到商家返回给前端
+      if(!CollectionUtils.isEmpty(distances)){
+        for(int i=0;i<stores.size();i++){
+          StoreDistanceVO storeDistanceVO = new StoreDistanceVO();
+          BeanUtils.copyProperties(stores.get(i),storeDistanceVO);
+          storeDistanceVO.setDistance(distances.get(i).getDistance());
+          storeDistances.add(storeDistanceVO);
+        }
+      }
     }
 
     //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
