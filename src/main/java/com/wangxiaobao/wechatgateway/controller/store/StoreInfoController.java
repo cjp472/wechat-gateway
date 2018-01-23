@@ -69,6 +69,13 @@ public class StoreInfoController {
   @Value("${fleetingtime.merchantSnCount}")
   private String merchantSnCountUrl;
 
+  /**
+   * 集码器APP，品牌账号创建门店信息
+   * @param storeInfoFormForBrand
+   * @param bindingResult
+   * @param loginUserInfo 升鹏gateway注入的APP登陆账号信息
+   * @return
+   */
   @PostMapping("/saveFromBrand")
   public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult,LoginUserInfo loginUserInfo){
     if (bindingResult.hasErrors()) {
@@ -78,38 +85,12 @@ public class StoreInfoController {
     }
 
     //如果参数中storeType为1:已合作，merchantAccount必填
-    if (storeInfoFormForBrand.getStoreType()==1 && StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
-      log.error("【品牌创建商家】商家账号为空, storeInfoFormForBrand={}", storeInfoFormForBrand);
-      throw new CommonException(ResultEnum.ACCOUNT_IS_NULL);
-    }
+    checkStoreType(storeInfoFormForBrand);
 
-    //验证账号是否合法
-    if (!StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
-      List<Merchant> merchants = loginUserInfo.getMerchant();
-      boolean hit = false;
-      for(Merchant merchant:merchants){
-        if(merchant.getMerchantAccount().equals(storeInfoFormForBrand.getMerchantAccount())){
-          hit = true;
-        }
-      }
-      if(!hit){
-        log.error("【品牌创建商家】门店账号不合法, storeInfoFormForBrand={}", storeInfoFormForBrand);
-        throw new CommonException(ResultEnum.MERCHANTACCOUT_INVALID);
-      }
-    }
-    //验证账号下是否有桌牌
-    if (!StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())) {
-      ResultVO<Integer> snCount = restTemplate.getForObject(
-          merchantSnCountUrl + "?merchantAccount=" + storeInfoFormForBrand.getMerchantAccount(),
-          ResultVO.class);
-      if (snCount.getData() <= 0) {
-        log.error("【品牌创建商家】门店账号下无桌牌，不可绑定, storeInfoFormForBrand={}", storeInfoFormForBrand);
-        throw new CommonException(ResultEnum.NO_MORE_TABLECARD);
-      }
-    }
+    //门店绑定账号验证 1.绑定账号必须是品牌下的账号 2.绑定账号下桌牌数量大于0
+    checkMerchantAccout(storeInfoFormForBrand, loginUserInfo);
 
     StoreInfo storeInfo = new StoreInfo();
-
     //如果storeId为空，生成storeId，否则查询出最新的storeInfo用于更新
     if(!StringUtils.isEmpty(storeInfoFormForBrand.getStoreId())){
       storeInfo = storeInfoService.findOne(storeInfoFormForBrand.getStoreId());
@@ -123,13 +104,53 @@ public class StoreInfoController {
     return ResultVOUtil.success(result);
   }
 
-  //delete store
+  private void checkMerchantAccout(@Valid StoreInfoFormForBrand storeInfoFormForBrand,
+      LoginUserInfo loginUserInfo) {
+    if (!StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount()) && storeInfoFormForBrand.getStoreType()==1){
+      //验证账号是否合法
+      List<Merchant> merchants = loginUserInfo.getMerchant();
+      boolean hit = false;
+      for(Merchant merchant:merchants){
+        if(merchant.getMerchantAccount().equals(storeInfoFormForBrand.getMerchantAccount())){
+          hit = true;
+        }
+      }
+      if(!hit){
+        log.error("【品牌创建商家】门店账号不合法, storeInfoFormForBrand={}", storeInfoFormForBrand);
+        throw new CommonException(ResultEnum.MERCHANTACCOUT_INVALID);
+      }
+
+      //验证账号下是否有桌牌
+      ResultVO<Integer> snCount = restTemplate.getForObject(
+          merchantSnCountUrl + "?merchantAccount=" + storeInfoFormForBrand.getMerchantAccount(),
+          ResultVO.class);
+      if (snCount.getData() <= 0) {
+        log.error("【品牌创建商家】门店账号下无桌牌，不可绑定, storeInfoFormForBrand={}", storeInfoFormForBrand);
+        throw new CommonException(ResultEnum.NO_MORE_TABLECARD);
+      }
+    }
+  }
+
+  private void checkStoreType(@Valid StoreInfoFormForBrand storeInfoFormForBrand) {
+    if (storeInfoFormForBrand.getStoreType()==1 && StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
+      log.error("【品牌创建商家】商家账号为空, storeInfoFormForBrand={}", storeInfoFormForBrand);
+      throw new CommonException(ResultEnum.ACCOUNT_IS_NULL);
+    }
+  }
+
+  //brand delete store
   @PostMapping("/delete")
   public ResultVO delete(@RequestParam("storeId") String storeId){
     storeInfoService.delete(storeId);
     return ResultVOUtil.success();
   }
 
+  /**
+   * 集码器APP，商家账号登陆创建门店信息
+   * @param storeInfoFormForMerchant
+   * @param bindingResult
+   * @return
+   */
   @PostMapping("/saveFromMerchant")
   public ResultVO<StoreInfo> saveFromMerchant(@Valid StoreInfoFormForMerchant storeInfoFormForMerchant,BindingResult bindingResult){
     if (bindingResult.hasErrors()) {
@@ -154,6 +175,12 @@ public class StoreInfoController {
     return ResultVOUtil.success(result);
   }
 
+  /**
+   * 保存门店的菜品图片
+   * @param storeId
+   * @param storeMenu
+   * @return
+   */
   @PostMapping("/saveStoreMenu")
   public ResultVO<StoreInfo> storeMenuSave(@RequestParam("storeId") String storeId,
       @RequestParam("storeMenu") String storeMenu){
@@ -163,6 +190,12 @@ public class StoreInfoController {
     return ResultVOUtil.success(result);
   }
 
+  /**
+   * 保存门店的装修图片
+   * @param storeId
+   * @param storePhoto
+   * @return
+   */
   @PostMapping("/saveStorePhoto")
   public ResultVO<StoreInfo> storePhotoSave(@RequestParam("storeId") String storeId,
       @RequestParam("storePhoto") String storePhoto){
@@ -184,7 +217,11 @@ public class StoreInfoController {
     return ResultVOUtil.success(result);
   }
 
-  //TODO findByBrandAccount
+  /**
+   * 品牌账号查询门店列表
+   * @param brandAccount
+   * @return
+   */
   @GetMapping("/findByBrandAccount")
   public ResultVO<List<StoreInfo>> findByBrandAccount(@RequestParam("brandAccount") String brandAccount){
     List<StoreInfo> result = storeInfoService.findByBrandAccount(brandAccount);
@@ -192,7 +229,7 @@ public class StoreInfoController {
   }
 
   /**
-   * 配合黄页首页，获取用户与商户距离
+   * 配合商家小程序黄页首页，获取用户与各门店距离以及品牌信息
    * @param longitude
    * @param latitude
    * @param platformOrgUserInfo
@@ -200,13 +237,41 @@ public class StoreInfoController {
    */
   @GetMapping("/getDistance")
   public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlatformOrgUserInfo platformOrgUserInfo){
+    /**
+     * 给商家小程序返回的VO，包括以下三个信息
+     * brandInfo：品牌信息
+     * List<StoreDistanceVO> 用户与门店距离与门店信息
+     * GeoAddress 用户的地理信息
+     */
+    BrandVO result = new BrandVO();
+
     //获取用户的坐标
     String destination = longitude+","+latitude;
-    log.info("【header参数】 result={}",platformOrgUserInfo);
-    if(null == platformOrgUserInfo.getOrganizationAccount()){
-      throw new CommonException(ResultEnum.BRAND_NOT_FOUND);
-    }
+
+    //检查是否能拿到用户使用的小程序所属品牌，后面需要通过品牌查门店列表
+    checkBrandAccount(platformOrgUserInfo);
+
+    //保存每个门店与用户的距离，和门店详细信息
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
+    getUserStoreDistance(platformOrgUserInfo, destination, storeDistances);
+    result.setStores(storeDistances);
+
+    //获取品牌信息
+    BrandInfo brandInfo = brandInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
+    result.setBrandInfo(brandInfo);
+
+    //获取用户的地址信息
+    GeoAddress geoAddress = amapUtil.getAddress(destination);
+    result.setUserAddress(geoAddress);
+    log.info("【获取用户地址】成功 address={}",geoAddress);
+    log.info("【获取用户附近门店】成功 result={}",result);
+
+    return ResultVOUtil.success(result);
+  }
+
+  private void getUserStoreDistance(PlatformOrgUserInfo platformOrgUserInfo, String destination,
+      List<StoreDistanceVO> storeDistances) {
+    //通过品牌账号获取门店列表
     List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
 
     //把没有地址的门店特殊处理，标记为未获取地址
@@ -249,21 +314,14 @@ public class StoreInfoController {
         }
       }
     }
-
-    //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
-    BrandInfo brandInfo = brandInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
-    BrandVO result = new BrandVO();
-    result.setBrandInfo(brandInfo);
-    result.setStores(storeDistances);
-
-    //获取用户的地址信息
-    GeoAddress geoAddress = amapUtil.getAddress(destination);
-    result.setUserAddress(geoAddress);
-    log.info("【获取用户地址】成功 address={}",geoAddress);
-    log.info("【获取用户附近门店】成功 result={}",result);
-
-    return ResultVOUtil.success(result);
   }
+
+  private void checkBrandAccount(PlatformOrgUserInfo platformOrgUserInfo) {
+    if(null == platformOrgUserInfo.getOrganizationAccount()){
+      throw new CommonException(ResultEnum.BRAND_NOT_FOUND);
+    }
+  }
+
   /**
     * @methodName: updateStoreTimes
     * @Description: 更新商户倒计时配置
