@@ -2,6 +2,7 @@ package com.wangxiaobao.wechatgateway.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo;
+import com.wangxiaobao.wechatgateway.entity.header.PlatformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,8 @@ public class LoginUserInfoMethodArgumentResolver implements HandlerMethodArgumen
             if(obj.getJSONObject("org").getJSONObject("1")!=null){//1表示是品牌信息
                 loginUserInfo.setOrganizationAccount(obj.getJSONObject("org").getJSONObject("1").getString("account"));
                 loginUserInfo.setOrganizationName(obj.getJSONObject("org").getJSONObject("1").getString("name"));
+                loginUserInfo.setMerchant(obj.getJSONArray("merchant").toJavaList(
+                    LoginUserInfo.Merchant.class));
             }
             if(obj.getJSONObject("org").getJSONObject("2")!=null){//2表示区域信息
                 loginUserInfo.setAreaAccount(obj.getJSONObject("org").getJSONObject("2").getString("account"));

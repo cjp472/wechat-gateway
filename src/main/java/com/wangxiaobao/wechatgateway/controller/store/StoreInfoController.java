@@ -1,5 +1,6 @@
 package com.wangxiaobao.wechatgateway.controller.store;
 
+import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo.Merchant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
 import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
+import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo;
 import com.wangxiaobao.wechatgateway.entity.header.PlatformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.store.BrandInfo;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
@@ -64,22 +66,43 @@ public class StoreInfoController {
   private AmapUtil amapUtil;
   @Value("${fleetingtime.merchantInfoBySn}")
   private String merchantInfoBySnUrl;
+  @Value("${fleetingtime.merchantSnCount}")
+  private String merchantSnCountUrl;
 
   @PostMapping("/saveFromBrand")
-  public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult){
+  public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult,LoginUserInfo loginUserInfo){
     if (bindingResult.hasErrors()) {
       log.error("【品牌创建商家】参数不正确, storeInfoFormForBrand={}", storeInfoFormForBrand);
       throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
           bindingResult.getFieldError().getDefaultMessage());
     }
 
+    //如果参数中storeType为1:已合作，merchantAccount必填
     if (storeInfoFormForBrand.getStoreType()==1 && StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
       log.error("【品牌创建商家】商家账号为空, storeInfoFormForBrand={}", storeInfoFormForBrand);
       throw new CommonException(ResultEnum.ACCOUNT_IS_NULL);
     }
 
-    //验证账号是否合法 TODO
-    //验证账号下是否有桌牌 TODO
+    //验证账号是否合法
+    if (!StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
+      List<Merchant> merchants = loginUserInfo.getMerchant();
+      boolean hit = false;
+      for(Merchant merchant:merchants){
+        if(merchant.getMerchantAccount().equals(storeInfoFormForBrand.getMerchantAccount())){
+          hit = true;
+        }
+      }
+      if(!hit){
+        log.error("【品牌创建商家】门店账号不合法, storeInfoFormForBrand={}", storeInfoFormForBrand);
+        throw new CommonException(ResultEnum.MERCHANTACCOUT_INVALID);
+      }
+    }
+    //验证账号下是否有桌牌
+    ResultVO<Integer> snCount = restTemplate.getForObject(merchantSnCountUrl + "?merchantAccount=" + storeInfoFormForBrand.getMerchantAccount(), ResultVO.class);
+    if(snCount.getData()<=0){
+      log.error("【品牌创建商家】门店账号下无桌牌，不可绑定, storeInfoFormForBrand={}", storeInfoFormForBrand);
+      throw new CommonException(ResultEnum.NO_MORE_TABLECARD);
+    }
 
     StoreInfo storeInfo = new StoreInfo();
 
@@ -168,7 +191,7 @@ public class StoreInfoController {
    * 配合黄页首页，获取用户与商户距离
    * @param longitude
    * @param latitude
-   * @param plateformOrgUserInfo
+   * @param platformOrgUserInfo
    * @return
    */
   @GetMapping("/getDistance")
