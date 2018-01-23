@@ -6,6 +6,7 @@ import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
 import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
+import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo;
 import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.store.BrandInfo;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
@@ -62,13 +63,14 @@ public class StoreInfoController {
   private String merchantInfoBySnUrl;
 
   @PostMapping("/saveFromBrand")
-  public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult){
+  public ResultVO<StoreInfo> saveFromBrand(@Valid StoreInfoFormForBrand storeInfoFormForBrand,BindingResult bindingResult,LoginUserInfo loginUserInfo){
     if (bindingResult.hasErrors()) {
       log.error("【品牌创建商家】参数不正确, storeInfoFormForBrand={}", storeInfoFormForBrand);
       throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
           bindingResult.getFieldError().getDefaultMessage());
     }
 
+    //如果参数中storeType为1:已合作，merchantAccount必填
     if (storeInfoFormForBrand.getStoreType()==1 && StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())){
       log.error("【品牌创建商家】商家账号为空, storeInfoFormForBrand={}", storeInfoFormForBrand);
       throw new CommonException(ResultEnum.ACCOUNT_IS_NULL);
