@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2018/1/15 20:21
  */
 @Data
-public class PlateformOrgUserInfo {
+public class PlatformOrgUserInfo {
 
     private String orgUserId;
     private String orgId;
@@ -30,12 +30,12 @@ public class PlateformOrgUserInfo {
     private String nickName;
     private int gender;
     private String avatarUrl;
-    private String plateformUserId;
-    private String plateformUnionId;
-    private String plateformOpenId;
-    private String plateformAppId;
-    private String plateformOpenPlateformId;
-    private String plateformAppType;
+    private String platformUserId;
+    private String platformUnionId;
+    private String platformOpenId;
+    private String platformAppId;
+    private String platformOpenPlateformId;
+    private String platformAppType;
     private List<Merchant> merchant;
     @Data
     public class Merchant{
