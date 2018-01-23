@@ -25,6 +25,8 @@
 
 - <a href="#12">通过广告ID获取广告</a>
 
+- <a href="#17">通过广告ID删除广告</a>
+
 - <a href="#13">通过商家账号获取广告列表</a>
 
 - <a href="#14">保存广告图片</a>
@@ -386,6 +388,13 @@ merchantAccount:WCBBJ //必填
 ``` 
 GET /wechatgateway/adinfo/getById?adId=12345
 ```
+
+<a name="17">通过广告ID删除广告</a>
+### 通过广告ID删除广告
+``` 
+POST /wechatgateway/adinfo/delete?adId=12345
+```
+
 
 <a name="13">通过商家账号获取广告列表</a>
 ### 通过商家账号获取广告列表
