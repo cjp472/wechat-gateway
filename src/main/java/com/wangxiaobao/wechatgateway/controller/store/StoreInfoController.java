@@ -98,10 +98,14 @@ public class StoreInfoController {
       }
     }
     //验证账号下是否有桌牌
-    ResultVO<Integer> snCount = restTemplate.getForObject(merchantSnCountUrl + "?merchantAccount=" + storeInfoFormForBrand.getMerchantAccount(), ResultVO.class);
-    if(snCount.getData()<=0){
-      log.error("【品牌创建商家】门店账号下无桌牌，不可绑定, storeInfoFormForBrand={}", storeInfoFormForBrand);
-      throw new CommonException(ResultEnum.NO_MORE_TABLECARD);
+    if (!StringUtils.isEmpty(storeInfoFormForBrand.getMerchantAccount())) {
+      ResultVO<Integer> snCount = restTemplate.getForObject(
+          merchantSnCountUrl + "?merchantAccount=" + storeInfoFormForBrand.getMerchantAccount(),
+          ResultVO.class);
+      if (snCount.getData() <= 0) {
+        log.error("【品牌创建商家】门店账号下无桌牌，不可绑定, storeInfoFormForBrand={}", storeInfoFormForBrand);
+        throw new CommonException(ResultEnum.NO_MORE_TABLECARD);
+      }
     }
 
     StoreInfo storeInfo = new StoreInfo();
