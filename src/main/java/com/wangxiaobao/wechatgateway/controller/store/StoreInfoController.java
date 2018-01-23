@@ -1,12 +1,30 @@
 package com.wangxiaobao.wechatgateway.controller.store;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.VO.ResultVO;
 import com.wangxiaobao.wechatgateway.VO.store.BrandVO;
 import com.wangxiaobao.wechatgateway.VO.store.StoreDistanceVO;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoAddress;
 import com.wangxiaobao.wechatgateway.entity.geo.GeoDistance;
-import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
+import com.wangxiaobao.wechatgateway.entity.header.PlatformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.store.BrandInfo;
 import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
@@ -21,22 +39,8 @@ import com.wangxiaobao.wechatgateway.utils.AmapUtil;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -167,13 +171,13 @@ public class StoreInfoController {
    * @return
    */
   @GetMapping("/getDistance")
-  public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlateformOrgUserInfo plateformOrgUserInfo){
+  public ResultVO<StoreDistanceVO> getDistance(@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude,PlatformOrgUserInfo platformOrgUserInfo){
     //获取用户的坐标
     String destination = longitude+","+latitude;
-    log.info("【header参数】 result={}",plateformOrgUserInfo);
+    log.info("【header参数】 result={}",platformOrgUserInfo);
 
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
-    List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
+    List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
 
     //把没有地址的门店特殊处理，标记为未获取地址
     List<StoreInfo> noLocationStores = new ArrayList<>();
@@ -210,7 +214,7 @@ public class StoreInfoController {
     }
 
     //返回结果放入品牌信息，因为黄页中顶部有品牌信息要展示
-    BrandInfo brandInfo = brandInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
+    BrandInfo brandInfo = brandInfoService.findByBrandAccount(platformOrgUserInfo.getOrganizationAccount());
     BrandVO result = new BrandVO();
     result.setBrandInfo(brandInfo);
     result.setStores(storeDistances);
