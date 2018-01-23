@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.entity.constantcode.ConstantCode;
-import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
@@ -154,7 +153,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	 */
 	@RequestMapping("/miniprogram/submitaudit")
 	public JsonResult submitAudit(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult,
-			PlateformOrgUserInfo plateformOrgUserInfo,String organizationAccount) {
+			String organizationAccount) {
 		if (bindingResult.hasErrors()) {
 			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramGetCategoryRequest=【】", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
