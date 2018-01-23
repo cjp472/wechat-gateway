@@ -175,7 +175,6 @@ public class StoreInfoController {
     if(null == plateformOrgUserInfo.getOrganizationAccount()){
       throw new CommonException(ResultEnum.BRAND_NOT_FOUND);
     }
-    plateformOrgUserInfo.setOrganizationAccount("XDHPP");
     List<StoreDistanceVO> storeDistances = new ArrayList<>();
     List<StoreInfo> stores = this.storeInfoService.findByBrandAccount(plateformOrgUserInfo.getOrganizationAccount());
 
