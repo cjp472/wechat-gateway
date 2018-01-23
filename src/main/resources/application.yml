@@ -3,8 +3,8 @@ spring:
     prefix: classpath:/templates
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    username: wxb
-    password: wxbroot123456
+    username: devtest1
+    password: dectest123
     url: jdbc:mysql://10.174.88.243:3306/wechat_gateway?characterEncoding=utf-8&useSSL=false
   jpa:
     show-sql: true
