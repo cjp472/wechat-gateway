@@ -352,7 +352,8 @@ latitude:30.538196
                 "storeDistrict": "华阳",
                 "storeLocation": "104.062026,30.505954",
                 "storeAddress": "华福大道一段",
-                "distance": "4850"
+                "distance": "4850",
+                "storeType": 1    //0:为合作  1:合作
             }
         ]
     }
