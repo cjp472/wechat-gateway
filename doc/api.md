@@ -253,7 +253,7 @@ GET /wechatgateway/storeinfo/findByMerchantAccount?merchantAccount=XHZHYD
 POST /wechatgateway/storeinfo/saveStoreMenu 
 
 参数：
-merchantAccount:XHZHYD
+storeId:12345
 storeMenu: 移动端自定义格式
 
 ```
@@ -264,7 +264,7 @@ storeMenu: 移动端自定义格式
 POST /wechatgateway/storeinfo/saveStorePhoto
 
 参数
-merchantAccount:XHZHYD
+storeId:12345
 storePhoto: 移动端自定义格式
 
 返回 略
@@ -353,7 +353,7 @@ latitude:30.538196
                 "storeLocation": "104.062026,30.505954",
                 "storeAddress": "华福大道一段",
                 "distance": "4850",
-                "storeType": 1    //0:为合作  1:合作
+                "storeType": 1    //0:未合作  1:合作
             }
         ]
     }
