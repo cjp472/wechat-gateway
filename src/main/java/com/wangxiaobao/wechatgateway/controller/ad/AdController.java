@@ -65,8 +65,9 @@ public class AdController {
   }
 
   @PostMapping("/delete")
-  public void delete(@RequestParam("adId") String adId){
+  public ResultVO delete(@RequestParam("adId") String adId){
     adService.delete(adId);
+    return ResultVOUtil.success();
   }
 
   @GetMapping("/getByMerchantAccount")
