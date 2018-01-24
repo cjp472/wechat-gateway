@@ -3,6 +3,7 @@ package com.wangxiaobao.wechatgateway.service.push;
 import com.wangxiaobao.wechatgateway.entity.push.PushForm;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +29,34 @@ public class PushService {
 
     @Value("${push.url}")
     private String pushUrl;
-    @Value("${push.url}")
+    @Value("${push.prefix}")
     private String pushPrefix;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+
+    public JsonResult pushMessage(String merchantAccount,String title,String body){
+        if(StringUtils.isEmpty(merchantAccount) ||StringUtils.isEmpty(title)){
+            log.info("推送商家账号和推送title不能为空");
+            return JsonResult.newInstanceMesFail("推送商家账号和推送title不能为空");
+        }
+        HttpHeaders headers =new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        PushForm pushForm=new PushForm();
+        pushForm.setChannel("ALIYUN");
+        pushForm.setPushType("MESSAGE");
+        pushForm.setDeviceType("ALL");
+        pushForm.setPushDeviceType("ALL");
+        pushForm.setTarget("ALIAS");
+        pushForm.setTargetValue(pushPrefix+"_"+merchantAccount);
+        pushForm.setTitle(title);
+        pushForm.setBody(body);
+        HttpEntity request=new HttpEntity(pushForm, headers);
+        JsonResult result = restTemplate.postForObject(pushUrl, request, JsonResult.class);
+        log.info("通用推送：account={},title={},body={},result={}",merchantAccount,title,body,result);
+        return result;
+    }
     /**
      * @methodName: pushStoreUpdateTimesMessage
      * @Description: 推送商家更新倒计时消息
@@ -46,7 +73,6 @@ public class PushService {
             return null;
         }
         //商家广告发布成功推送消息给设备
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers =new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         PushForm pushForm=new PushForm();

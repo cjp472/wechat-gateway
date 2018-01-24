@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchProviderException;
 import java.security.Security;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,15 +37,13 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSONObject;
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
-import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
-import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoSearchCondition;
-import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramAuthInfoResponse;
+import com.wangxiaobao.wechatgateway.service.kefu.KeFuService;
 import com.wangxiaobao.wechatgateway.service.miniprogramtemplate.WxMiniprogramTemplateService;
 import com.wangxiaobao.wechatgateway.service.openplatform.OpenPlatformXiaochengxuService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
@@ -60,9 +57,11 @@ import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.WxUtil;
 
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.util.BeanUtils;
-import me.chanjar.weixin.common.util.ToStringUtils;
 import me.chanjar.weixin.common.util.http.URIUtil;
+import me.chanjar.weixin.mp.api.impl.WxMpKefuServiceImpl;
+import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
 
 @Controller
 @Slf4j
@@ -97,7 +96,8 @@ public class OpenPlatformController {
 	private OrganizeTemplateService organizeTemplateService;
 	@Autowired
 	private WxMiniprogramTemplateService wxMiniprogramTemplateService;
-
+	@Autowired
+	KeFuService keFuService;
 	@RequestMapping(value = "/")
 	@ResponseBody
 	public String getSessionKey(String appId, String appsecret, String code) {
@@ -208,8 +208,7 @@ public class OpenPlatformController {
 					case "authorized":
 						String authorizationCode = map.get("AuthorizationCode");
 						logger.info("返回的授权code：" + authorizationCode);
-						String authorizationInfo = testService.apiQueryAuth(authorizationCode, authType,
-								organizationAccount, appId, appsecret);
+						String authorizationInfo = testService.apiQueryAuth(authorizationCode,appId, appsecret);
 						return buildingAuthorizer(authorizationInfo, authType, organizationAccount);
 					case "unauthorized":
 						logger.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
@@ -239,16 +238,56 @@ public class OpenPlatformController {
 			}
 		} else {
 			logger.info("返回的授权code：" + authCode);
-			String authorizationInfo = testService.apiQueryAuth(authCode, authType, organizationAccount, appId,
+			String authorizationInfo = testService.apiQueryAuth(authCode, appId,
 					appsecret);
 			buildingAuthorizer(authorizationInfo, authType, organizationAccount);
 			return "success";
 		}
 	}
 
+	private String weixinTest(Map<String, String> map, String timeStamp, String nonce)
+			throws AesException {
+		WXBizMsgCrypt pc = new WXBizMsgCrypt(token, encodingAesKey, appId);
+		String msgType = map.get("MsgType");
+		if ("wx570bc396a51b8ff8".equals(appId) || "wxd101a85aa106f53e".equals(appId)) {
+			switch (msgType) {
+			case "event":
+				// 事件处理
+				String event = map.get("Event");
+				WxMpXmlOutTextMessage eventTextMessage = WxMpXmlOutMessage.TEXT().content(event + "from_callback")
+						.toUser(map.get("FromUserName")).fromUser(map.get("ToUserName")).build();
+				String result = pc.encryptMsg(eventTextMessage.toXml(), timeStamp, nonce);
+				return result;
+			case "text":
+				String result1 = "";
+				if("TESTCOMPONENT_MSG_TYPE_TEXT".equals(map.get("Content"))){
+					WxMpXmlOutTextMessage textMessage = WxMpXmlOutMessage.TEXT().content("TESTCOMPONENT_MSG_TYPE_TEXT_callback")
+							.toUser(map.get("FromUserName")).fromUser(map.get("ToUserName")).build();
+					result1 = pc.encryptMsg(textMessage.toXml(), timeStamp, nonce);
+				}else if(map.get("Content").contains("QUERY_AUTH_CODE")){
+					String context = map.get("Content");
+					String query_auth_code = context.substring(context.indexOf(":")+1);
+					//异步方法
+					String authorizationInfo = testService.apiQueryAuth(query_auth_code, appId, appsecret);
+					JSONObject jsono = JSONObject.parseObject(authorizationInfo);
+					WxMpKefuMessage wxMpKefuMessage = WxMpKefuMessage.TEXT().content(query_auth_code+"_from_api").toUser(map.get("ToUserName")).build();
+					keFuService.sendKefuMessage(jsono.getString("authorizer_access_token"), wxMpKefuMessage);
+					return "";
+				}
+				return result1;
+			default:
+				return "";
+			}
+		}
+		return null;
+	}
+	
+	
+
 	@RequestMapping("/event/{APPID}/callBack")
 	@ResponseBody
-	public String eventCallBack(HttpServletRequest request,@PathVariable(name="APPID") String APPID,@RequestBody String postData) {
+	public String eventCallBack(HttpServletRequest request, @PathVariable(name = "APPID") String APPID,
+			@RequestBody String postData) {
 		String msgSignature = request.getParameter("msg_signature");
 		String timestamp = request.getParameter("timestamp");
 		String nonce = request.getParameter("nonce");
@@ -260,36 +299,43 @@ public class OpenPlatformController {
 				Map<String, String> map = WxUtil.readStringXmlOut(resultXml);
 				String msgType = map.get("MsgType");
 				String event = map.get("Event");
-				//处理事件消息
-				if("event".equals(msgType)){
+				// 微信自动化测试的专用测试公众号和小程序处理
+				String result = weixinTest(map,timestamp,nonce);
+				if(null!=result){
+					return result;
+				}
+				// 处理事件消息
+				if ("event".equals(msgType)) {
 					String toUserName = map.get("ToUserName");
 					// component_verify_ticket:微信平台定时推送；authorized：微信公众号授权第三方平台；unauthorized：微信公众号取消授权第三方平台
 					switch (event) {
 					case "weapp_audit_success":
-						logger.info("微信商家小程序【】审核成功回调",APPID);
+						logger.info("微信商家小程序【】审核成功回调", APPID);
 						try {
-							organizeTemplateService.updateOrganizeTemplateStatus(APPID,OrganizeTemplateStatusEnum.SUCCESS.getStatus());
+							organizeTemplateService.updateOrganizeTemplateStatus(APPID,
+									OrganizeTemplateStatusEnum.SUCCESS.getStatus());
 							openPlatformXiaochengxuService.release(APPID);
 							organizeTemplateService.updateOrganizeTemplateIsOnline(APPID, "1");
 						} catch (Exception e) {
-							log.error("微信商家小程序【】更新审核状态为成功失败",APPID,e.getMessage());
-						}finally {
+							log.error("微信商家小程序【】更新审核状态为成功失败", APPID, e.getMessage());
+						} finally {
 							return "success";
 						}
 					case "weapp_audit_fail":
-						logger.info("微信商家小程序【】审核成功回调",APPID);
+						logger.info("微信商家小程序【】审核成功回调", APPID);
 						try {
-							organizeTemplateService.updateOrganizeTemplateStatus(APPID,OrganizeTemplateStatusEnum.FAIL.getStatus());
+							organizeTemplateService.updateOrganizeTemplateStatus(APPID,
+									OrganizeTemplateStatusEnum.FAIL.getStatus());
 						} catch (Exception e) {
-							log.error("微信商家小程序【】更新审核状态为失败失败",APPID,e.getMessage());
-						}finally {
+							log.error("微信商家小程序【】更新审核状态为失败失败", APPID, e.getMessage());
+						} finally {
 							return "success";
 						}
 					default:
 						return "success";
 					}
-				}else{
-					//处理通知消息
+				} else {
+					// 处理通知消息
 				}
 			} else {
 				logger.info("微信平台未推送内容到服务器");
@@ -315,7 +361,7 @@ public class OpenPlatformController {
 		// 授权账户类型1：公众号；2：小程序
 		String authType = request.getParameter("authType");
 		logger.info("返回的授权code：" + authCode);
-		String authorizationInfo = testService.apiQueryAuth(authCode, authType, organizationAccount, appId, appsecret);
+		String authorizationInfo = testService.apiQueryAuth(authCode, appId, appsecret);
 		String result = buildingAuthorizer(authorizationInfo, authType, organizationAccount);
 		model.addAttribute("authResult", result);
 		return "/authResult";
@@ -326,16 +372,17 @@ public class OpenPlatformController {
 		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
 		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService
 				.getByWXAppId(jsono.getString("authorizer_appid"));
-		//换取了调用凭证，必须更新redis数据
-		if(null!=oldWxInfo&&!StringUtils.isEmpty(oldWxInfo.getWxAppid())){
+		// 换取了调用凭证，必须更新redis数据
+		if (null != oldWxInfo && !StringUtils.isEmpty(oldWxInfo.getWxAppid())) {
 			oldWxInfo.setAuthoriceAccessToken(jsono.getString("authorizer_access_token"));
 			oldWxInfo.setAuthoriceRefreshToken(jsono.getString("authorizer_refresh_token"));
 			wXopenPlatformMerchantInfoService.save(oldWxInfo);
-			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + oldWxInfo.getWxAppid(), JSONObject.toJSONString(oldWxInfo),7000);
-		}else{
-			redisService.del(Constants.MERCHANT_WX_OPENPLATFORM_KEY+jsono.getString("authorizer_appid"));
+			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + oldWxInfo.getWxAppid(),
+					JSONObject.toJSONString(oldWxInfo), 7000);
+		} else {
+			redisService.del(Constants.MERCHANT_WX_OPENPLATFORM_KEY + jsono.getString("authorizer_appid"));
 		}
-		//获取平台调用凭证
+		// 获取平台调用凭证
 		String component_access_token = testService.getApiComponentToken(appId, appsecret);
 		// 获取授权方的详细信息
 		String authorizerStr = testService.getAuthorizerInfo(appId, jsono.getString("authorizer_appid"),
@@ -384,8 +431,9 @@ public class OpenPlatformController {
 					wxCondition.setAuthType(Constants.AUTHORIZER_TYPE_GONGZHONGHAO);
 					List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
 							.findByCondition(wxCondition);
-					//更新微信公众号需要将之前的删除
-					if(null!=wxInfoList&&!wxInfoList.get(0).getWxAppid().equals(jsono.getString("authorizer_appid"))){
+					// 更新微信公众号需要将之前的删除
+					if (null != wxInfoList
+							&& !wxInfoList.get(0).getWxAppid().equals(jsono.getString("authorizer_appid"))) {
 						wXopenPlatformMerchantInfoService.deleteByWXAppId(wxInfoList.get(0).getWxAppid());
 					}
 					// 创建商户公众号的开放平台
@@ -427,23 +475,24 @@ public class OpenPlatformController {
 					.findByCondition(wxCondition);
 			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
 				return "授权失败,请先授权公众号";
-			} else if (null!=oldWxInfo&&!oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"))) {
+			} else if (null != oldWxInfo && !oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"))) {
 				return "授权失败,更换小程序可能造成用户数据丢失,请联系【旺小宝】";
 			}
 			JsonResult result = testService.bindOpen(jsono.getString("authorizer_appid"),
 					wxInfoResponses.get(0).getOpenAppid(), jsono.getString("authorizer_access_token"));
 			if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
 				String wxAppid = "";
-				if(null==oldWxInfo){
+				if (null == oldWxInfo) {
 					WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(),
 							jsono.getString("authorizer_appid"), null, jsono.getString("authorizer_access_token"),
-							jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser", new Date(),
-							wxInfoResponses.get(0).getOpenAppid(), authType, organizationAccount,
+							jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser",
+							new Date(), wxInfoResponses.get(0).getOpenAppid(), authType, organizationAccount,
 							authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
-							authorizerInfoJson.getString("verify_type_info"), authorizerInfoJson.getString("user_name"));
+							authorizerInfoJson.getString("verify_type_info"),
+							authorizerInfoJson.getString("user_name"));
 					wXopenPlatformMerchantInfoService.save(wxInfo);
 					wxAppid = wxInfo.getWxAppid();
-				}else{
+				} else {
 					wxAppid = oldWxInfo.getWxAppid();
 				}
 				openPlatformXiaochengxuService.initXiaochengxu(wxAppid, "add", organizationAccount,
@@ -498,8 +547,9 @@ public class OpenPlatformController {
 		sbUrl.append("https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=" + appId + "&pre_auth_code="
 				+ getPreAuthCode());
 		sbUrl.append("&auth_type=").append(authType);
-		String redirectUri = URIUtil.encodeURIComponent(redirectUrl + "/wechatgateway/platform/auth/callBack?organizationAccount="
-				+ organizationAccount + "&authType=" + authType);
+		String redirectUri = URIUtil
+				.encodeURIComponent(redirectUrl + "/wechatgateway/platform/auth/callBack?organizationAccount="
+						+ organizationAccount + "&authType=" + authType);
 		// redirectUrl + "/index/auth/callBack?organizationAccount=" +
 		// organizationAccount +
 		// "&authType=" + authType);
@@ -613,7 +663,8 @@ public class OpenPlatformController {
 	public JsonResult bindWxamplink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(wxAppid);
-		JSONObject resultJson = testService.bindWxamplink(xcxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
+		JSONObject resultJson = testService.bindWxamplink(xcxAppid,
+				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
 	}
 
@@ -628,7 +679,8 @@ public class OpenPlatformController {
 	public JsonResult unbindWxampunlink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(wxAppid);
-		JSONObject resultJson = testService.bindWxamplink(xcxAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
+		JSONObject resultJson = testService.bindWxamplink(xcxAppid,
+				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
 	}
 

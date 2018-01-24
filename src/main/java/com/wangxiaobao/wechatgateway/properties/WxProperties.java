@@ -25,4 +25,10 @@ public class WxProperties {
 	private String wx_miniprogram_get_latest_auditstatus_url;
 	private String wx_miniprogram_release_url;
 	private String wx_miniprogram_setweappsupportversion_url;
+	private String wx_send_kefu_message_url;
+	private String wx_template_message_send_url;
+	//获取模板库某个模板标题下关键词库
+	private String wx_template_library_get_url;
+	//小程序游戏中奖模板id
+	private String miniprogram_jigsaw_template_message_id;
 }

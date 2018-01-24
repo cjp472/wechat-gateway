@@ -1,16 +1,17 @@
 package com.wangxiaobao.wechatgateway.repository.store;
 
-import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.extern.slf4j.Slf4j;
+import com.wangxiaobao.wechatgateway.entity.store.StoreInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by halleyzhang on 2018/1/13.
@@ -25,7 +26,7 @@ public class StoreInfoRepositoryTest {
 
   @Test
   public void save() {
-    /*StoreInfo storeInfo = new StoreInfo();
+    StoreInfo storeInfo = new StoreInfo();
     storeInfo.setStoreId("12345");
     storeInfo.setStoreName("销魂掌华阳店");
     storeInfo.setMerchantAccount("XHZHYD");
@@ -39,15 +40,19 @@ public class StoreInfoRepositoryTest {
     storeInfo.setStorePhone("88888888");
     storeInfo.setHaveParking(1);
     StoreInfo result = storeInfoRepository.save(storeInfo);
-    Assert.assertNotNull(result);*/
+    Assert.assertNotNull(result);
   }
 
   @Test
-  public void findByMerchantIdIn() {
-    /*List<String> merchantId = new ArrayList();
-    merchantId.add("123456");
-    merchantId.add("1234561");
-    List<StoreInfo> result = storeInfoRepository.findByMerchantIdIn(merchantId);
-    log.info(result.toString());*/
+  public void findByMerchantAccount() {
+    StoreInfo storeInfo = storeInfoRepository.findByMerchantAccount("WCBBJ");
+    log.info(storeInfo.toString());
+  }
+
+  @Test
+  public void findByBrandAccount(){
+    List<StoreInfo> stores  = storeInfoRepository.findByBrandAccount("BOSS3");
+    log.info(stores.toString());
+
   }
 }

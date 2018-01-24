@@ -58,7 +58,7 @@ public class TestService {
 	 *              2017年9月13日 下午7:26:09 @updateUser: liping_max @updateDate:
 	 *              2017年9月13日 下午7:26:09 @throws
 	 */
-	public String apiQueryAuth(String authCode, String authType, String organizationAccount, String appId, String appsecret) {
+	public String apiQueryAuth(String authCode, String appId, String appsecret) {
 		String component_access_token = getApiComponentToken(appId, appsecret);
 		String url = "https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token="
 				+ component_access_token;
@@ -401,10 +401,10 @@ public class TestService {
 						statueName = "平台已上传，等待提交审核";
 					} else if (organizeT.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
 						statueName = "微信审核失败";
+						response.setStatusMessage("审核异常");
 					}
 					response.setUpdateDate(sdf.format(wxMiniprogramTemplate.getUpdateDate()));
 					response.setStatus("最新版本(" + wxMiniprogramTemplate.getUserVersion() + ")微信" + statueName);
-					response.setStatusMessage("微信觉得你不够帅");
 				}
 			}
 		}

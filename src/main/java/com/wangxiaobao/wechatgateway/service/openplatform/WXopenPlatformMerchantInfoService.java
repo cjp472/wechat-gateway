@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoForm;
-import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoResponse;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoSearchCondition;
 import com.wangxiaobao.wechatgateway.repository.openplatform.WXopenPlatformMerchantInfoMapper;
 import com.wangxiaobao.wechatgateway.service.redis.RedisService;
@@ -120,6 +119,8 @@ public class WXopenPlatformMerchantInfoService {
 			String StrResult = HttpClientUtils.executeByJSONPOST(url, jsonO.toJSONString(), 5000);
 			JSONObject jsonResult = JSONObject.parseObject(StrResult);
 			wxInfo.setAuthoriceAccessToken(jsonResult.getString("authorizer_access_token"));
+			wxInfo.setAuthoriceRefreshToken(jsonResult.getString("authorizer_refresh_token"));
+			wXopenPlatformMerchantInfoMapper.save(wxInfo);
 			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + wxAppId, JSONObject.toJSONString(wxInfo),7000);
 		}
 		return wxInfo;

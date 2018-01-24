@@ -1,17 +1,20 @@
 package com.wangxiaobao.wechatgateway.utils;
 
-import com.alibaba.fastjson.JSONObject;
-import com.wangxiaobao.wechatgateway.entity.header.PlateformOrgUserInfo;
-import com.wangxiaobao.wechatgateway.enums.ResultEnum;
-import com.wangxiaobao.wechatgateway.exception.CommonException;
 import java.net.URLDecoder;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import com.alibaba.fastjson.JSONObject;
+import com.wangxiaobao.wechatgateway.entity.header.PlatformOrgUserInfo;
+import com.wangxiaobao.wechatgateway.enums.ResultEnum;
+import com.wangxiaobao.wechatgateway.exception.CommonException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Zhoutong
@@ -38,7 +41,7 @@ public class UserInfoMethodArgumentResolver implements HandlerMethodArgumentReso
       */
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return methodParameter.getParameterType().equals(PlateformOrgUserInfo.class) && methodParameter.getParameterName().equals("plateformOrgUserInfo");
+        return methodParameter.getParameterType().equals(PlatformOrgUserInfo.class) && methodParameter.getParameterName().equals("platformOrgUserInfo");
     }
 
 
@@ -59,7 +62,7 @@ public class UserInfoMethodArgumentResolver implements HandlerMethodArgumentReso
             if (StringUtils.isBlank(wxUserInfo))
                 return null;
             log.info("wxUserInfo :",wxUserInfo);
-            return JSONObject.parseObject(URLDecoder.decode(wxUserInfo, "UTF-8"), PlateformOrgUserInfo.class);
+            return JSONObject.parseObject(URLDecoder.decode(wxUserInfo, "UTF-8"), PlatformOrgUserInfo.class);
         }catch (Exception e){
             throw new CommonException(ResultEnum.HEADER_GAIN_ERROR.getCode(),e.getMessage());
         }

@@ -1,35 +1,32 @@
-package com.wangxiaobao.wechatgateway.entity.store;
+package com.wangxiaobao.wechatgateway.form.store;
 
-import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import lombok.Data;
-import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
 
 /**
  * Created by halleyzhang on 2018/1/13.
  */
-@Entity
 @Data
-@DynamicUpdate
-public class StoreInfo {
+public class StoreInfoFormForMerchant {
 
-  @Id
   private String storeId;
 
   /** 权限系统商家账号. */
+  @NotEmpty(message = "商家权限系统账号必填")
   private String merchantAccount;
 
   /** 权限系统商家ID. */
   private String merchantId;
 
-  /** 权限系统品牌账号. */
+  /** 门店合作类型，此处为合作 1. */
+  private int storeType = 1;
+
+  @NotEmpty(message = "门店所属品牌账号必填")
   private String brandAccount;
 
-  /** 门店类型. */
-  private int storeType;
-
   /** 门店名称. */
+  @NotEmpty(message = "门店名称必填")
   private String storeName;
 
   /** 门店省. */
@@ -44,45 +41,35 @@ public class StoreInfo {
   /** 门店地址. */
   private String storeAddress;
 
-  /** 门店坐标. */
-  private String storeLocation;
-
-  /** 门店logo. */
-  private String storeLogo;
-
   /** 门店描述. */
   private String storeDescription;
 
   /** 门店电话. */
   private String storePhone;
 
+  /** 门店logo. */
+  private String storeLogo;
+
+  /** 门店坐标. */
+  private String storeLocation;
+
   /** 门店营业时间. */
   private String storeOfficehours;
 
   /** 是有有车位，0没有 1有. */
+  @Range(min=0,max=1)
   private int haveParking = 0;
 
   /** 是否有wifi，0没有 1有. */
+  @Range(min=0,max=1)
   private int haveWifi = 0;
 
   /** 是否有包间， 0没有 1有. */
+  @Range(min=0,max=1)
   private int havePrivateroom = 0;
 
   /** 是否能预订， 0不能 1能. */
+  @Range(min=0,max=1)
   private int haveBooking = 0;
 
-  /** 门店菜品图片地址. */
-  private String storeMenu;
-
-  /** 门店图片地址. */
-  private String storePhoto;
-  /** 是否开启倒计时 0否 1是*/
-  private int isOpenTime = 0;
-  /** 倒计时时间 默认:1分钟*/
-  private int times = 1;
-  /** 商家承诺 */
-  private String promise;
-
-  private Date createTime;
-  private Date updateTime;
 }

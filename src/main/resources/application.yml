@@ -24,7 +24,7 @@ logging:
   path: /logs/${spring.application.name}/${HOSTNAME:localhost}
   file: ${spring.application.name}.log
   level:
-    root: debug
+    root: info
 wechat:
   openplatform:
     appid: wxc0e7c45bbe6d5459
@@ -46,6 +46,7 @@ wechat:
     userversion: V0.0.1
 fleetingtime:
   merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
+  merchantSnCount: http://develop.source3g.com:57567/fleetingtime/merchant/getSnCount
 push:
   url: http://develop.source3g.com:57560/push/push
   prefix: Dev
