@@ -25,6 +25,8 @@
 
 - <a href="#12">通过广告ID获取广告</a>
 
+- <a href="#17">通过广告ID删除广告</a>
+
 - <a href="#13">通过商家账号获取广告列表</a>
 
 - <a href="#14">保存广告图片</a>
@@ -251,7 +253,7 @@ GET /wechatgateway/storeinfo/findByMerchantAccount?merchantAccount=XHZHYD
 POST /wechatgateway/storeinfo/saveStoreMenu 
 
 参数：
-merchantAccount:XHZHYD
+storeId:12345
 storeMenu: 移动端自定义格式
 
 ```
@@ -262,7 +264,7 @@ storeMenu: 移动端自定义格式
 POST /wechatgateway/storeinfo/saveStorePhoto
 
 参数
-merchantAccount:XHZHYD
+storeId:12345
 storePhoto: 移动端自定义格式
 
 返回 略
@@ -350,7 +352,8 @@ latitude:30.538196
                 "storeDistrict": "华阳",
                 "storeLocation": "104.062026,30.505954",
                 "storeAddress": "华福大道一段",
-                "distance": "4850"
+                "distance": "4850",
+                "storeType": 1    //0:未合作  1:合作
             }
         ]
     }
@@ -386,6 +389,13 @@ merchantAccount:WCBBJ //必填
 ``` 
 GET /wechatgateway/adinfo/getById?adId=12345
 ```
+
+<a name="17">通过广告ID删除广告</a>
+### 通过广告ID删除广告
+``` 
+POST /wechatgateway/adinfo/delete?adId=12345
+```
+
 
 <a name="13">通过商家账号获取广告列表</a>
 ### 通过商家账号获取广告列表

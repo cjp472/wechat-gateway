@@ -42,6 +42,7 @@ wechat:
     userversion: V0.0.1
 fleetingtime:
   merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
+  merchantSnCount: http://develop.source3g.com:57567/fleetingtime/merchant/getSnCount
 push:
   url: http://develop.source3g.com:57560/push/push
   prefix: Dev

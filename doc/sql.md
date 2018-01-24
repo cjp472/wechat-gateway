@@ -9,7 +9,7 @@ create table `ad_info` (
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
     primary key (`ad_id`)
 );
-alter table ad_info add index idx_storeId (mercahant_account);
+alter table ad_info add index idx_storeId (merchant_account);
 
 -- 广告详情
 create table `ad_detail` (
@@ -65,6 +65,9 @@ create table `store_info` (
     `store_menu` varchar(5120)  comment '门店菜品图片地址',
     `store_photo` varchar(5120)  comment '门店图片地址',
     `have_booking` tinyint(3) not null default '0' comment '是否能预订，默认不能',
+    `is_open_time` tinyint(3)  comment '是否启用倒计时',
+    `time` int(11) comment '倒计时时间',
+    `promise` varchar(100) comment '倒计时服务承诺',
     `create_time` timestamp not null default current_timestamp comment '创建时间',
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
     primary key (`store_id`)

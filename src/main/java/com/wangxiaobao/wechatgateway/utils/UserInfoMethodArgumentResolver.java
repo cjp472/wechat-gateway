@@ -41,7 +41,7 @@ public class UserInfoMethodArgumentResolver implements HandlerMethodArgumentReso
       */
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return methodParameter.getParameterType().equals(PlatformOrgUserInfo.class) && methodParameter.getParameterName().equals("plateformOrgUserInfo");
+        return methodParameter.getParameterType().equals(PlatformOrgUserInfo.class) && methodParameter.getParameterName().equals("platformOrgUserInfo");
     }
 
 
