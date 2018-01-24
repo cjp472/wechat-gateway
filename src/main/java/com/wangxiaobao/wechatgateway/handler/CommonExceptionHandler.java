@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class CommonExceptionHandler {
   @ExceptionHandler(CommonException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
   @ResponseBody
   public ResultVO handlerCommonException(CommonException e) {
     log.error("【通用异常】",e.getMessage());
