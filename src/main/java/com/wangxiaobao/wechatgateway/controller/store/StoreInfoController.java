@@ -201,7 +201,7 @@ public class StoreInfoController {
         throw new CommonException(1, "商家承诺不能大于50个字");
       }
     }
-    StoreInfo storeInfo = storeInfoService.findByMerchantId(storeTimesForm.getMerchantId());
+    StoreInfo storeInfo = storeInfoService.findByMerchantAccount(storeTimesForm.getMerchantAccount());
     if(storeInfo == null)
       throw new CommonException(1,"没有找到该商家信息为空");
     BeanUtils.copyProperties(storeTimesForm,storeInfo);

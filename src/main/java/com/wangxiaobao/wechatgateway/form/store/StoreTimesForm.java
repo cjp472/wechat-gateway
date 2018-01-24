@@ -21,9 +21,9 @@ public class StoreTimesForm implements Serializable{
 
     private static final long serialVersionUID = 1495287735118363923L;
 
-    //商家ID
-    @NotBlank(message = "商家ID不能为空")
-    private String merchantId;
+    //商家Account
+    @NotBlank(message = "商家Account不能为空")
+    private String merchantAccount;
     //是否开启倒计时 0否 1是
     private int isOpenTime = 0;
     //倒计时时间 默认:1分钟
