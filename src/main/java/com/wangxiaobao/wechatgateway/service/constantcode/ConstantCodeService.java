@@ -1,5 +1,7 @@
 package com.wangxiaobao.wechatgateway.service.constantcode;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +20,10 @@ public class ConstantCodeService extends BaseService {
 	public ConstantCode findConstantCode(ConstantCode constantCode){
 		Example<ConstantCode> example = Example.of(constantCode);
 		return constantCodeRepository.findOne(example);
+	}
+	
+	public List<ConstantCode> selectConstantCode(ConstantCode constantCode){
+		Example<ConstantCode> example = Example.of(constantCode);
+		return constantCodeRepository.findAll(example);
 	}
 }

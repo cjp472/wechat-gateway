@@ -13,6 +13,4 @@ public class TextMessage extends BaseWechatMessage {
 	public void setContent(String content) {
 		Content = content;
 	}
-	
-
 }

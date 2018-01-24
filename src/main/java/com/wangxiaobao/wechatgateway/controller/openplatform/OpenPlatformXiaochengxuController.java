@@ -23,6 +23,7 @@ import com.wangxiaobao.wechatgateway.enums.MiniprogramTemplateTypeEnum;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
+import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramBindTesterRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramCommitRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramGetAuditstatusRequest;
 import com.wangxiaobao.wechatgateway.form.xiaochengxu.MiniProgramGetCategoryRequest;
@@ -273,6 +274,19 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		}
 		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.release(request.getWxAppid()));
 	}
+	
+	
+	@RequestMapping("/miniprogram/bindTester")
+	public JsonResult bindTester(@Valid MiniProgramBindTesterRequest request, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			log.error("【设置最低基础库版本】参数不正确, MiniProgramBindTesterRequest=【】", request);
+			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+					bindingResult.getFieldError().getDefaultMessage());
+		}
+		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.bindTester(request.getWechatid(),request.getWxAppid()));
+	}
+	
+	
 
 	public static void main(String[] args) {
 		JSONObject json = new JSONObject();

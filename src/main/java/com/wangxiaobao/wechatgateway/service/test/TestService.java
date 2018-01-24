@@ -58,7 +58,7 @@ public class TestService {
 	 *              2017年9月13日 下午7:26:09 @updateUser: liping_max @updateDate:
 	 *              2017年9月13日 下午7:26:09 @throws
 	 */
-	public String apiQueryAuth(String authCode, String authType, String organizationAccount, String appId, String appsecret) {
+	public String apiQueryAuth(String authCode, String appId, String appsecret) {
 		String component_access_token = getApiComponentToken(appId, appsecret);
 		String url = "https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token="
 				+ component_access_token;

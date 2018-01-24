@@ -25,4 +25,6 @@ public class WxProperties {
 	private String wx_miniprogram_get_latest_auditstatus_url;
 	private String wx_miniprogram_release_url;
 	private String wx_miniprogram_setweappsupportversion_url;
+	private String wx_send_kefu_message_url;
+	private String wx_template_message_send_url;
 }

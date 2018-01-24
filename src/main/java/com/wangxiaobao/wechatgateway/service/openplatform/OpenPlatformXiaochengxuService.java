@@ -142,7 +142,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		param.put("user_version", userVersion);
 		param.put("user_desc", "test");
 		JSONObject params = new JSONObject();
-		params.put("organizeId", organizationAccount);
+		params.put("organizationAccount", organizationAccount);
 		param.put("ext_json", params.toJSONString());
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
 //		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
@@ -244,6 +244,26 @@ public static void main(String[] args) {
 		String url = "https://api.weixin.qq.com/wxa/release?access_token="+
 				wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		JSONObject param = new JSONObject();
+		JSONObject result = restTemplate.postForObject(url, param.toJSONString(), JSONObject.class);
+		return result;
+	}
+	
+	/**
+	  * @methodName: release
+	  * @Description: TODO
+	  * @param wxAppid
+	  * @return JSONObject
+	  * @createUser: liping_max
+	  * @createDate: 2018年1月24日 下午4:23:36
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年1月24日 下午4:23:36
+	  * @throws
+	 */
+	public JSONObject bindTester(String wechatid,String wxAppid) {
+		String url = "https://api.weixin.qq.com/wxa/bind_tester?access_token="+
+				wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
+		JSONObject param = new JSONObject();
+		param.put("wechatid", wechatid);
 		JSONObject result = restTemplate.postForObject(url, param.toJSONString(), JSONObject.class);
 		return result;
 	}

@@ -120,6 +120,8 @@ public class WXopenPlatformMerchantInfoService {
 			String StrResult = HttpClientUtils.executeByJSONPOST(url, jsonO.toJSONString(), 5000);
 			JSONObject jsonResult = JSONObject.parseObject(StrResult);
 			wxInfo.setAuthoriceAccessToken(jsonResult.getString("authorizer_access_token"));
+			wxInfo.setAuthoriceRefreshToken(jsonResult.getString("authorizer_refresh_token"));
+			wXopenPlatformMerchantInfoMapper.save(wxInfo);
 			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + wxAppId, JSONObject.toJSONString(wxInfo),7000);
 		}
 		return wxInfo;
