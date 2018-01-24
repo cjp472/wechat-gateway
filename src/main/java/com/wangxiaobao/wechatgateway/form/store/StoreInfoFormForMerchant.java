@@ -17,7 +17,6 @@ public class StoreInfoFormForMerchant {
   private String merchantAccount;
 
   /** 权限系统商家ID. */
-  @NotEmpty(message = "商家权限系统ID必填")
   private String merchantId;
 
   /** 门店合作类型，此处为合作 1. */
