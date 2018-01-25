@@ -1,7 +1,5 @@
 package com.wangxiaobao.wechatgateway.service.miniprogramqrcode;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,9 +12,6 @@ import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeReq
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
-
-import lombok.extern.slf4j.Slf4j;
-@Slf4j
 @Service
 public class MiniProgramQrCodeService extends BaseService {
 	@Autowired
