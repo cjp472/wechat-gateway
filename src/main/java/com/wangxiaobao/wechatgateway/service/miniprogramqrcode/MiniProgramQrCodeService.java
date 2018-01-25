@@ -1,16 +1,22 @@
 package com.wangxiaobao.wechatgateway.service.miniprogramqrcode;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeAddForm;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeRequest;
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
+
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 public class MiniProgramQrCodeService extends BaseService {
 	@Autowired
@@ -39,6 +45,28 @@ public class MiniProgramQrCodeService extends BaseService {
 		JSONObject paramsJSON = JSONObject.parseObject(paramsStr);
 		paramsJSON.put("debug_url", debugUrlJSONA);
 		String result = HttpClientUtils.executeByJSONPOST(url, paramsJSON.toJSONString(), 50000);
+		JSONObject addJSON = JSONObject.parseObject(result);
+		if(!"0".equals(addJSON.getString("errcode"))){
+			throw new CommonException(Integer.parseInt(addJSON.getString("errcode")), addJSON.getString("errmsg"));
+		}
+		return result;
+	}
+	/**
+	  * @methodName: qrcodejumpaddAndPush
+	  * @Description: TODO完整的添加和发布二维码规则
+	  * @param form
+	  * @param wxAppid
+	  * @return String
+	  * @createUser: liping_max
+	  * @createDate: 2018年1月25日 下午6:43:45
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年1月25日 下午6:43:45
+	  * @throws
+	 */
+	@SuppressWarnings("static-access")
+	public String qrcodejumpaddAndPush(MiniprogramQrCodeAddForm form,String wxAppid){
+		qrcodejumpadd(form, wxAppid);
+		String result = qrcodejumppublish(form.getPrefix(), wxAppid);
 		return result;
 	}
 	
@@ -49,6 +77,23 @@ public class MiniProgramQrCodeService extends BaseService {
 		JSONObject params = new JSONObject();
 		params.put("prefix", prefix);
 		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
+		JSONObject addJSON = JSONObject.parseObject(result);
+		if(!"0".equals(addJSON.getString("errcode"))){
+			throw new CommonException(Integer.parseInt(addJSON.getString("errcode")), addJSON.getString("errmsg"));
+		}
+		return result;
+	}
+	
+	public String qrcodejumppublish(String prefix,String wxAppid){
+		String url = wxProperties.getWx_qrcode_qrcodejumppublish_url()
+				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
+		JSONObject params = new JSONObject();
+		params.put("prefix", prefix);
+		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
+		JSONObject addJSON = JSONObject.parseObject(result);
+		if(!"0".equals(addJSON.getString("errcode"))){
+			throw new CommonException(Integer.parseInt(addJSON.getString("errcode")), addJSON.getString("errmsg"));
+		}
 		return result;
 	}
 	
@@ -56,6 +101,10 @@ public class MiniProgramQrCodeService extends BaseService {
 		String url = wxProperties.getWx_qrcode_qrcodejumpdownload_url()
 				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		String result = HttpClientUtils.executeByJSONPOST(url, new JSONObject().toJSONString(), 50000);
+		JSONObject addJSON = JSONObject.parseObject(result);
+		if(!"0".equals(addJSON.getString("errcode"))){
+			throw new CommonException(Integer.parseInt(addJSON.getString("errcode")), addJSON.getString("errmsg"));
+		}
 		return result;
 	}
 }
