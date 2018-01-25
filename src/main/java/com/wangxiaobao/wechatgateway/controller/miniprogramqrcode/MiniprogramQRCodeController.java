@@ -2,6 +2,7 @@ package com.wangxiaobao.wechatgateway.controller.miniprogramqrcode;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -87,8 +88,8 @@ public class MiniprogramQRCodeController extends BaseController {
 		return JsonResult.newInstanceSuccess();
 	}
 	
-	@RequestMapping("/miniprogramqrcode/{fileName}")
-	public String verifyOrganizationQrcodeFile(@PathVariable(name = "fileName") String fileName){
+	@RequestMapping("/miniprogramqrcode1/{fileName}")
+	public String verifyOrganizationQrcodeFile(@PathVariable(name = "fileName") String fileName,HttpServletResponse response){
 		QrcodeUrlVerify qrcodeUrlVerify = qrcodeUrlVerifyService.findByFileName(fileName+".txt");
 		return qrcodeUrlVerify.getFileContent();
 	}

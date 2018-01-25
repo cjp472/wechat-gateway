@@ -2,7 +2,9 @@ package com.wangxiaobao.wechatgateway.service.miniprogramqrcode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeAddForm;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeRequest;
@@ -22,10 +24,21 @@ public class MiniProgramQrCodeService extends BaseService {
 		return result;
 	}
 	
+	@SuppressWarnings("static-access")
 	public String qrcodejumpadd(MiniprogramQrCodeAddForm form,String wxAppid){
 		String url = wxProperties.getWx_qrcode_qrcodejumpadd_url()
 				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
-		String result = HttpClientUtils.executeByJSONPOST(url, new JSONObject().toJSONString(form), 50000);
+		JSONArray debugUrlJSONA = new JSONArray();
+		if(!StringUtils.isEmpty(form.getDebug_url())){
+			String[] debugUrls = form.getDebug_url().split(",");
+			for (String string : debugUrls) {
+				debugUrlJSONA.add(string);
+			}
+		}
+		String paramsStr = new JSONObject().toJSONString(form);
+		JSONObject paramsJSON = JSONObject.parseObject(paramsStr);
+		paramsJSON.put("debug_url", debugUrlJSONA);
+		String result = HttpClientUtils.executeByJSONPOST(url, paramsJSON.toJSONString(), 50000);
 		return result;
 	}
 	
