@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class MiniprogramTemplateMessageRequest {
-	@NotEmpty(message="发送用户的appid必填")
+	@NotEmpty(message="发送用户的openId必填")
 	private String touser;
 	private String formId;
 	@NotEmpty(message="奖品名称必填")
@@ -17,4 +17,6 @@ public class MiniprogramTemplateMessageRequest {
 	private String merchantName;
 	private String remark;
 	private String page;
+	@NotEmpty(message="小程序appId不能为空")
+	private String appId;
 }

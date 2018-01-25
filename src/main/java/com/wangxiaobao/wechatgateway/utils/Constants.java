@@ -115,6 +115,8 @@ public class Constants {
 	public static final String AUTHORIZER_TYPE_XIAOCHENGXU = "2";
 	//accessToken过期时间
 	public static final long ACCESS_TOKEN_REDIS_TIMEOUT=7000;
+	//公众号或平台小程序的调用凭证redis缓存key
+	public static final String WX_ACCESS_TOKEN_KEY="access_token:";
 	//httpPost超时时间
 	public static final int HTTP_CLIENT_TIMEOUT=50000;
 	

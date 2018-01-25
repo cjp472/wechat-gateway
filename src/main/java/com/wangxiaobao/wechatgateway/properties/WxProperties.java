@@ -31,4 +31,12 @@ public class WxProperties {
 	private String wx_template_library_get_url;
 	//小程序游戏中奖模板id
 	private String miniprogram_jigsaw_template_message_id;
+	//获取已设置的二维码规则
+	private String wx_qrcode_qrcodejumpget_url;
+	//公众号获取accesstoken
+	private String wx_get_access_token_url;
+	//增加或修改二维码规则
+	private String wx_qrcode_qrcodejumpadd_url;
+	//获取二维码校验文件名称及内容
+	private String wx_qrcode_qrcodejumpdownload_url;
 }

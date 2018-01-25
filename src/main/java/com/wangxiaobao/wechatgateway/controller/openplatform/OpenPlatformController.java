@@ -58,7 +58,6 @@ import com.wangxiaobao.wechatgateway.utils.WxUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.util.http.URIUtil;
-import me.chanjar.weixin.mp.api.impl.WxMpKefuServiceImpl;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;

@@ -12,6 +12,7 @@ import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.entity.templatemessage.MiniprogramTemplateMessage;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageLibraryGetRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageRequest;
+import com.wangxiaobao.wechatgateway.service.gongzhonghao.GongzhonghaoService;
 import com.wangxiaobao.wechatgateway.service.templatemessage.MiniprogramTemplateMessageService;
 import com.wangxiaobao.wechatgateway.service.test.TestService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
@@ -24,11 +25,12 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	@Autowired
 	private MiniprogramTemplateMessageService miniprogramTemplateMessageService;
 	@Autowired
-	private TestService testService;
+	private GongzhonghaoService gongzhonghaoService;
 	
-	@RequestMapping("miniprogram/template/sendMessage")
+	@RequestMapping("miniprogram/sendMessage")
 	public JsonResult sendMessage(MiniprogramTemplateMessageRequest request){
-		String componentAccessToken = testService.getApiComponentToken(appId, appsecret);
+		
+		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);

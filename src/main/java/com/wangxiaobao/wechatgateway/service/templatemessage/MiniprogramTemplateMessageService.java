@@ -3,11 +3,10 @@ package com.wangxiaobao.wechatgateway.service.templatemessage;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.wangxiaobao.wechatgateway.entity.templatemessage.MiniprogramTemplateMessage;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageRequest;
 import com.wangxiaobao.wechatgateway.repository.templatemessage.MiniprogramTemplateMessageRepository;
@@ -21,6 +20,8 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	MiniprogramTemplateMessageRepository miniprogramTemplateMessageRepository;
 	@Autowired
 	WXopenPlatformMerchantInfoService wXopenPlatformMerchantInfoService;
+	@Value("${wechat.miniprogram.templateMessageId}")
+	String templateMessageId;
 	/**
 	  * @methodName: saveMessage
 	  * @Description: TODO保存发送的小程序模板消息
@@ -100,7 +101,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
-		miniprogramTemplateMessage.setTemplate(wxProperties.getMiniprogram_jigsaw_template_message_id());
+		miniprogramTemplateMessage.setTemplate(templateMessageId);
 		miniprogramTemplateMessage.setToUser(request.getTouser());
 		return miniprogramTemplateMessage;
 	}
