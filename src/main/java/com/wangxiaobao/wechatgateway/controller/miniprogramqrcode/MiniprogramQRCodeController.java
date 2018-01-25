@@ -88,7 +88,7 @@ public class MiniprogramQRCodeController extends BaseController {
 		return JsonResult.newInstanceSuccess();
 	}
 	
-	@RequestMapping("/miniprogramqrcode1/{fileName}")
+	@RequestMapping("/miniprogramqrcode/{fileName}")
 	public String verifyOrganizationQrcodeFile(@PathVariable(name = "fileName") String fileName,HttpServletResponse response){
 		QrcodeUrlVerify qrcodeUrlVerify = qrcodeUrlVerifyService.findByFileName(fileName+".txt");
 		return qrcodeUrlVerify.getFileContent();
