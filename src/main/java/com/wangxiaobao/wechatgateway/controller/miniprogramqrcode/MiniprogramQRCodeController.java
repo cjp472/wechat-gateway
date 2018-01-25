@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,12 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.entity.qrcodeurlverify.QrcodeUrlVerify;
+import com.wangxiaobao.wechatgateway.enums.ResultEnum;
+import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeAddForm;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeAddRequest;
+import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeDeleteRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeRequest;
 import com.wangxiaobao.wechatgateway.service.miniprogramqrcode.MiniProgramQrCodeService;
 import com.wangxiaobao.wechatgateway.service.qrcodeurlverify.QrcodeUrlVerifyService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
+
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RestController
 public class MiniprogramQRCodeController extends BaseController {
 	@Autowired
@@ -43,7 +50,12 @@ public class MiniprogramQRCodeController extends BaseController {
 	  * @throws
 	 */
 	@RequestMapping("/miniprogramqrcode/qrcodejumpget")
-	public JsonResult qrcodejumpget(@Valid MiniprogramQrCodeRequest request){
+	public JsonResult qrcodejumpget(@Valid MiniprogramQrCodeRequest request, BindingResult bindingResult){
+		if (bindingResult.hasErrors()) {
+			log.error("【获取已设置的二维码规则】参数不正确, MiniprogramQrCodeRequest=【】", request);
+			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+					bindingResult.getFieldError().getDefaultMessage());
+		}
 		return JsonResult.newInstanceDataSuccess(miniProgramQrCodeService.qrcodejumpget(request));
 	}
 	/**
@@ -58,10 +70,37 @@ public class MiniprogramQRCodeController extends BaseController {
 	  * @throws
 	 */
 	@RequestMapping("/miniprogramqrcode/qrcodejumpadd")
-	public JsonResult qrcodejumpadd(@Valid MiniprogramQrCodeAddRequest request){
+	public JsonResult qrcodejumpadd(@Valid MiniprogramQrCodeAddRequest request, BindingResult bindingResult){
+		if (bindingResult.hasErrors()) {
+			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest=【】", request);
+			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+					bindingResult.getFieldError().getDefaultMessage());
+		}
 		MiniprogramQrCodeAddForm miniprogramQrCodeAddForm = new MiniprogramQrCodeAddForm();
 		BeanUtils.copyProperties(request, miniprogramQrCodeAddForm);
 		return JsonResult.newInstanceDataSuccess(miniProgramQrCodeService.qrcodejumpadd(miniprogramQrCodeAddForm, request.getWxAppid()));
+	}
+	
+	/**
+	  * @methodName: qrcodejumpdelete
+	  * @Description: TODO删除二维码规则
+	  * @param request
+	  * @param bindingResult
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年1月25日 下午6:00:09
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年1月25日 下午6:00:09
+	  * @throws
+	 */
+	@RequestMapping("/miniprogramqrcode/qrcodejumpdelete")
+	public JsonResult qrcodejumpdelete(@Valid MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
+		if (bindingResult.hasErrors()) {
+			log.error("【删除二维码规则】参数不正确, MiniProgramGetCategoryRequest=【】", request);
+			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+					bindingResult.getFieldError().getDefaultMessage());
+		}
+		return JsonResult.newInstanceDataSuccess(miniProgramQrCodeService.qrcodejumpdelete(request.getPrefix(), request.getWxAppid()));
 	}
 	
 	/**
@@ -76,7 +115,12 @@ public class MiniprogramQRCodeController extends BaseController {
 	  * @throws
 	 */
 	@RequestMapping("/miniprogramqrcode/qrcodejumpdownload")
-	public JsonResult qrcodejumpdownload(@Valid MiniprogramQrCodeRequest request){
+	public JsonResult qrcodejumpdownload(@Valid MiniprogramQrCodeRequest request, BindingResult bindingResult){
+		if (bindingResult.hasErrors()) {
+			log.error("【获取校验文件名称及内容】参数不正确, MiniprogramQrCodeRequest=【】", request);
+			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+					bindingResult.getFieldError().getDefaultMessage());
+		}
 		String result = miniProgramQrCodeService.qrcodejumpdownload(request.getWxAppid());
 		JSONObject jsono = JSONObject.parseObject(result);
 		QrcodeUrlVerify qrcodeUrlVerify = new QrcodeUrlVerify();

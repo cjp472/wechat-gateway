@@ -42,6 +42,16 @@ public class MiniProgramQrCodeService extends BaseService {
 		return result;
 	}
 	
+	
+	public String qrcodejumpdelete(String prefix,String wxAppid){
+		String url = wxProperties.getWx_qrcode_qrcodejumpdelete_url()
+				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
+		JSONObject params = new JSONObject();
+		params.put("prefix", prefix);
+		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
+		return result;
+	}
+	
 	public String qrcodejumpdownload(String wxAppid){
 		String url = wxProperties.getWx_qrcode_qrcodejumpdownload_url()
 				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();

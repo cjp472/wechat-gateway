@@ -39,4 +39,6 @@ public class WxProperties {
 	private String wx_qrcode_qrcodejumpadd_url;
 	//获取二维码校验文件名称及内容
 	private String wx_qrcode_qrcodejumpdownload_url;
+	//删除二维码规则
+	private String wx_qrcode_qrcodejumpdelete_url;
 }
