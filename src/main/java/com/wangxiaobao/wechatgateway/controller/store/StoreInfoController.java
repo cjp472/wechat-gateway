@@ -263,6 +263,7 @@ public class StoreInfoController {
     //获取用户的地址信息
     GeoAddress geoAddress = amapUtil.getAddress(destination);
     result.setUserAddress(geoAddress);
+    log.info("【用户坐标】 locathion={}",destination);
     log.info("【获取用户地址】成功 address={}",geoAddress);
     log.info("【获取用户附近门店】成功 result={}",result);
 
