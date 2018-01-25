@@ -29,8 +29,6 @@ public class PushService {
 
     @Value("${push.url}")
     private String pushUrl;
-    @Value("${push.prefix}")
-    private String pushPrefix;
 
     @Autowired
     RestTemplate restTemplate;
@@ -38,7 +36,7 @@ public class PushService {
 
     public JsonResult pushMessage(String merchantAccount,String title,String body){
         if(StringUtils.isEmpty(merchantAccount) ||StringUtils.isEmpty(title)){
-            log.info("推送商家账号和推送title不能为空");
+            log.info("推送商家Account和推送title不能为空");
             return JsonResult.newInstanceMesFail("推送商家账号和推送title不能为空");
         }
         HttpHeaders headers =new HttpHeaders();
@@ -48,13 +46,13 @@ public class PushService {
         pushForm.setPushType("MESSAGE");
         pushForm.setDeviceType("ALL");
         pushForm.setPushDeviceType("ALL");
-        pushForm.setTarget("ALIAS");
-        pushForm.setTargetValue(pushPrefix+"_"+merchantAccount);
+        pushForm.setTarget("TAG");
+        pushForm.setTargetValue(merchantAccount);
         pushForm.setTitle(title);
         pushForm.setBody(body);
         HttpEntity request=new HttpEntity(pushForm, headers);
         JsonResult result = restTemplate.postForObject(pushUrl, request, JsonResult.class);
-        log.info("通用推送：account={},title={},body={},result={}",merchantAccount,title,body,result);
+        log.info("通用推送：merchantAccount={},title={},body={},result={}",merchantAccount,title,body,result);
         return result;
     }
     /**
@@ -67,9 +65,9 @@ public class PushService {
      * @updateUser: ZhouTong
      * @updateDate: 2018/1/13 11:13
      */
-    public JsonResult pushStoreUpdateTimesMessage(String merchantId,String body){
-        if(!StringUtils.hasText(merchantId) || !StringUtils.hasText(body)){
-            log.info("商户ID或内容不能为空,无法推送消息");
+    public JsonResult pushStoreUpdateTimesMessage(String merchantAccount,String body){
+        if(!StringUtils.hasText(merchantAccount) || !StringUtils.hasText(body)){
+            log.info("商户Account或内容不能为空,无法推送消息");
             return null;
         }
         //商家广告发布成功推送消息给设备
@@ -80,8 +78,8 @@ public class PushService {
         pushForm.setPushType("MESSAGE");
         pushForm.setDeviceType("ALL");
         pushForm.setPushDeviceType("ALL");
-        pushForm.setTarget("ALIAS");
-        pushForm.setTargetValue(pushPrefix+"_"+merchantId);
+        pushForm.setTarget("TAG");
+        pushForm.setTargetValue(merchantAccount);
         pushForm.setTitle("UPDATETIMES");
         pushForm.setBody(body);
         HttpEntity request=new HttpEntity(pushForm, headers);
