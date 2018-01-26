@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.templatemessage.MiniprogramTemplateMessage;
+import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateCardVoucherDueMessageRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageRequest;
 import com.wangxiaobao.wechatgateway.repository.templatemessage.MiniprogramTemplateMessageRepository;
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
@@ -22,6 +23,8 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	WXopenPlatformMerchantInfoService wXopenPlatformMerchantInfoService;
 	@Value("${wechat.miniprogram.templateMessageId}")
 	String templateMessageId;
+	@Value("${wechat.miniprogram.templateMessageCardDueId}")
+	String templateMessageCardDueId;
 	/**
 	  * @methodName: saveMessage
 	  * @Description: TODO保存发送的小程序模板消息
@@ -80,13 +83,14 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	public MiniprogramTemplateMessage buildingTemplateMessageData(MiniprogramTemplateMessageRequest request,MiniprogramTemplateMessage miniprogramTemplateMessage){
 		JSONObject dataJson = new JSONObject();
 		JSONObject keyJson = new JSONObject();
-		keyJson.put("value", request.getStatus());
-		keyJson.put("color", "#173177");
-		dataJson.put("keyword1", keyJson);
 		
 		keyJson.put("value", request.getRewardName());
-		keyJson.put("color", "#173177");
+		keyJson.put("color", "#EA3340");
 		dataJson.put("keyword2", keyJson);
+		
+		keyJson.put("value", request.getStatus());
+		keyJson.put("color", "#EA3340");
+		dataJson.put("keyword1", keyJson);
 		
 		keyJson.put("value", request.getMerchantName());
 		keyJson.put("color", "#173177");
@@ -102,6 +106,42 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
 		miniprogramTemplateMessage.setTemplate(templateMessageId);
+		miniprogramTemplateMessage.setToUser(request.getTouser());
+		return miniprogramTemplateMessage;
+	}
+	
+	
+	
+	public MiniprogramTemplateMessage buildingTemplateCardVoucherDueMessageData(MiniprogramTemplateCardVoucherDueMessageRequest request,MiniprogramTemplateMessage miniprogramTemplateMessage){
+		JSONObject dataJson = new JSONObject();
+		JSONObject keyJson = new JSONObject();
+		keyJson.put("value", request.getRewardType());
+		keyJson.put("color", "#EA3340");
+		dataJson.put("keyword1", keyJson);
+		
+		keyJson.put("value", request.getEndDate());
+		keyJson.put("color", "#518AFD");
+		dataJson.put("keyword3", keyJson);
+		
+		keyJson.put("value", request.getRemark());
+		keyJson.put("color", "#518AFD");
+		dataJson.put("keyword4", keyJson);
+		
+		keyJson.put("value", request.getRewardName());
+		keyJson.put("color", "#173177");
+		dataJson.put("keyword5", keyJson);
+		
+		keyJson.put("value", request.getMerchantName());
+		keyJson.put("color", "#173177");
+		dataJson.put("keyword6", keyJson);
+		
+		
+		miniprogramTemplateMessage.setData(dataJson.toJSONString());
+		miniprogramTemplateMessage.setCreateDate(new Date());
+		miniprogramTemplateMessage.setFormId(request.getFormId());
+		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
+		miniprogramTemplateMessage.setPage(request.getPage());
+		miniprogramTemplateMessage.setTemplate(templateMessageCardDueId);
 		miniprogramTemplateMessage.setToUser(request.getTouser());
 		return miniprogramTemplateMessage;
 	}

@@ -13,11 +13,11 @@ import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.entity.templatemessage.MiniprogramTemplateMessage;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
+import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateCardVoucherDueMessageRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageLibraryGetRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageRequest;
 import com.wangxiaobao.wechatgateway.service.gongzhonghao.GongzhonghaoService;
 import com.wangxiaobao.wechatgateway.service.templatemessage.MiniprogramTemplateMessageService;
-import com.wangxiaobao.wechatgateway.service.test.TestService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +33,46 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	@Autowired
 	private GongzhonghaoService gongzhonghaoService;
 	
+	/**
+	  * @methodName: sendMessage
+	  * @Description: TODO发送商家活动结果通知
+	  * @param request
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年1月26日 上午11:11:48
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年1月26日 上午11:11:48
+	  * @throws
+	 */
 	@RequestMapping("miniprogram/sendMessage")
 	public JsonResult sendMessage(MiniprogramTemplateMessageRequest request){
 		
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);
+		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
+		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
+		return JsonResult.newInstanceDataSuccess(result);
+	}
+	
+	/**
+	 * 
+	  * @methodName: sendCardVoucherDueMessage
+	  * @Description: 发送用户卡券到期提醒
+	  * @param request
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年1月26日 上午11:11:23
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年1月26日 上午11:11:23
+	  * @throws
+	 */
+	@RequestMapping("miniprogram/sendCardVoucherDueMessage")
+	public JsonResult sendCardVoucherDueMessage(MiniprogramTemplateCardVoucherDueMessageRequest request){
+		
+		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
+		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
+		miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,miniprogramTemplateMessage);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
 		return JsonResult.newInstanceDataSuccess(result);
