@@ -142,8 +142,10 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		param.put("user_version", userVersion);
 		param.put("user_desc", "test");
 		JSONObject params = new JSONObject();
-		params.put("organizationAccount", organizationAccount);
-		param.put("ext_json", params.toJSONString());
+		JSONObject ext = new JSONObject();
+		ext.put("organizationAccount", organizationAccount);
+		params.put("ext", ext);
+		param.put("ext_json", params.toString());
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
 //		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(result.getString("errcode"))) {
