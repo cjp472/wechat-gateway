@@ -1,7 +1,9 @@
 package com.wangxiaobao.wechatgateway.service.openplatform;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -141,9 +143,11 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		param.put("template_id", templateId);
 		param.put("user_version", userVersion);
 		param.put("user_desc", "test");
+		JSONObject ext = new JSONObject();
+		ext.put("organizationAccount", organizationAccount);
 		JSONObject params = new JSONObject();
-		params.put("organizationAccount", organizationAccount);
-		param.put("ext_json", params.toJSONString());
+		params.put("ext", ext);
+		param.put("ext_json", params);
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
 //		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(result.getString("errcode"))) {
@@ -153,7 +157,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		return result;
 	}
 public static void main(String[] args) {
-	JSONObject jsono = new JSONObject();
+	/*JSONObject jsono = new JSONObject();
 	JSONArray jsonA= new JSONArray();
 	JSONObject json = new JSONObject();
 	json.put("firstClass", "餐饮");
@@ -164,7 +168,8 @@ public static void main(String[] args) {
 	json.put("title", "首页");
 	jsonA.add(json);
 	jsono.put("item_list", jsonA);
-	System.out.println(jsono.toJSONString());
+	System.out.println(jsono.toJSONString());*/
+	
 }
 	
 	/**

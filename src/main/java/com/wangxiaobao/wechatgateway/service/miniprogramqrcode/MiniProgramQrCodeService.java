@@ -58,8 +58,8 @@ public class MiniProgramQrCodeService extends BaseService {
 	  * @updateDate: 2018年1月25日 下午6:43:45
 	  * @throws
 	 */
-	@SuppressWarnings("static-access")
 	public String qrcodejumpaddAndPush(MiniprogramQrCodeAddForm form,String wxAppid){
+		qrcodejumpdownload(wxAppid);
 		qrcodejumpadd(form, wxAppid);
 		String result = qrcodejumppublish(form.getPrefix(), wxAppid);
 		return result;
