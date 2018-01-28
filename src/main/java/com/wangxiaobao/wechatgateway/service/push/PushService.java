@@ -50,6 +50,7 @@ public class PushService {
         pushForm.setTargetValue(merchantAccount);
         pushForm.setTitle(title);
         pushForm.setBody(body);
+        pushForm.setStoreOffline(true);
         HttpEntity request=new HttpEntity(pushForm, headers);
         JsonResult result = restTemplate.postForObject(pushUrl, request, JsonResult.class);
         log.info("通用推送：merchantAccount={},title={},body={},result={}",merchantAccount,title,body,result);
@@ -82,6 +83,7 @@ public class PushService {
         pushForm.setTargetValue(merchantAccount);
         pushForm.setTitle("UPDATETIMES");
         pushForm.setBody(body);
+        pushForm.setStoreOffline(true);
         HttpEntity request=new HttpEntity(pushForm, headers);
         JsonResult result = restTemplate.postForObject(pushUrl, request, JsonResult.class);
         log.info("推送商家更新倒计时消息：{}",result);
