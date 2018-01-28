@@ -7,9 +7,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.wangxiaobao.wechatgateway.properties.WxProperties;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Controller
 public class BaseController {
 	@Autowired

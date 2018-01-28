@@ -44,6 +44,8 @@ wechat:
     webviewdomain1: https://develop.source3g.com
     webviewdomain2: https://preview.source3g.com
     userversion: V0.0.1
+    templateMessageId: fNxpIi0DAvs5c0ZyLfI-Bjn_rHG_elIUSx-ViXJMVZA
+    templateMessageCardDueId: twyJQcZF5CKflHv-AXLD9_uyRjTsMLUiM6fp8QwnKSE
 fleetingtime:
   merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
   merchantSnCount: http://develop.source3g.com:57567/fleetingtime/merchant/getSnCount
