@@ -64,6 +64,15 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		response.setComponentAppId(appId);
 		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxu);
 	}
+	
+	@RequestMapping("/xiaochengxu/findXiaochengxuByAppId")
+	public JsonResult findXiaochengxuByAppId(String appId) {
+		if (StringUtils.isEmpty(appId)) {
+			return JsonResult.newInstanceMesFail("appId未传");
+		}
+		OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService.findXiaochengxuByAppId(appId);
+		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxu);
+	}
 
 	/**
 	 * @methodName: modifyDomain @Description: 设置小程序服务器域名 @param wxAppid @return

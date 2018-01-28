@@ -98,6 +98,11 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuRepository.findByCode(code);
 		return openPlatformXiaochengxu;
 	}
+	
+	public OpenPlatformXiaochengxu findXiaochengxuByAppId(String appId) {
+		OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuRepository.findByAppId(appId);
+		return openPlatformXiaochengxu;
+	}
 
 	public String modifyDomain(String wxAppid, String action) {
 		String url = wxProperties.getWx_modify_domain_url()
