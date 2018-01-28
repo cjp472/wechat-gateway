@@ -62,7 +62,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		OpenPlatformXiaochengxuResponse response = new OpenPlatformXiaochengxuResponse();
 		BeanUtils.copyProperties(openPlatformXiaochengxu, response);
 		response.setComponentAppId(appId);
-		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxu);
+		return JsonResult.newInstanceDataSuccess(response);
 	}
 	
 	@RequestMapping("/xiaochengxu/findXiaochengxuByAppId")
