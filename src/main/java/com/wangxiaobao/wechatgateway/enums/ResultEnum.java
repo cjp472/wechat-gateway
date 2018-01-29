@@ -16,6 +16,8 @@ public enum ResultEnum {
     BRAND_NOT_FOUND(6,"未获取品牌账号"),
     MERCHANTACCOUT_INVALID(7,"绑定的账号不在品牌的商家列表中"),
     NO_MORE_TABLECARD(8,"绑定的账号下无桌牌，禁止绑定账号"),
+    MERCHANT_NOT_FOUND(9,"未查到SN对应的商家"),
+    APPID_NOT_FOUND(10,"为获取小程序ID"),
 
     UNKNOW_ERROR(100, "未知错误"),
     ;
