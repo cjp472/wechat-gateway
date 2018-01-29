@@ -37,6 +37,12 @@ public class WXopenPlatformMerchantInfoService {
 	public void save(WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo){
 		wXopenPlatformMerchantInfoMapper.save(wXopenPlatformMerchantInfo);
 	}
+
+	public WXopenPlatformMerchantInfo getByBrandAccount(String brandAccount,String authType){
+		WXopenPlatformMerchantInfo result =  wXopenPlatformMerchantInfoMapper.findByOrganizationAccountAndAuthType(brandAccount,authType);
+		return result;
+	}
+
 	
 	public WXopenPlatformMerchantInfo getByWXAppId(String wxAppId){
 		return wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppId);
@@ -72,7 +78,6 @@ public class WXopenPlatformMerchantInfoService {
 	/**
 	  * @methodName: deleteByorganizationAccountAndAuthType
 	  * @Description: 根据wxAppId删除记录
-	  * @param organizationAccount
 	  * @createUser: liping_max
 	  * @createDate: 2018年1月12日 下午4:46:48
 	  * @updateUser: liping_max
