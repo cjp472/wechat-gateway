@@ -112,7 +112,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	public JsonResult commit(@Valid MiniProgramCommitRequest miniProgramCommitRequest, BindingResult bindingResult) {
 		// TODO版本号后续需要通过数据库读取
 		if (bindingResult.hasErrors()) {
-			log.error("【为授权的小程序帐号上传小程序代码】参数不正确, miniProgramCommitRequest=【】", miniProgramCommitRequest);
+			log.error("【为授权的小程序帐号上传小程序代码】参数不正确, miniProgramCommitRequest={}", miniProgramCommitRequest);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -130,7 +130,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	@RequestMapping("/miniprogram/getcategory")
 	public JsonResult getCategory(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【获取授权小程序帐号的可选类目】参数不正确, miniProgramCommitRequest=【】", request);
+			log.error("【获取授权小程序帐号的可选类目】参数不正确, miniProgramCommitRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -146,7 +146,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	@RequestMapping("/miniprogram/getpage")
 	public JsonResult getPage(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【获取小程序的第三方提交代码的页面配置】参数不正确, MiniProgramGetCategoryRequest=【】", request);
+			log.error("【获取小程序的第三方提交代码的页面配置】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -165,7 +165,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	public JsonResult submitAudit(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult,
 			String organizationAccount) {
 		if (bindingResult.hasErrors()) {
-			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramGetCategoryRequest=【】", request);
+			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -222,7 +222,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	@RequestMapping("/miniprogram/getAuditstatus")
 	public JsonResult getAuditstatus(@Valid MiniProgramGetAuditstatusRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【查询某个指定版本的审核状态】参数不正确, MiniProgramSubmitAuditRequest=【】", request);
+			log.error("【查询某个指定版本的审核状态】参数不正确, MiniProgramSubmitAuditRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -241,7 +241,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	@RequestMapping("/miniprogram/getLatestAuditstatus")
 	public JsonResult getLatestAuditstatus(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【查询某个指定版本的审核状态】参数不正确, MiniProgramGetCategoryRequest=【】", request);
+			log.error("【查询某个指定版本的审核状态】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -260,7 +260,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	public JsonResult setweappsupportversion(@Valid MiniProgramSetweappsupportversionRequest request,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【设置最低基础库版本】参数不正确, MiniProgramSetweappsupportversionRequest=【】", request);
+			log.error("【设置最低基础库版本】参数不正确, MiniProgramSetweappsupportversionRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -277,7 +277,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	@RequestMapping("/miniprogram/release")
 	public JsonResult release(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【设置最低基础库版本】参数不正确, MiniProgramGetCategoryRequest=【】", request);
+			log.error("【设置最低基础库版本】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -288,7 +288,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	@RequestMapping("/miniprogram/bindTester")
 	public JsonResult bindTester(@Valid MiniProgramBindTesterRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			log.error("【设置最低基础库版本】参数不正确, MiniProgramBindTesterRequest=【】", request);
+			log.error("【设置最低基础库版本】参数不正确, MiniProgramBindTesterRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}

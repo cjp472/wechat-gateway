@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import groovy.transform.stc.ClosureParams;
 import lombok.Data;
 
 /**
@@ -62,4 +63,6 @@ public class OrganizeTemplate {
 	private String isOnline;
 	@Column(name="is_new")
 	private String isNew;
+	@Column(name ="reason")
+	private String reason;
 }

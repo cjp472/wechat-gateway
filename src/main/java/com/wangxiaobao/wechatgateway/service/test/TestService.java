@@ -192,7 +192,7 @@ public class TestService {
 				return JsonResult.newInstanceDataSuccess(jsonO.getString("open_appid"));
 			}
 		}else{
-			log.error("授权失败，商家公众号创建开放平台【】【】",wxAppid,result);
+			log.error("授权失败，商家公众号创建开放平台{}{}",wxAppid,result);
 			throw new CommonException(jsono.getInteger("errcode"), "授权失败"+jsono.getString("errmsg"));
 		}
 		return JsonResult.newInstanceMesFail(jsono.getString("errcode"));

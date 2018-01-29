@@ -36,11 +36,12 @@ public class OrganizeTemplateService extends BaseService {
 		return organizeTemplateRepository.findOne(example);
 	}
 	
-	public void updateOrganizeTemplateStatus(String wxAppid,String status){
+	public void updateOrganizeTemplateStatus(String wxAppid,String status,String reason){
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppid);
 		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
 		organizeTemplate.setOrganizationAccount(wxInfo.getOrganizationAccount());
 		organizeTemplate.setIsNew("1");
+		organizeTemplate.setReason(reason);
 		OrganizeTemplate organizeTemplate2 = findOrganizeTemplateBy(organizeTemplate);
 		organizeTemplate2.setStatus(status);
 		save(organizeTemplate2);

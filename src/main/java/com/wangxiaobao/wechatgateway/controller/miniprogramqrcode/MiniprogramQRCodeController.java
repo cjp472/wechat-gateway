@@ -52,7 +52,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	@RequestMapping("/miniprogramqrcode/qrcodejumpget")
 	public JsonResult qrcodejumpget(@Valid MiniprogramQrCodeRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【获取已设置的二维码规则】参数不正确, MiniprogramQrCodeRequest=【】", request);
+			log.error("【获取已设置的二维码规则】参数不正确, MiniprogramQrCodeRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -72,7 +72,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	@RequestMapping("/miniprogramqrcode/qrcodejumpadd")
 	public JsonResult qrcodejumpadd(@Valid MiniprogramQrCodeAddRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest=【】", request);
+			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -95,7 +95,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	@RequestMapping("/miniprogramqrcode/qrcodejumpaddAndPublish")
 	public JsonResult qrcodejumpaddAndPublish(@Valid MiniprogramQrCodeAddRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest=【】", request);
+			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -119,7 +119,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	@RequestMapping("/miniprogramqrcode/qrcodejumpdelete")
 	public JsonResult qrcodejumpdelete(@Valid MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【删除二维码规则】参数不正确, MiniProgramGetCategoryRequest=【】", request);
+			log.error("【删除二维码规则】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -140,7 +140,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	@RequestMapping("/miniprogramqrcode/qrcodejumpdownload")
 	public JsonResult qrcodejumpdownload(@Valid MiniprogramQrCodeRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【获取校验文件名称及内容】参数不正确, MiniprogramQrCodeRequest=【】", request);
+			log.error("【获取校验文件名称及内容】参数不正确, MiniprogramQrCodeRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -170,7 +170,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	@RequestMapping("/miniprogramqrcode/qrcodejumppublish")
 	public JsonResult qrcodejumppublish(@Valid MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【发布已设置的二维码规则】参数不正确, MiniprogramQrCodeDeleteRequest=【】", request);
+			log.error("【发布已设置的二维码规则】参数不正确, MiniprogramQrCodeDeleteRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}

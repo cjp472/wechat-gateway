@@ -117,7 +117,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		JSONObject modifyDomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(modifyDomainJson.getString("errcode"))
 				&& !"85017".equals(modifyDomainJson.getString("errcode"))) {
-			log.error("设置商家小程序【】服务器域名异常【】", wxAppid, modifyDomainJson.getString("errmsg"));
+			log.error("设置商家小程序{}服务器域名异常{}", wxAppid, modifyDomainJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), modifyDomainJson.getString("errmsg"));
 		}
 		return result;
@@ -133,7 +133,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		JSONObject setwebviewdomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(setwebviewdomainJson.getString("errcode"))
 				&& !"89019".equals(setwebviewdomainJson.getString("errcode"))) {
-			log.error("设置商家小程序【】业务域名异常【】", wxAppid, setwebviewdomainJson.getString("errmsg"));
+			log.error("设置商家小程序{}业务域名异常{}", wxAppid, setwebviewdomainJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), setwebviewdomainJson.getString("errmsg"));
 		}
 		return result;
@@ -154,7 +154,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 		JSONObject result = restTemplate.postForObject(url, param, JSONObject.class);
 //		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(result.getString("errcode"))) {
-			log.error("为商家小程序【】上传模板异常【】", wxAppid, result.getString("errmsg"));
+			log.error("为商家小程序{}上传模板异常{}", wxAppid, result.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), result.getString("errmsg"));
 		}
 		return result;
@@ -211,7 +211,7 @@ public static void main(String[] args) {
 		JSONObject resultJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(resultJson.getString("errcode"))
 				&& !"89019".equals(resultJson.getString("errcode"))&&!"85009".equals(resultJson.getString("errcode"))) {
-			log.error("设置商家小程序【】业务域名异常【】", wxAppid, resultJson.getString("errmsg"));
+			log.error("设置商家小程序{}业务域名异常{}", wxAppid, resultJson.getString("errmsg"));
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), resultJson.getString("errmsg"));
 		}
 		return resultJson;
@@ -327,7 +327,7 @@ public static void main(String[] args) {
 		organizeTemplateService.updateOrganizeTemplateIsNew(wxAppid,"0");
 		OrganizeTemplate organizeTemplateResult = organizeTemplateService.save(organizeTemplate);
 		if (null == organizeTemplateResult) {
-			log.error("将商家小程序【】版本上传的版本记录到数据库失败", wxAppid);
+			log.error("将商家小程序{}版本上传的版本记录到数据库失败", wxAppid);
 			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), "保存商家小程序" + wxAppid + "模板版本号数据库异常");
 		}
 		// 获取商家小程序账号需要配置的address和类目

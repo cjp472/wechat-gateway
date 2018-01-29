@@ -93,7 +93,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	@RequestMapping("miniprogram/template/libraryGet")
 	public JsonResult libraryGet(@Valid MiniprogramTemplateMessageLibraryGetRequest request,BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【获取模板库】参数不正确, MiniprogramTemplateMessageLibraryGetRequest=【】", request);
+			log.error("【获取模板库】参数不正确, MiniprogramTemplateMessageLibraryGetRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}

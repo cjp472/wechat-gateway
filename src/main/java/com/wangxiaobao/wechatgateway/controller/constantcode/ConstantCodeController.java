@@ -38,7 +38,7 @@ public class ConstantCodeController extends BaseController {
 	@PostMapping("/constantcode/selectListByType")
 	public JsonResult selectConstantCodeByType(@Valid ConstantCodeWXAuthRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
-			log.error("【查询某个指定版本的审核状态】参数不正确, ConstantCodeWXAuthRequest=【】", request);
+			log.error("【查询某个指定版本的审核状态】参数不正确, ConstantCodeWXAuthRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}

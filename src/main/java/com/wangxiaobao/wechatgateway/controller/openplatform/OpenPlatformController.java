@@ -216,11 +216,11 @@ public class OpenPlatformController {
 					case "TESTCOMPONENT_MSG_TYPE_TEXT":
 						return "TESTCOMPONENT_MSG_TYPE_TEXT_callback";
 					case "weapp_audit_success":
-						log.info("小程序【】审核成功【】", map.get("ToUserName"), map.get("SuccTime"));
+						log.info("小程序{}审核成功{}", map.get("ToUserName"), map.get("SuccTime"));
 						wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(map.get(""));
 						return "success";
 					case "weapp_audit_fail":
-						log.info("小程序【】审核失败【】", map.get("ToUserName"), map.get("Reason"));
+						log.info("小程序{}审核失败{}", map.get("ToUserName"), map.get("Reason"));
 						return "success";
 					default:
 						break;
@@ -309,24 +309,24 @@ public class OpenPlatformController {
 					// component_verify_ticket:微信平台定时推送；authorized：微信公众号授权第三方平台；unauthorized：微信公众号取消授权第三方平台
 					switch (event) {
 					case "weapp_audit_success":
-						logger.info("微信商家小程序【】审核成功回调", APPID);
+						logger.info("微信商家小程序{}审核成功回调", APPID);
 						try {
 							organizeTemplateService.updateOrganizeTemplateStatus(APPID,
-									OrganizeTemplateStatusEnum.SUCCESS.getStatus());
+									OrganizeTemplateStatusEnum.SUCCESS.getStatus(),null);
 							openPlatformXiaochengxuService.release(APPID);
 							organizeTemplateService.updateOrganizeTemplateIsOnline(APPID, "1");
 						} catch (Exception e) {
-							log.error("微信商家小程序【】更新审核状态为成功失败", APPID, e.getMessage());
+							log.error("微信商家小程序{}更新审核状态为成功失败", APPID, e.getMessage());
 						} finally {
 							return "success";
 						}
 					case "weapp_audit_fail":
-						logger.info("微信商家小程序【】审核成功回调", APPID);
+						logger.info("微信商家小程序{}审核成功回调", APPID);
 						try {
 							organizeTemplateService.updateOrganizeTemplateStatus(APPID,
-									OrganizeTemplateStatusEnum.FAIL.getStatus());
+									OrganizeTemplateStatusEnum.FAIL.getStatus(),map.get("Reason"));
 						} catch (Exception e) {
-							log.error("微信商家小程序【】更新审核状态为失败失败", APPID, e.getMessage());
+							log.error("微信商家小程序{}更新审核状态为失败失败", APPID, e.getMessage());
 						} finally {
 							return "success";
 						}
