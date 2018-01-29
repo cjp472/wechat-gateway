@@ -53,7 +53,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	public String sendMessageToUser(MiniprogramTemplateMessage miniprogramTemplateMessage,String componentAccessToken){
 		JSONObject json = new JSONObject();
 		json.put("touser", miniprogramTemplateMessage.getToUser());
-		json.put("template_id", miniprogramTemplateMessage.getTemplate());
+		json.put("template_id", miniprogramTemplateMessage.getTemplateId());
 		json.put("page", miniprogramTemplateMessage.getPage());
 		json.put("form_id", miniprogramTemplateMessage.getFormId());
 		json.put("data", miniprogramTemplateMessage.getData());
@@ -105,7 +105,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
-		miniprogramTemplateMessage.setTemplate(templateMessageId);
+		miniprogramTemplateMessage.setTemplateId(templateMessageId);
 		miniprogramTemplateMessage.setToUser(request.getTouser());
 		return miniprogramTemplateMessage;
 	}
@@ -141,7 +141,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
-		miniprogramTemplateMessage.setTemplate(templateMessageCardDueId);
+		miniprogramTemplateMessage.setTemplateId(templateMessageCardDueId);
 		miniprogramTemplateMessage.setToUser(request.getTouser());
 		return miniprogramTemplateMessage;
 	}

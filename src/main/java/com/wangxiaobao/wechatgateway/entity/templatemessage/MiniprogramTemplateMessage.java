@@ -18,7 +18,7 @@ public class MiniprogramTemplateMessage {
 	@Id
 	private String messageId;
 	private String toUser;
-	private String template;
+	private String templateId;
 	private String page;
 	private String formId;
 	private String data;
