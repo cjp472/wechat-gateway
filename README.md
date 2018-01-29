@@ -321,7 +321,8 @@ brandId:1516093835325110194 //主键，如果有是更新，没有为新建
 }
 ```
 
-<a name="#20">sn查询品牌APP信息</a>
+<a name="20">sn查询品牌APP信息</a>
+### sn查询品牌APP信息
 ``` 
 GET /wechatgateway/brandinfo/findBySn?sn=CB023170500003B7
 
