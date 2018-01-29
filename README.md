@@ -10,6 +10,8 @@
 
 - <a href="#8">查询品牌信息</a>
 
+- <a href="#20">sn查询品牌APP信息</a>
+
 
 ## 商家管理门店
 - <a href="#4">商家创建门店</a>
@@ -318,6 +320,27 @@ brandId:1516093835325110194 //主键，如果有是更新，没有为新建
     }
 }
 ```
+
+<a name="#20">sn查询品牌APP信息</a>
+``` 
+GET /wechatgateway/brandinfo/findBySn?sn=CB023170500003B7
+
+返回
+{
+    "code": 0,
+    "msg": "成功",
+    "data": {
+        "sn": "CB023170500003B7",
+        "merchantAccount": "WCBBJ",
+        "tabelName": "二号桌",
+        "brandAccount": "MINIAPPPP",
+        "appId": "wxff3043a582d31257"
+    }
+}
+
+```
+
+
 
 <a name="10">获取用户与门店距离</a>
 ### 获取用户与门店距离
