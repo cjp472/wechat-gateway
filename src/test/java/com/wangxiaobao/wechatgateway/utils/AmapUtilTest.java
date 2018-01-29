@@ -53,8 +53,8 @@ public class AmapUtilTest {
 
   @Test
   public void getDistance(){
-    String orgin = "104.068359,30.538196|104.068359,30.538196";
-    String destination = "104.066428,30.527265";
+    String orgin = "103.591583,30.889160";
+    String destination = "103.59158325195312,30.87916015625";
     log.info(amapUtil.getDistance(orgin,destination).toString());
   }
 
