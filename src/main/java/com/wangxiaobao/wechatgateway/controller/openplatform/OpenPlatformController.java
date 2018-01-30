@@ -359,7 +359,7 @@ public class OpenPlatformController {
 		String organizationAccount = request.getParameter("organizationAccount");
 		// 授权账户类型1：公众号；2：小程序
 		String authType = request.getParameter("authType");
-		logger.info("返回的授权code：" + authCode);
+		logger.info("返回的授权code：" + authCode+",authType="+authType);
 		String authorizationInfo = testService.apiQueryAuth(authCode, appId, appsecret);
 		JsonResult jsonResult = buildingAuthorizer(authorizationInfo, authType, organizationAccount);
 		model.addAttribute("authResult", jsonResult.getMessage());
