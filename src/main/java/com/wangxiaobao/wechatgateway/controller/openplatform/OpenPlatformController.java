@@ -362,6 +362,7 @@ public class OpenPlatformController {
 		logger.info("返回的授权code：" + authCode+",authType="+authType);
 		String authorizationInfo = testService.apiQueryAuth(authCode, appId, appsecret);
 		JsonResult jsonResult = buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+		log.info("授权返回结果{}",JSONObject.toJSONString(jsonResult));
 		model.addAttribute("authResult", jsonResult.getMessage());
 		model.addAttribute("authReason", jsonResult.getData());
 		return "/authResult";
