@@ -20,7 +20,7 @@ public class CommonExceptionHandler {
   @ExceptionHandler(CommonException.class)
   @ResponseBody
   public ResultVO handlerCommonException(CommonException e) {
-    log.error("【通用异常】",e);
+    log.error("【通用异常】{}",e);
     return ResultVOUtil.error(e.getCode() , e.getMessage());
   }
 
