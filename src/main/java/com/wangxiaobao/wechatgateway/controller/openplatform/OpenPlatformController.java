@@ -94,8 +94,6 @@ public class OpenPlatformController {
 	@Autowired
 	private OrganizeTemplateService organizeTemplateService;
 	@Autowired
-	private WxMiniprogramTemplateService wxMiniprogramTemplateService;
-	@Autowired
 	KeFuService keFuService;
 	@RequestMapping(value = "/")
 	@ResponseBody
@@ -208,7 +206,8 @@ public class OpenPlatformController {
 						String authorizationCode = map.get("AuthorizationCode");
 						logger.info("返回的授权code：" + authorizationCode);
 						String authorizationInfo = testService.apiQueryAuth(authorizationCode,appId, appsecret);
-						return buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+						buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+						return "success";
 					case "unauthorized":
 						logger.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
 						wXopenPlatformMerchantInfoService.deleteByWXAppId(authorizerAppid);
@@ -283,6 +282,7 @@ public class OpenPlatformController {
 	
 	
 
+	@SuppressWarnings("finally")
 	@RequestMapping("/event/{APPID}/callBack")
 	@ResponseBody
 	public String eventCallBack(HttpServletRequest request, @PathVariable(name = "APPID") String APPID,
@@ -305,7 +305,7 @@ public class OpenPlatformController {
 				}
 				// 处理事件消息
 				if ("event".equals(msgType)) {
-					String toUserName = map.get("ToUserName");
+//					String toUserName = map.get("ToUserName");
 					// component_verify_ticket:微信平台定时推送；authorized：微信公众号授权第三方平台；unauthorized：微信公众号取消授权第三方平台
 					switch (event) {
 					case "weapp_audit_success":
@@ -361,13 +361,14 @@ public class OpenPlatformController {
 		String authType = request.getParameter("authType");
 		logger.info("返回的授权code：" + authCode);
 		String authorizationInfo = testService.apiQueryAuth(authCode, appId, appsecret);
-		String result = buildingAuthorizer(authorizationInfo, authType, organizationAccount);
-		model.addAttribute("authResult", result);
+		JsonResult jsonResult = buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+		model.addAttribute("authResult", jsonResult.getMessage());
+		model.addAttribute("authReason", jsonResult.getData());
 		return "/authResult";
 	}
 
 	// 组装授权和创建开放平台
-	public String buildingAuthorizer(String authorizationInfo, String authType, String organizationAccount) {
+	public JsonResult buildingAuthorizer(String authorizationInfo, String authType, String organizationAccount) {
 		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
 		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService
 				.getByWXAppId(jsono.getString("authorizer_appid"));
@@ -406,18 +407,18 @@ public class OpenPlatformController {
 					OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService
 							.findCanBindXiaochengxu();
 					if (null == openPlatformXiaochengxu) {
-						return "授权失败";
+						return JsonResult.newInstanceAuthFail("平台黄页小程序不存在");
 					}
 					JSONObject resultJson = testService.bindWxamplink(openPlatformXiaochengxu.getAppId(),
 							jsono.getString("authorizer_access_token"));
 					JsonResult jsonResult = JsonResult.newInstance(resultJson.getString("errcode"),
 							resultJson.getString("errmsg"));
 					if (!JsonResult.APP_RETURN_SUCCESS.equals(jsonResult.getCode())) {
-						return "授权失败,绑定第三方平台小程序失败";
+						return JsonResult.newInstanceAuthFail("绑定第三方平台小程序失败");
 					}
-					return "授权成功";
+					return JsonResult.newInstanceAuthSuccess("授权成功");
 				} else {
-					return "授权失败," + result.getCode() + result.getMessage();
+					return JsonResult.newInstanceAuthFail("创建公众号开放平台失败");
 				}
 			} else {
 				// 更新权限
@@ -451,19 +452,19 @@ public class OpenPlatformController {
 						OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService
 								.findCanBindXiaochengxu();
 						if (null == openPlatformXiaochengxu) {
-							return "授权失败";
+							return JsonResult.newInstanceAuthFail("更新授权，平台黄页小程序不存在");
 						}
-						JSONObject resultJson = testService.bindWxamplink(openPlatformXiaochengxu.getAppId(),
+						testService.bindWxamplink(openPlatformXiaochengxu.getAppId(),
 								jsono.getString("authorizer_access_token"));
-						return "授权成功";
+						return JsonResult.newInstanceAuthSuccess("授权成功");
 					} else {
-						return "授权失败," + result.getCode() + result.getMessage();
+						return JsonResult.newInstanceAuthFail("创建公众号开放平台失败");
 					}
 				} else if (oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"))) {
 					// 当前已绑定小程序，只能更新权限，不能更改公众号
-					return "授权成功";
+					return JsonResult.newInstanceAuthSuccess("更新公众号授权成功");
 				} else {
-					return "授权失败，更换公众号可能造成用户数据丢失,请联系【旺小宝】";
+					return JsonResult.newInstanceAuthFail("更换公众号有可能造成数据丢失，请联系【旺小宝】更换");
 				}
 			}
 		} else {
@@ -473,9 +474,9 @@ public class OpenPlatformController {
 			List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
 					.findByCondition(wxCondition);
 			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
-				return "授权失败,请先授权公众号";
+				return JsonResult.newInstanceAuthFail("授权小程序之前需要授权公众号");
 			} else if (null != oldWxInfo && !oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"))) {
-				return "授权失败,更换小程序可能造成用户数据丢失,请联系【旺小宝】";
+				return JsonResult.newInstanceAuthFail("更换小程序可能造成用户数据丢失,请联系【旺小宝】更换");
 			}
 			JsonResult result = testService.bindOpen(jsono.getString("authorizer_appid"),
 					wxInfoResponses.get(0).getOpenAppid(), jsono.getString("authorizer_access_token"));
@@ -497,7 +498,7 @@ public class OpenPlatformController {
 				openPlatformXiaochengxuService.initXiaochengxu(wxAppid, "add", organizationAccount,
 						authorizerInfoJson.getString("nick_name"));
 			}
-			return result.getMessage();
+			return result;
 		}
 	}
 

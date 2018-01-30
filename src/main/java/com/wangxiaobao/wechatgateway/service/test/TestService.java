@@ -244,32 +244,32 @@ public class TestService {
 				/*WXopenPlatformMerchantInfo wInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppid);
 				wInfo.setOpenAppid(openAppid);
 				wXopenPlatformMerchantInfoService.update(wInfo);*/
-				return JsonResult.newInstanceMesSuccess("授权成功");
+				return JsonResult.newInstanceAuthSuccess("小程序首次绑定开放平台成功");
 			} else if("89000".equals(jsono.getString("errcode"))){
 				JsonResult result1 = getBindOpen(wxAppid, authoriceAccessToken);
 				if(JsonResult.APP_RETURN_SUCCESS.equals(result1.getCode())){
 					JSONObject jsonO = (JSONObject) result1.getData();
 					if(openAppid.equals(jsonO.getString("open_appid"))){
-						return JsonResult.newInstanceMesSuccess("授权成功");
+						return JsonResult.newInstanceAuthSuccess("授权小程序已绑定开放平台和本次操作开放平台相同");
 					}else{
 						//解绑
 						JsonResult jsonr = unbindOpen(wxAppid,jsonO.getString("open_appid"),authoriceAccessToken);
 						if("0".equals(jsonr.getCode())){
 							bindOpen(wxAppid,openAppid,authoriceAccessToken);
-							return JsonResult.newInstanceMesSuccess("授权成功");
+							return JsonResult.newInstanceAuthSuccess("小程序解绑开放平台后重新绑定新开放平台成功");
 						}
-						return JsonResult.newInstanceMesFail("授权失败已绑定的开放平台和现有开放平台不一致");
+						return JsonResult.newInstanceAuthFail("授权失败已绑定的开放平台和现有开放平台不一致,解绑失败");
 					}
 				}
-				return JsonResult.newInstanceMesFail("授权失败"+jsono.toJSONString());
+				return JsonResult.newInstanceAuthFail("授权失败"+jsono.toJSONString());
 			}else{
-				return JsonResult.newInstanceMesFail("授权失败"+jsono.toJSONString());
+				return JsonResult.newInstanceAuthFail("授权失败"+jsono.toJSONString());
 			}
 		} else if (wxAppid.equals(wxInfo.getWxAppid())) {
-			return JsonResult.newInstanceMesSuccess("授权成功");
+			return JsonResult.newInstanceAuthSuccess("当前操作小程序已存在记录，不做任何更改，默认成功");
 		} else {
 			logger.info("该小程序已经绑定了其它开放平台");
-			return JsonResult.newInstanceMesFail("授权失败");
+			return JsonResult.newInstanceAuthFail("当前绑定开放平台和小程序已绑定开放平台不一致,请联系旺小宝更改绑定");
 		}
 	}
 

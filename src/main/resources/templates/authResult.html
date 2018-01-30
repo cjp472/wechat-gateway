@@ -7,21 +7,22 @@
 <body>
 <script th:inline="javascript">
     var authResult = [[${authResult}]];
+    var authReason = [[${authReason}]]
     if(authResult.indexOf("授权成功") >= 0){
     	alert("授权成功");
-    	authorizationResult("0");
+    	authorizationResult("0",authReason);
     }else{
     	alert("授权失败");
-    	authorizationResult("1");
+    	authorizationResult("1",authReason);
     }
-    function authorizationResult(result) {
+    function authorizationResult(result,message) {
     	//安卓调用方法
 		try{
-			AppInterface.authorizationResult(result);
+			AppInterface.authorizationResult(result,message);
 		}catch(e){}
 		//ios调用方法
 		try{
-			window.webkit.messageHandlers.AppInterface.postMessage({body: result});
+			window.webkit.messageHandlers.AppInterface.postMessage({body: result,message});
 		}catch(e){}
     }
 

@@ -30,6 +30,8 @@ public class JsonResult implements Serializable {
 	public final static String APP_MSG_INPUT_PARAM_ORROR = "传入参数错误";
 	public final static String APP_NOT_DATA = "6";
 	public final static String APP_MSG_NOT_DATA = "未查询到相关数据";
+	public final static String APP_MSG_AUTH_FAIL = "授权失败";
+	public final static String APP_MSG_AUTH_SUCCESS = "授权成功";
 	/**
 	  * @Fields serialVersionUID : 序列化
 	  */
@@ -62,6 +64,14 @@ public class JsonResult implements Serializable {
 
 	public static JsonResult newInstanceFail(String message, Object data) {
 		return JsonResult.newInstance(APP_RETURN_FAIL, message, data);
+	}
+	
+	public static JsonResult newInstanceAuthFail(Object data) {
+		return JsonResult.newInstance(APP_RETURN_FAIL, APP_MSG_AUTH_FAIL, data);
+	}
+	
+	public static JsonResult newInstanceAuthSuccess(Object data) {
+		return JsonResult.newInstance(APP_RETURN_FAIL, APP_MSG_AUTH_SUCCESS, data);
 	}
 
 	public static JsonResult newInstanceSuccess() {
