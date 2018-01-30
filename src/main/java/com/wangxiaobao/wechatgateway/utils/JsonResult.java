@@ -71,7 +71,7 @@ public class JsonResult implements Serializable {
 	}
 	
 	public static JsonResult newInstanceAuthSuccess(Object data) {
-		return JsonResult.newInstance(APP_RETURN_FAIL, APP_MSG_AUTH_SUCCESS, data);
+		return JsonResult.newInstance(APP_RETURN_SUCCESS, APP_MSG_AUTH_SUCCESS, data);
 	}
 
 	public static JsonResult newInstanceSuccess() {

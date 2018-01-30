@@ -9,7 +9,7 @@
     var authResult = [[${authResult}]];
     var authReason = [[${authReason}]]
     if(authResult.indexOf("授权成功") >= 0){
-    	alert(authResult);
+    	alert(authResult+authReason);
     	authorizationResult("0");
     }else{
     	alert(authResult+authReason);
