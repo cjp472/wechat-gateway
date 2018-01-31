@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
+import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoForm;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoSearchCondition;
 import com.wangxiaobao.wechatgateway.repository.openplatform.WXopenPlatformMerchantInfoMapper;
+import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
 import com.wangxiaobao.wechatgateway.service.redis.RedisService;
 import com.wangxiaobao.wechatgateway.service.test.TestService;
 import com.wangxiaobao.wechatgateway.utils.Constants;
@@ -33,6 +36,8 @@ public class WXopenPlatformMerchantInfoService {
 	TestService testService;
 	@Autowired
 	private WXopenPlatformMerchantInfoMapper wXopenPlatformMerchantInfoMapper;
+	@Autowired
+	private OrganizeTemplateService organizeTemplateService;
 	
 	public void save(WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo){
 		wXopenPlatformMerchantInfoMapper.save(wXopenPlatformMerchantInfo);
@@ -40,7 +45,18 @@ public class WXopenPlatformMerchantInfoService {
 
 	public WXopenPlatformMerchantInfo getByBrandAccount(String brandAccount,String authType){
 		WXopenPlatformMerchantInfo result =  wXopenPlatformMerchantInfoMapper.findByOrganizationAccountAndAuthType(brandAccount,authType);
-		return result;
+		//只有商家小程序发布上线，审核通过之后才算真正有商家小程序
+		if(!ObjectUtils.isEmpty(result)){
+			OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+			organizeTemplate.setIsOnline("1");
+			OrganizeTemplate organizeTemplate2 = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
+			if(!ObjectUtils.isEmpty(organizeTemplate2)){
+				return result;
+			}else{
+				return null;
+			}
+		}
+		return null;
 	}
 
 	

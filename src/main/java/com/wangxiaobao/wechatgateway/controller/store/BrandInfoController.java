@@ -96,7 +96,7 @@ public class BrandInfoController {
     //brand to app
     //authType=2  小程序
     WXopenPlatformMerchantInfo appInfo = wXopenPlatformMerchantInfoService.getByBrandAccount(storeInfo.getBrandAccount(),"2");
-    checkAPP(appInfo);
+    //checkAPP(appInfo);
 
     setValue(result, tableCard, storeInfo, appInfo);
     return ResultVOUtil.success(result);
@@ -108,7 +108,9 @@ public class BrandInfoController {
     result.setSn(tableCard.getSn());
     result.setTableName(tableCard.getTableName());
     result.setBrandAccount(storeInfo.getBrandAccount());
-    result.setAppId(appInfo.getWxAppid());
+    if(null!=appInfo){
+    	result.setAppId(appInfo.getWxAppid());
+    }
   }
 
   private void checkAPP(WXopenPlatformMerchantInfo appInfo) {
