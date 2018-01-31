@@ -106,7 +106,7 @@ public class BrandInfoController {
       WXopenPlatformMerchantInfo appInfo) {
     result.setMerchantAccount(tableCard.getMerchantAccount());
     result.setSn(tableCard.getSn());
-    result.setTabelName(tableCard.getTableName());
+    result.setTableName(tableCard.getTableName());
     result.setBrandAccount(storeInfo.getBrandAccount());
     result.setAppId(appInfo.getWxAppid());
   }

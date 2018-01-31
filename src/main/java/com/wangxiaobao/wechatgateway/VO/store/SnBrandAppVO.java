@@ -10,7 +10,7 @@ public class SnBrandAppVO {
 
   private String sn;
   private String merchantAccount;
-  private String tabelName;
+  private String tableName;
   private String brandAccount;
   private String appId;
 
