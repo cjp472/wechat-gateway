@@ -226,10 +226,8 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		String url = wxProperties.getWx_miniprogram_get_auditstatus_url() + wxPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(request.getWxAppid()).getAuthoriceAccessToken();
 		return JsonResult
-				.newInstanceDataSuccess(openPlatformXiaochengxuService.getAuditstatus(url, request.getAuditid()));
+				.newInstanceDataSuccess(openPlatformXiaochengxuService.getAuditstatus(request.getWxAppid(), request.getAuditid()));
 	}
 
 	/**

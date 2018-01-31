@@ -576,8 +576,6 @@ public class OpenPlatformController {
 	@RequestMapping("/wxAuth/getMiniprogramAuthorizerInfo")
 	@ResponseBody
 	public JsonResult getMiniprogramAuthorizerInfo(String wxAppId) {
-		// String authoriceAccessToken = testService.getApiComponentToken(appId,
-		// appsecret);
 		String resultStr = testService.getMiniprogramAuthorizerInfo(wxAppId);
 		JSONObject json = JSONObject.parseObject(resultStr);
 		return JsonResult.newInstanceDataSuccess(json);

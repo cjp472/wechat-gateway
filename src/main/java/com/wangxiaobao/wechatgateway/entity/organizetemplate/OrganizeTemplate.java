@@ -20,8 +20,7 @@ import lombok.Data;
  * @Copyright: Copyright (c) 2018 ALL RIGHTS RESERVED.
  * @Company:成都国胜天丰技术有限责任公司
  * @author liping_max
- * @date 2018年1月17日 下午3:28:02
- * 管理商家小程序的版本
+ * @date 2018年1月17日 下午3:28:02 管理商家小程序的版本
  */
 @Entity
 @Data
@@ -59,10 +58,12 @@ public class OrganizeTemplate {
 	private Date updateDate;
 	@Column(name = "status")
 	private String status;
-	@Column(name="is_online")
+	@Column(name = "is_online")
 	private String isOnline;
-	@Column(name="is_new")
+	@Column(name = "is_new")
 	private String isNew;
-	@Column(name ="reason")
+	@Column(name = "reason")
 	private String reason;
+	@Column(name = "auditid")
+	private String auditid;
 }

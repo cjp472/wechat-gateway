@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
-import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.repository.openplatform.WXopenPlatformMerchantInfoMapper;
 import com.wangxiaobao.wechatgateway.repository.organizetemplate.OrganizeTemplateRepository;
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
@@ -34,6 +33,11 @@ public class OrganizeTemplateService extends BaseService {
 	public OrganizeTemplate findOrganizeTemplateBy(OrganizeTemplate organizeTemplate){
 		Example<OrganizeTemplate> example = Example.of(organizeTemplate);
 		return organizeTemplateRepository.findOne(example);
+	}
+	
+	public List<OrganizeTemplate> findOrganizeTemplateListBy(OrganizeTemplate organizeTemplate){
+		Example<OrganizeTemplate> example = Example.of(organizeTemplate);
+		return organizeTemplateRepository.findAll(example);
 	}
 	
 	public void updateOrganizeTemplateStatus(String wxAppid,String status,String reason){

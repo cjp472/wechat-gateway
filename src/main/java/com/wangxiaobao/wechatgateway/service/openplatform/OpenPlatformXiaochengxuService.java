@@ -223,7 +223,9 @@ public static void main(String[] args) {
 	 *              liping_max @createDate: 2018年1月16日 下午7:57:12 @updateUser:
 	 *              liping_max @updateDate: 2018年1月16日 下午7:57:12 @throws
 	 */
-	public JSONObject getAuditstatus(String url, String auditid) {
+	public JSONObject getAuditstatus(String wxAppid, String auditid) {
+		String url = wxProperties.getWx_miniprogram_get_auditstatus_url() + wxPlatformMerchantInfoService
+				.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		JSONObject param = new JSONObject();
 		param.put("auditid", auditid);
 		JSONObject result = restTemplate.postForObject(url, param.toJSONString(), JSONObject.class);
@@ -347,7 +349,10 @@ public static void main(String[] args) {
 			}
 		}
 		// 将第三方提交的代码包提交审核
-		submitAudit(wxAppid, submitauditparamJson);
+		JSONObject resultJson = submitAudit(wxAppid, submitauditparamJson);
+		if(resultJson.containsKey("auditid")){
+			organizeTemplate.setAuditid(resultJson.getString("auditid"));
+		}
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplateService.save(organizeTemplate);
 	}

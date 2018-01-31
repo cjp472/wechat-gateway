@@ -375,7 +375,7 @@ public class TestService {
 				} else if (organizeTemplate.getStatus().equals(OrganizeTemplateStatusEnum.FAIL.getStatus())) {
 					response.setUserVersion("微信审核失败");
 					// TODO 需要查询数据库
-					response.setStatusMessage("微信认为你不帅");
+					response.setStatusMessage(organizeTemplate.getReason());
 					response.setStatus("无");
 					response.setUpdateDate("无");
 				}
