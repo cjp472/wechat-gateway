@@ -8,6 +8,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.alibaba.fastjson.JSONObject;
+
 import lombok.Data;
 
 @Entity
@@ -21,7 +23,7 @@ public class MiniprogramTemplateMessage {
 	private String templateId;
 	private String page;
 	private String formId;
-	private String data;
+	private JSONObject data;
 	private String emphasisKeyword;
 	private Date createDate;
 	private String createUser;

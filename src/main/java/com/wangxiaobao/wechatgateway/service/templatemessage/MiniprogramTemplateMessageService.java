@@ -100,7 +100,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		keyJson4.put("color", "#173177");
 		dataJson.put("keyword4", keyJson4);
 
-		miniprogramTemplateMessage.setData(dataJson.toJSONString());
+		miniprogramTemplateMessage.setData(dataJson);
 		miniprogramTemplateMessage.setCreateDate(new Date());
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
@@ -147,7 +147,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		keyJson5.put("color", "#173177");
 		dataJson.put("keyword5", keyJson5);
 
-		miniprogramTemplateMessage.setData(dataJson.toJSONString());
+		miniprogramTemplateMessage.setData(dataJson);
 		miniprogramTemplateMessage.setCreateDate(new Date());
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
