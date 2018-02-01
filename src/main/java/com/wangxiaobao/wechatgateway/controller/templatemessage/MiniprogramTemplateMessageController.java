@@ -45,8 +45,11 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	  * @throws
 	 */
 	@RequestMapping("miniprogram/sendMessage")
-	public JsonResult sendMessage(MiniprogramTemplateMessageRequest request){
-		
+	public JsonResult sendMessage(@Valid MiniprogramTemplateMessageRequest request,BindingResult bindingResult){
+		if(bindingResult.hasErrors()){
+			log.error("发送商家活动结果通知异常【MiniprogramTemplateMessageRequest】{}",request);
+			throw new CommonException(ResultEnum.PARAM_ERROR);
+		}
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);

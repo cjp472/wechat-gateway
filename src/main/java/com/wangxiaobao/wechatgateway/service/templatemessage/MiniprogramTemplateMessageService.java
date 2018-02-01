@@ -106,6 +106,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
 		miniprogramTemplateMessage.setToUser(request.getTouser());
+		
 		// 查询小程序的通知模板消息设置
 		MiniprogramTemplateMessageConfig miniprogramTemplateMessageConfig = new MiniprogramTemplateMessageConfig();
 		miniprogramTemplateMessageConfig.setWxAppId(request.getAppId());
