@@ -82,23 +82,23 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	public MiniprogramTemplateMessage buildingTemplateMessageData(MiniprogramTemplateMessageRequest request,
 			MiniprogramTemplateMessage miniprogramTemplateMessage) {
 		JSONObject dataJson = new JSONObject();
-		JSONObject keyJson = new JSONObject();
-
-		keyJson.put("value", request.getRewardName());
-		keyJson.put("color", "#EA3340");
-		dataJson.put("keyword2", keyJson);
-
-		keyJson.put("value", request.getStatus());
-		keyJson.put("color", "#EA3340");
-		dataJson.put("keyword1", keyJson);
-
-		keyJson.put("value", request.getMerchantName());
-		keyJson.put("color", "#173177");
-		dataJson.put("keyword3", keyJson);
-
-		keyJson.put("value", request.getRemark());
-		keyJson.put("color", "#173177");
-		dataJson.put("keyword4", keyJson);
+		
+		JSONObject keyJson1 = new JSONObject();
+		keyJson1.put("value", request.getRewardName());
+		keyJson1.put("color", "#EA3340");
+		dataJson.put("keyword2", keyJson1);
+		JSONObject keyJson2 = new JSONObject();
+		keyJson2.put("value", request.getStatus());
+		keyJson2.put("color", "#EA3340");
+		dataJson.put("keyword1", keyJson2);
+		JSONObject keyJson3 = new JSONObject();
+		keyJson3.put("value", request.getMerchantName());
+		keyJson3.put("color", "#173177");
+		dataJson.put("keyword3", keyJson3);
+		JSONObject keyJson4 = new JSONObject();
+		keyJson4.put("value", request.getRemark());
+		keyJson4.put("color", "#173177");
+		dataJson.put("keyword4", keyJson4);
 
 		miniprogramTemplateMessage.setData(dataJson.toJSONString());
 		miniprogramTemplateMessage.setCreateDate(new Date());
@@ -121,26 +121,31 @@ public class MiniprogramTemplateMessageService extends BaseService {
 			MiniprogramTemplateCardVoucherDueMessageRequest request,
 			MiniprogramTemplateMessage miniprogramTemplateMessage) {
 		JSONObject dataJson = new JSONObject();
-		JSONObject keyJson = new JSONObject();
-		keyJson.put("value", request.getRewardType());
-		keyJson.put("color", "#EA3340");
-		dataJson.put("keyword1", keyJson);
-
-		keyJson.put("value", request.getEndDate());
-		keyJson.put("color", "#518AFD");
-		dataJson.put("keyword3", keyJson);
-
-		keyJson.put("value", request.getRemark());
-		keyJson.put("color", "#518AFD");
-		dataJson.put("keyword4", keyJson);
-
-		keyJson.put("value", request.getRewardName());
-		keyJson.put("color", "#173177");
-		dataJson.put("keyword5", keyJson);
-
-		keyJson.put("value", request.getMerchantName());
-		keyJson.put("color", "#173177");
-		dataJson.put("keyword6", keyJson);
+		
+		JSONObject keyJson1 = new JSONObject();
+		keyJson1.put("value", request.getRewardType());
+		keyJson1.put("color", "#EA3340");
+		dataJson.put("keyword1", keyJson1);
+		
+		JSONObject keyJson2 = new JSONObject();
+		keyJson2.put("value", request.getEndDate());
+		keyJson2.put("color", "#518AFD");
+		dataJson.put("keyword3", keyJson2);
+		
+		JSONObject keyJson3 = new JSONObject();
+		keyJson3.put("value", request.getRemark());
+		keyJson3.put("color", "#518AFD");
+		dataJson.put("keyword4", keyJson3);
+		
+		JSONObject keyJson4 = new JSONObject();
+		keyJson4.put("value", request.getRewardName());
+		keyJson4.put("color", "#173177");
+		dataJson.put("keyword5", keyJson4);
+		
+		JSONObject keyJson5 = new JSONObject();
+		keyJson5.put("value", request.getMerchantName());
+		keyJson5.put("color", "#173177");
+		dataJson.put("keyword6", keyJson5);
 
 		miniprogramTemplateMessage.setData(dataJson.toJSONString());
 		miniprogramTemplateMessage.setCreateDate(new Date());

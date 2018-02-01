@@ -54,10 +54,22 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	private String uploaddomain2;
 	@Value("${wechat.miniprogram.downloaddomain2}")
 	private String downloaddomain2;
+	
+	@Value("${wechat.miniprogram.requestdomain3}")
+	private String requestdomain3;
+	@Value("${wechat.miniprogram.wsrequestdomain3}")
+	private String wsrequestdomain3;
+	@Value("${wechat.miniprogram.uploaddomain3}")
+	private String uploaddomain3;
+	@Value("${wechat.miniprogram.downloaddomain3}")
+	private String downloaddomain3;
+	
 	@Value("${wechat.miniprogram.webviewdomain1}")
 	private String webviewdomain1;
 	@Value("${wechat.miniprogram.webviewdomain2}")
 	private String webviewdomain2;
+	@Value("${wechat.miniprogram.webviewdomain3}")
+	private String webviewdomain3;
 	@Value("${wechat.miniprogram.userversion}")
 	private String userVersion;
 	@Autowired
@@ -109,10 +121,10 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 				+ wxPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
 		JSONObject param = new JSONObject();
 		param.put("action", action);
-		param.put("requestdomain", new String[] { requestdomain1, requestdomain2 });
-		param.put("wsrequestdomain", new String[] { wsrequestdomain1, wsrequestdomain2 });
-		param.put("uploaddomain", new String[] { uploaddomain1, uploaddomain2 });
-		param.put("downloaddomain", new String[] { downloaddomain1, downloaddomain2 });
+		param.put("requestdomain", new String[] { requestdomain1, requestdomain2,requestdomain3});
+		param.put("wsrequestdomain", new String[] { wsrequestdomain1, wsrequestdomain2, wsrequestdomain3});
+		param.put("uploaddomain", new String[] { uploaddomain1, uploaddomain2, uploaddomain3 });
+		param.put("downloaddomain", new String[] { downloaddomain1, downloaddomain2 , downloaddomain3 });
 		String result = HttpClientUtils.executeByJSONPOST(url, param.toJSONString(), Constants.HTTP_CLIENT_TIMEOUT);
 		JSONObject modifyDomainJson = JSONObject.parseObject(result);
 		if (!JsonResult.APP_RETURN_SUCCESS.equals(modifyDomainJson.getString("errcode"))

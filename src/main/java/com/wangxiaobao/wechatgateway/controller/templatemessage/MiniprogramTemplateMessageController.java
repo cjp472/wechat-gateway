@@ -53,7 +53,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 		}
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
-		miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);
+		miniprogramTemplateMessage = miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
 		return JsonResult.newInstanceDataSuccess(result);
@@ -79,7 +79,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 		}
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
-		miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,miniprogramTemplateMessage);
+		miniprogramTemplateMessage = miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,miniprogramTemplateMessage);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
 		return JsonResult.newInstanceDataSuccess(result);
