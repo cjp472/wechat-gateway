@@ -83,19 +83,21 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	public TemplateMessageRequest buildingTemplateMessageData(MiniprogramTemplateMessageRequest request,
 			TemplateMessageRequest miniprogramTemplateMessage) {
 		JSONObject dataJson = new JSONObject();
-		
-		JSONObject keyJson1 = new JSONObject();
-		keyJson1.put("value", request.getRewardName());
-		keyJson1.put("color", "#EA3340");
-		dataJson.put("keyword2", keyJson1);
 		JSONObject keyJson2 = new JSONObject();
 		keyJson2.put("value", request.getStatus());
 		keyJson2.put("color", "#EA3340");
 		dataJson.put("keyword1", keyJson2);
+		
 		JSONObject keyJson3 = new JSONObject();
 		keyJson3.put("value", request.getMerchantName());
 		keyJson3.put("color", "#173177");
-		dataJson.put("keyword3", keyJson3);
+		dataJson.put("keyword2", keyJson3);
+		
+		JSONObject keyJson1 = new JSONObject();
+		keyJson1.put("value", request.getRewardName());
+		keyJson1.put("color", "#EA3340");
+		dataJson.put("keyword3", keyJson1);
+		
 		JSONObject keyJson4 = new JSONObject();
 		keyJson4.put("value", request.getRemark());
 		keyJson4.put("color", "#173177");
@@ -131,12 +133,12 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		JSONObject keyJson2 = new JSONObject();
 		keyJson2.put("value", request.getEndDate());
 		keyJson2.put("color", "#518AFD");
-		dataJson.put("keyword3", keyJson2);
+		dataJson.put("keyword2", keyJson2);
 		
 		JSONObject keyJson3 = new JSONObject();
 		keyJson3.put("value", request.getRemark());
 		keyJson3.put("color", "#518AFD");
-		dataJson.put("keyword4", keyJson3);
+		dataJson.put("keyword3", keyJson3);
 		
 		JSONObject keyJson4 = new JSONObject();
 		keyJson4.put("value", request.getRewardName());
