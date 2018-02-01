@@ -58,6 +58,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		json.put("page", miniprogramTemplateMessage.getPage());
 		json.put("form_id", miniprogramTemplateMessage.getFormId());
 		json.put("data", miniprogramTemplateMessage.getDataJSON());
+		json.put("emphasis_keyword", miniprogramTemplateMessage.getEmphasisKeyword());
 		String result = HttpClientUtils.executeByJSONPOST(
 				wxProperties.getWx_template_message_send_url() + componentAccessToken, json.toJSONString(), 50000);
 		return result;
@@ -83,32 +84,32 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	public TemplateMessageRequest buildingTemplateMessageData(MiniprogramTemplateMessageRequest request,
 			TemplateMessageRequest miniprogramTemplateMessage) {
 		JSONObject dataJson = new JSONObject();
-		JSONObject keyJson2 = new JSONObject();
-		keyJson2.put("value", request.getStatus());
-		keyJson2.put("color", "#EA3340");
-		dataJson.put("keyword1", keyJson2);
+		JSONObject keyJson1 = new JSONObject();
+		keyJson1.put("value", request.getRewardName());
+		keyJson1.put("color", "#EA3340");
+		dataJson.put("keyword1", keyJson1);
 		
 		JSONObject keyJson3 = new JSONObject();
 		keyJson3.put("value", request.getMerchantName());
 		keyJson3.put("color", "#173177");
 		dataJson.put("keyword2", keyJson3);
 		
-		JSONObject keyJson1 = new JSONObject();
-		keyJson1.put("value", request.getRewardName());
-		keyJson1.put("color", "#EA3340");
-		dataJson.put("keyword3", keyJson1);
-		
 		JSONObject keyJson4 = new JSONObject();
 		keyJson4.put("value", request.getRemark());
 		keyJson4.put("color", "#173177");
-		dataJson.put("keyword4", keyJson4);
+		dataJson.put("keyword3", keyJson4);
 
+		JSONObject keyJson2 = new JSONObject();
+		keyJson2.put("value", request.getStatus());
+		keyJson2.put("color", "#EA3340");
+		dataJson.put("keyword4", keyJson2);
 		miniprogramTemplateMessage.setDataJSON(dataJson);
 		miniprogramTemplateMessage.setCreateDate(new Date());
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
 		miniprogramTemplateMessage.setToUser(request.getTouser());
+		miniprogramTemplateMessage.setEmphasisKeyword("keyword1.DATA");
 		
 		// 查询小程序的通知模板消息设置
 		MiniprogramTemplateMessageConfig miniprogramTemplateMessageConfig = new MiniprogramTemplateMessageConfig();
@@ -156,6 +157,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
 		miniprogramTemplateMessage.setPage(request.getPage());
 		miniprogramTemplateMessage.setToUser(request.getTouser());
+		miniprogramTemplateMessage.setEmphasisKeyword("keyword1.DATA");
 		// 查询小程序的通知模板消息设置
 		MiniprogramTemplateMessageConfig miniprogramTemplateMessageConfig = new MiniprogramTemplateMessageConfig();
 		miniprogramTemplateMessageConfig.setWxAppId(request.getAppId());
