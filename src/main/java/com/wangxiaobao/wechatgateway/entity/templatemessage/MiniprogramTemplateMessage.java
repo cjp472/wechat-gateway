@@ -8,8 +8,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
 
 @Entity
