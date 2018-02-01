@@ -50,14 +50,14 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	 * 下午3:03:04 @updateUser: liping_max @updateDate: 2018年1月24日
 	 * 下午3:03:04 @throws
 	 */
-	public String sendMessageToUser(MiniprogramTemplateMessage miniprogramTemplateMessage,
+	public String sendMessageToUser(TemplateMessageRequest miniprogramTemplateMessage,
 			String componentAccessToken) {
 		JSONObject json = new JSONObject();
 		json.put("touser", miniprogramTemplateMessage.getToUser());
 		json.put("template_id", miniprogramTemplateMessage.getTemplateId());
 		json.put("page", miniprogramTemplateMessage.getPage());
 		json.put("form_id", miniprogramTemplateMessage.getFormId());
-		json.put("data", miniprogramTemplateMessage.getData());
+		json.put("data", miniprogramTemplateMessage.getDataJSON());
 		String result = HttpClientUtils.executeByJSONPOST(
 				wxProperties.getWx_template_message_send_url() + componentAccessToken, json.toJSONString(), 50000);
 		return result;

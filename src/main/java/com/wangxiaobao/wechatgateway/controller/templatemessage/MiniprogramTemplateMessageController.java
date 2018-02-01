@@ -57,8 +57,8 @@ public class MiniprogramTemplateMessageController extends BaseController{
 		TemplateMessageRequest templateMessageRequest = new TemplateMessageRequest();
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		templateMessageRequest = miniprogramTemplateMessageService.buildingTemplateMessageData(request,templateMessageRequest);
-		log.info("发送模板消息，组装后的参数：{}",miniprogramTemplateMessage);
-		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
+		log.info("发送模板消息，组装后的参数：{}",templateMessageRequest);
+		String result = miniprogramTemplateMessageService.sendMessageToUser(templateMessageRequest, componentAccessToken);
 		BeanUtils.copyProperties(templateMessageRequest, miniprogramTemplateMessage);
 		miniprogramTemplateMessage.setData(templateMessageRequest.getDataJSON().toJSONString());
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
@@ -87,7 +87,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		TemplateMessageRequest templateMessageRequest = new TemplateMessageRequest();
 		templateMessageRequest = miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,templateMessageRequest);
-		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
+		String result = miniprogramTemplateMessageService.sendMessageToUser(templateMessageRequest, componentAccessToken);
 		BeanUtils.copyProperties(templateMessageRequest, miniprogramTemplateMessage);
 		miniprogramTemplateMessage.setData(templateMessageRequest.getDataJSON().toJSONString());
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
