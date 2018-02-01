@@ -53,6 +53,8 @@ public class OrganizationTemplateScheduled {
 						log.info("模板小程序定时任务】品牌小程序模板{}审核成功",JSONObject.toJSONString(organizeTemplate));
 						organizeTemplate.setStatus(OrganizeTemplateStatusEnum.SUCCESS.getStatus());
 						organizeTemplateService.save(organizeTemplate);
+						openPlatformXiaochengxuService.release(organizeTemplate.getWxAppId());
+						organizeTemplateService.updateOrganizeTemplateIsOnline(organizeTemplate.getWxAppId(), "1");
 					}else if("0".equals(errcode)){
 						log.info("模板小程序定时任务】品牌小程序模板{}审核失败",JSONObject.toJSONString(organizeTemplate));
 						organizeTemplate.setStatus(OrganizeTemplateStatusEnum.FAIL.getStatus());
