@@ -37,7 +37,7 @@ public class OrganizationTemplateScheduled {
 	/**
 	 * 目前只有拼图游戏走这个逻辑,口令游戏不走这里
 	 */
-	@Scheduled(cron = "* * 0/1 * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void gameFinish() {
 		log.info("品牌小程序模板审核结果定时任务启动");
 		OrganizeTemplate organizeTemplateSearch = new OrganizeTemplate();
