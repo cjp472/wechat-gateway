@@ -23,7 +23,7 @@ public class MiniprogramTemplateMessage {
 	private String templateId;
 	private String page;
 	private String formId;
-	private JSONObject data;
+	private String data;
 	private String emphasisKeyword;
 	private Date createDate;
 	private String createUser;

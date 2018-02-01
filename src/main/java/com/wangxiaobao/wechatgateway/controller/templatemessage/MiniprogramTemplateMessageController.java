@@ -2,6 +2,7 @@ package com.wangxiaobao.wechatgateway.controller.templatemessage;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateCardVoucherDueMessageRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageLibraryGetRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageRequest;
+import com.wangxiaobao.wechatgateway.form.templatemessage.TemplateMessageRequest;
 import com.wangxiaobao.wechatgateway.service.gongzhonghao.GongzhonghaoService;
 import com.wangxiaobao.wechatgateway.service.templatemessage.MiniprogramTemplateMessageService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
@@ -52,10 +54,13 @@ public class MiniprogramTemplateMessageController extends BaseController{
 			throw new CommonException(ResultEnum.PARAM_ERROR);
 		}
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
+		TemplateMessageRequest templateMessageRequest = new TemplateMessageRequest();
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
-		miniprogramTemplateMessage = miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);
+		templateMessageRequest = miniprogramTemplateMessageService.buildingTemplateMessageData(request,templateMessageRequest);
 		log.info("发送模板消息，组装后的参数：{}",miniprogramTemplateMessage);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
+		BeanUtils.copyProperties(templateMessageRequest, miniprogramTemplateMessage);
+		miniprogramTemplateMessage.setData(templateMessageRequest.getDataJSON().toJSONString());
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
 		return JsonResult.newInstanceDataSuccess(result);
 	}
@@ -80,8 +85,11 @@ public class MiniprogramTemplateMessageController extends BaseController{
 		}
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
-		miniprogramTemplateMessage = miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,miniprogramTemplateMessage);
+		TemplateMessageRequest templateMessageRequest = new TemplateMessageRequest();
+		templateMessageRequest = miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,templateMessageRequest);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
+		BeanUtils.copyProperties(templateMessageRequest, miniprogramTemplateMessage);
+		miniprogramTemplateMessage.setData(templateMessageRequest.getDataJSON().toJSONString());
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
 		return JsonResult.newInstanceDataSuccess(result);
 	}

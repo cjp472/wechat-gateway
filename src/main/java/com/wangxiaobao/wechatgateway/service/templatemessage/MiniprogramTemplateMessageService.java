@@ -12,6 +12,7 @@ import com.wangxiaobao.wechatgateway.entity.templatemessageconfig.MiniprogramTem
 import com.wangxiaobao.wechatgateway.enums.MiniprogramTemplateMessageTypeEnum;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateCardVoucherDueMessageRequest;
 import com.wangxiaobao.wechatgateway.form.miniprogramtemplatemessage.MiniprogramTemplateMessageRequest;
+import com.wangxiaobao.wechatgateway.form.templatemessage.TemplateMessageRequest;
 import com.wangxiaobao.wechatgateway.repository.templatemessage.MiniprogramTemplateMessageRepository;
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
@@ -79,18 +80,18 @@ public class MiniprogramTemplateMessageService extends BaseService {
 	 * 2018年1月24日 下午7:36:21 @updateUser: liping_max @updateDate: 2018年1月24日
 	 * 下午7:36:21 @throws
 	 */
-	public MiniprogramTemplateMessage buildingTemplateMessageData(MiniprogramTemplateMessageRequest request,
-			MiniprogramTemplateMessage miniprogramTemplateMessage) {
+	public TemplateMessageRequest buildingTemplateMessageData(MiniprogramTemplateMessageRequest request,
+			TemplateMessageRequest miniprogramTemplateMessage) {
 		JSONObject dataJson = new JSONObject();
 		
 		JSONObject keyJson1 = new JSONObject();
 		keyJson1.put("value", request.getRewardName());
 		keyJson1.put("color", "#EA3340");
-		dataJson.put("keyword1", keyJson1);
+		dataJson.put("keyword2", keyJson1);
 		JSONObject keyJson2 = new JSONObject();
 		keyJson2.put("value", request.getStatus());
 		keyJson2.put("color", "#EA3340");
-		dataJson.put("keyword2", keyJson2);
+		dataJson.put("keyword1", keyJson2);
 		JSONObject keyJson3 = new JSONObject();
 		keyJson3.put("value", request.getMerchantName());
 		keyJson3.put("color", "#173177");
@@ -100,7 +101,7 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		keyJson4.put("color", "#173177");
 		dataJson.put("keyword4", keyJson4);
 
-		miniprogramTemplateMessage.setData(dataJson);
+		miniprogramTemplateMessage.setDataJSON(dataJson);
 		miniprogramTemplateMessage.setCreateDate(new Date());
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
@@ -117,9 +118,9 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		return miniprogramTemplateMessage;
 	}
 
-	public MiniprogramTemplateMessage buildingTemplateCardVoucherDueMessageData(
+	public TemplateMessageRequest buildingTemplateCardVoucherDueMessageData(
 			MiniprogramTemplateCardVoucherDueMessageRequest request,
-			MiniprogramTemplateMessage miniprogramTemplateMessage) {
+			TemplateMessageRequest miniprogramTemplateMessage) {
 		JSONObject dataJson = new JSONObject();
 		
 		JSONObject keyJson1 = new JSONObject();
@@ -130,24 +131,24 @@ public class MiniprogramTemplateMessageService extends BaseService {
 		JSONObject keyJson2 = new JSONObject();
 		keyJson2.put("value", request.getEndDate());
 		keyJson2.put("color", "#518AFD");
-		dataJson.put("keyword2", keyJson2);
+		dataJson.put("keyword3", keyJson2);
 		
 		JSONObject keyJson3 = new JSONObject();
 		keyJson3.put("value", request.getRemark());
 		keyJson3.put("color", "#518AFD");
-		dataJson.put("keyword3", keyJson3);
+		dataJson.put("keyword4", keyJson3);
 		
 		JSONObject keyJson4 = new JSONObject();
 		keyJson4.put("value", request.getRewardName());
 		keyJson4.put("color", "#173177");
-		dataJson.put("keyword4", keyJson4);
+		dataJson.put("keyword5", keyJson4);
 		
 		JSONObject keyJson5 = new JSONObject();
 		keyJson5.put("value", request.getMerchantName());
 		keyJson5.put("color", "#173177");
-		dataJson.put("keyword5", keyJson5);
+		dataJson.put("keyword6", keyJson5);
 
-		miniprogramTemplateMessage.setData(dataJson);
+		miniprogramTemplateMessage.setDataJSON(dataJson);
 		miniprogramTemplateMessage.setCreateDate(new Date());
 		miniprogramTemplateMessage.setFormId(request.getFormId());
 		miniprogramTemplateMessage.setMessageId(KeyUtil.genUniqueKey());
