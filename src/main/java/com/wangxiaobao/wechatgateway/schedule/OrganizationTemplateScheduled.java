@@ -2,12 +2,10 @@ package com.wangxiaobao.wechatgateway.schedule;
 
 import java.util.List;
 
-import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -20,9 +18,6 @@ import com.wangxiaobao.wechatgateway.service.redis.RedisService;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Created by huhuaiyong on 2018/1/23.
- */
 @Configuration
 @EnableScheduling
 @Slf4j
