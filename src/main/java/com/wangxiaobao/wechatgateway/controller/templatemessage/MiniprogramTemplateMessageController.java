@@ -54,6 +54,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		miniprogramTemplateMessage = miniprogramTemplateMessageService.buildingTemplateMessageData(request,miniprogramTemplateMessage);
+		log.info("发送模板消息，组装后的参数：{}",miniprogramTemplateMessage);
 		String result = miniprogramTemplateMessageService.sendMessageToUser(miniprogramTemplateMessage, componentAccessToken);
 		miniprogramTemplateMessageService.saveMessage(miniprogramTemplateMessage);
 		return JsonResult.newInstanceDataSuccess(result);
