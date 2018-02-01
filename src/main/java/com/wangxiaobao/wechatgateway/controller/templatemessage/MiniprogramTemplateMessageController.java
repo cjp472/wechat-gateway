@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,7 +46,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	  * @throws
 	 */
 	@RequestMapping("miniprogram/sendMessage")
-	public JsonResult sendMessage(@Valid MiniprogramTemplateMessageRequest request,BindingResult bindingResult){
+	public JsonResult sendMessage(@Valid @RequestBody MiniprogramTemplateMessageRequest request,BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			log.error("发送商家活动结果通知异常【MiniprogramTemplateMessageRequest】{}",request);
 			throw new CommonException(ResultEnum.PARAM_ERROR);
@@ -71,8 +72,11 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	  * @throws
 	 */
 	@RequestMapping("miniprogram/sendCardVoucherDueMessage")
-	public JsonResult sendCardVoucherDueMessage(MiniprogramTemplateCardVoucherDueMessageRequest request){
-		
+	public JsonResult sendCardVoucherDueMessage(@Valid @RequestBody MiniprogramTemplateCardVoucherDueMessageRequest request,BindingResult bindingResult){
+		if(bindingResult.hasErrors()){
+			log.error("发送商家活动结果通知异常【MiniprogramTemplateMessageRequest】{}",request);
+			throw new CommonException(ResultEnum.PARAM_ERROR);
+		}
 		String componentAccessToken = gongzhonghaoService.getAccessToken(request.getAppId());
 		MiniprogramTemplateMessage miniprogramTemplateMessage = new MiniprogramTemplateMessage();
 		miniprogramTemplateMessageService.buildingTemplateCardVoucherDueMessageData(request,miniprogramTemplateMessage);
