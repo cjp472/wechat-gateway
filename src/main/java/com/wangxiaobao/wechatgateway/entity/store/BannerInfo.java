@@ -40,6 +40,8 @@ public class BannerInfo {
 	//跳转url
 	@NotEmpty(message="跳转地址必填")
 	private String url;
+	@NotEmpty(message="背景图地址必填")
+	private String backgroundImgUrl;
 	//小程序appId
 	private String appId;
 	private int isValidate=Constants.IS_VALIDATE;
