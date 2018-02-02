@@ -348,6 +348,7 @@ public class StoreInfoController {
     StoreInfo storeInfo = storeInfoService.findByMerchantAccount(storeTimesForm.getMerchantAccount());
     if(storeInfo == null)
       throw new CommonException(1,"没有找到该商家信息为空");
+    storeTimesForm.setBrandAccount(storeInfo.getBrandAccount());
     BeanUtils.copyProperties(storeTimesForm,storeInfo);
     storeInfo = storeInfoService.save(storeInfo);
     storeTimesForm.setBrandAccount(storeInfo.getBrandAccount());
