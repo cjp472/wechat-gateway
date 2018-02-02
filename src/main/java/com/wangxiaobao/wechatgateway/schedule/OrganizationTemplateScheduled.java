@@ -42,7 +42,7 @@ public class OrganizationTemplateScheduled {
 		if(!ObjectUtils.isEmpty(organizeTemplates)){
 			for (OrganizeTemplate organizeTemplate : organizeTemplates) {
 				try{
-					if(StringUtils.hasText(organizeTemplate.getAuditid())){
+					if(!StringUtils.hasText(organizeTemplate.getAuditid())){
 						log.info("模板小程序定时任务】品牌小程序模板{}没有auditId，不进行审核状态查询",JSONObject.toJSONString(organizeTemplate));
 						continue;
 					}

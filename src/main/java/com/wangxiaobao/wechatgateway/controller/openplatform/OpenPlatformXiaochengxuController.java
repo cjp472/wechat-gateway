@@ -187,7 +187,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 				itemJson.put("tag", itemJson.getString("tag") + " " + tag);
 			}
 		}
-		openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), submitauditparamJson);
+		JSONObject jsonResult= openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), submitauditparamJson);
 		// 将之前的发布设为旧
 		OrganizeTemplate orTemplate = new OrganizeTemplate();
 		orTemplate.setIsNew("1");
@@ -209,6 +209,10 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplate.setIsOnline("0");
 		organizeTemplate.setIsNew("1");
+		if(jsonResult.containsKey("auditid")){
+			organizeTemplate.setAuditid(jsonResult.getString("auditid"));
+		}
+		
 		organizeTemplateService.save(organizeTemplate);
 		return JsonResult.newInstanceSuccess();
 	}
