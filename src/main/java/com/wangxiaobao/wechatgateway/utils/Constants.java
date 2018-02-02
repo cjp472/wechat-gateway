@@ -119,5 +119,6 @@ public class Constants {
 	public static final String WX_ACCESS_TOKEN_KEY="access_token:";
 	//httpPost超时时间
 	public static final int HTTP_CLIENT_TIMEOUT=50000;
-	
+	public static final int IS_VALIDATE=1;//有效
+	public static final int NOT_VALIDATE=0;//无效
 }
