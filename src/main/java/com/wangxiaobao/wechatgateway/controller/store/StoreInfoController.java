@@ -350,7 +350,8 @@ public class StoreInfoController {
       throw new CommonException(1,"没有找到该商家信息为空");
     BeanUtils.copyProperties(storeTimesForm,storeInfo);
     storeInfo = storeInfoService.save(storeInfo);
-    JsonResult jsonResult=pushService.pushStoreUpdateTimesMessage(storeInfo.getMerchantAccount(), JSONObject.toJSONString(storeInfo));
+    storeTimesForm.setBrandAccount(storeInfo.getBrandAccount());
+    JsonResult jsonResult=pushService.pushStoreUpdateTimesMessage(storeInfo.getMerchantAccount(), JSONObject.toJSONString(storeTimesForm));
     log.info("更新商家倒计时推送消息返回:{}",jsonResult);
     return ResultVOUtil.success(storeInfo);
   }

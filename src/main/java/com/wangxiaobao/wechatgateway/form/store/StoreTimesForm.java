@@ -24,6 +24,8 @@ public class StoreTimesForm implements Serializable{
     //商家Account
     @NotBlank(message = "商家Account不能为空")
     private String merchantAccount;
+    //品牌信息
+    private String brandAccount;
     //是否开启倒计时 0否 1是
     private int isOpenTime = 0;
     //倒计时时间 默认:1分钟
