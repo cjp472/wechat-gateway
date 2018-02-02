@@ -35,14 +35,19 @@ wechat:
   miniprogram:   
     requestdomain1: https://develop.source3g.com
     requestdomain2: https://preview.source3g.com
-    wsrequestdomain1: https://develop.source3g.com
-    wsrequestdomain2: https://preview.source3g.com
+    requestdomain3: https://miniapp.source3g.com
+    wsrequestdomain1: wss://develop.source3g.com
+    wsrequestdomain2: wss://preview.source3g.com
+    wsrequestdomain3: wss://miniapp.source3g.com
     uploaddomain1: https://develop.source3g.com
     uploaddomain2: https://preview.source3g.com
+    uploaddomain3: https://miniapp.source3g.com
     downloaddomain1: https://develop.source3g.com
     downloaddomain2: https://preview.source3g.com
+    downloaddomain3: https://miniapp.source3g.com
     webviewdomain1: https://develop.source3g.com
     webviewdomain2: https://preview.source3g.com
+    webviewdomain3: https://miniapp.source3g.com
     userversion: V0.0.1
     templateMessageId: fNxpIi0DAvs5c0ZyLfI-Bjn_rHG_elIUSx-ViXJMVZA
     templateMessageCardDueId: twyJQcZF5CKflHv-AXLD9_uyRjTsMLUiM6fp8QwnKSE

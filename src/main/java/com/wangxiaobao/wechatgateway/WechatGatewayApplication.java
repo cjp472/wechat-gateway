@@ -26,7 +26,7 @@ public class WechatGatewayApplication extends WebMvcConfigurerAdapter {
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		super.addArgumentResolvers(argumentResolvers);
-		argumentResolvers.add(new UserInfoMethodArgumentResolver());
-		argumentResolvers.add(new LoginUserInfoMethodArgumentResolver());
+//		argumentResolvers.add(new UserInfoMethodArgumentResolver());
+//		argumentResolvers.add(new LoginUserInfoMethodArgumentResolver());
 	}
 }
