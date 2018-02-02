@@ -59,17 +59,17 @@ public class BannerInfoController {
 	 *              liping_max @updateDate: 2018年2月2日 下午4:32:18 @throws
 	 */
 	@RequestMapping("/findBannerInfoWithType")
-	public JsonResult findBannerInfo(@Valid BannerInfoTypeRequest bannerInfoTypeRequest, BindingResult bindingResult, String merchantAccount) {
+	public JsonResult findBannerInfo(@Valid BannerInfoTypeRequest bannerInfoTypeRequest, BindingResult bindingResult,LoginUserInfo loginUserInfo) {
 		if (bindingResult.hasErrors()) {
 			log.info("查询品牌门店bannerInfo参数异常{}", bannerInfoTypeRequest);
 			throw new CommonException(ResultEnum.PARAM_ERROR);
 		}
-		if (StringUtils.hasText(merchantAccount)) {
+		if (StringUtils.hasText(loginUserInfo.getMerchantAccount())) {
 			return JsonResult.newInstanceDataSuccess(
-					bannerInfoService.findMerchantBannerInfoTypeList(bannerInfoTypeRequest.getOrgAccount(), Constants.IS_VALIDATE, merchantAccount,bannerInfoTypeRequest.getType()));
+					bannerInfoService.findMerchantBannerInfoTypeList(loginUserInfo.getOrganizationAccount(), Constants.IS_VALIDATE, loginUserInfo.getMerchantAccount(),bannerInfoTypeRequest.getType()));
 		} else {
 			return JsonResult
-					.newInstanceDataSuccess(bannerInfoService.findOrgBannerInfoTypeList(bannerInfoTypeRequest.getOrgAccount(), Constants.IS_VALIDATE,bannerInfoTypeRequest.getType()));
+					.newInstanceDataSuccess(bannerInfoService.findOrgBannerInfoTypeList(loginUserInfo.getOrganizationAccount(), Constants.IS_VALIDATE,bannerInfoTypeRequest.getType()));
 		}
 	}
 
@@ -89,10 +89,6 @@ public class BannerInfoController {
 		if (!StringUtils.hasText(bannerInfo.getConfigId())) {
 			bannerInfo.setConfigId(KeyUtil.genUniqueKey());
 		}
-		bannerInfo.setMerchantAccount(loginUserInfo.getMerchantAccount());
-		bannerInfo.setMerchantName(loginUserInfo.getMerchantName());
-		bannerInfo.setOrgAccount(loginUserInfo.getOrganizationAccount());
-		bannerInfo.setOrgName(loginUserInfo.getOrganizationName());
-		return JsonResult.newInstanceDataSuccess(bannerInfoService.save(bannerInfo));
+		return JsonResult.newInstanceDataSuccess(bannerInfoService.save(bannerInfo,loginUserInfo));
 	}
 }
