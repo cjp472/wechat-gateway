@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wangxiaobao.wechatgateway.entity.header.LoginUserInfo;
+import com.wangxiaobao.wechatgateway.entity.header.PlatformOrgUserInfo;
 import com.wangxiaobao.wechatgateway.entity.store.BannerInfo;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
@@ -36,18 +37,13 @@ public class BannerInfoController {
 	 *              liping_max @updateDate: 2018年2月2日 下午4:32:18 @throws
 	 */
 	@RequestMapping("/findBannerInfo")
-	public JsonResult findBannerInfo(@Valid BannerInfoRequest bannerInfoRequest, BindingResult bindingResult,
-			String merchantAccount) {
-		if (bindingResult.hasErrors()) {
-			log.info("查询品牌门店bannerInfo参数异常{}", bannerInfoRequest);
-			throw new CommonException(ResultEnum.PARAM_ERROR);
-		}
+	public JsonResult findBannerInfo(String merchantAccount,PlatformOrgUserInfo platformOrgUserInfo) {
 		if (StringUtils.hasText(merchantAccount)) {
 			return JsonResult.newInstanceDataSuccess(
-					bannerInfoService.findMerchantBannerInfoList(bannerInfoRequest.getOrgAccount(), Constants.IS_VALIDATE, merchantAccount));
+					bannerInfoService.findMerchantBannerInfoList(platformOrgUserInfo.getOrganizationAccount(), Constants.IS_VALIDATE, merchantAccount));
 		} else {
 			return JsonResult
-					.newInstanceDataSuccess(bannerInfoService.findOrgBannerInfoList(bannerInfoRequest.getOrgAccount(), Constants.IS_VALIDATE));
+					.newInstanceDataSuccess(bannerInfoService.findOrgBannerInfoList(platformOrgUserInfo.getOrganizationAccount(), Constants.IS_VALIDATE));
 		}
 	}
 
