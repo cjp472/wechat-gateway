@@ -177,8 +177,9 @@ public class MiniprogramQRCodeController extends BaseController {
 		return JsonResult.newInstanceDataSuccess(miniProgramQrCodeService.qrcodejumppublish(request.getPrefix(), request.getWxAppid()));
 	}
 	
-	@RequestMapping("/miniprogramqrcode/{fileName}")
-	public String verifyOrganizationQrcodeFile(@PathVariable(name = "fileName") String fileName,HttpServletResponse response){
+	@RequestMapping("/q/{organizationAccount}/{fileName}")
+	public String verifyOrganizationQrcodeFile(@PathVariable(name = "organizationAccount") String organizationAccount,@PathVariable(name = "fileName") String fileName,HttpServletResponse response){
+		log.info("文件效验地址请求参数"+organizationAccount+","+fileName);
 		QrcodeUrlVerify qrcodeUrlVerify = qrcodeUrlVerifyService.findByFileName(fileName+".txt");
 		return qrcodeUrlVerify.getFileContent();
 	}
