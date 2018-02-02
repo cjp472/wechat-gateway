@@ -49,6 +49,7 @@ public class WXopenPlatformMerchantInfoService {
 		if(!ObjectUtils.isEmpty(result)){
 			OrganizeTemplate organizeTemplate = new OrganizeTemplate();
 			organizeTemplate.setIsOnline("1");
+			organizeTemplate.setOrganizationAccount(brandAccount);
 			OrganizeTemplate organizeTemplate2 = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
 			if(!ObjectUtils.isEmpty(organizeTemplate2)){
 				return result;
