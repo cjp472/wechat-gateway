@@ -74,7 +74,7 @@ public class AdController {
     AdInfo adInfo = adService.findOne(adId);
     String merchantAccount = adInfo.getMerchantAccount();
     adService.delete(adId);
-    JsonResult jsonResult=pushService.pushMessage(merchantAccount,"UPDATE_MERCHANT_ADS",adId);
+    JsonResult jsonResult=pushService.pushMessage(merchantAccount,"DELETE_MERCHANT_ADS",adId);
     log.info("【保存商家广告】 推送桌牌 result={}",jsonResult);
     return ResultVOUtil.success();
   }
