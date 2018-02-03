@@ -9,6 +9,8 @@ import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.ad.AdForm;
 import com.wangxiaobao.wechatgateway.service.ad.AdDetailService;
 import com.wangxiaobao.wechatgateway.service.ad.AdService;
+import com.wangxiaobao.wechatgateway.service.push.PushService;
+import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 import com.wangxiaobao.wechatgateway.utils.ResultVOUtil;
 import java.util.ArrayList;
@@ -39,6 +41,9 @@ public class AdController {
   @Autowired
   private AdDetailService adDetailService;
 
+  @Autowired
+  private PushService pushService;
+
   @PostMapping("/save")
   public ResultVO<AdInfo> save(@Valid AdForm adForm,BindingResult bindingResult){
     if (bindingResult.hasErrors()) {
@@ -66,7 +71,11 @@ public class AdController {
 
   @PostMapping("/delete")
   public ResultVO delete(@RequestParam("adId") String adId){
+    AdInfo adInfo = adService.findOne(adId);
+    String merchantAccount = adInfo.getMerchantAccount();
     adService.delete(adId);
+    JsonResult jsonResult=pushService.pushMessage(merchantAccount,"UPDATE_MERCHANT_ADS",adId);
+    log.info("【保存商家广告】 推送桌牌 result={}",jsonResult);
     return ResultVOUtil.success();
   }
 
