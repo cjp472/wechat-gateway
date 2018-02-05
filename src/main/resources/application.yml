@@ -30,7 +30,7 @@ wechat:
     appid: wxc0e7c45bbe6d5459
     appsecret: bb7e865ed0710dbe7c6a9f77fb365dee
     redirectUrl: http://liping.nat200.top/wechatgateway
-    token: wxtest
+    token: wxbtest
     encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
   miniprogram:   
     requestdomain1: https://develop.source3g.com

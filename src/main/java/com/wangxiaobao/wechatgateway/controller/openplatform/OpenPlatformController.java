@@ -210,7 +210,9 @@ public class OpenPlatformController {
 						return "success";
 					case "unauthorized":
 						logger.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
-						wXopenPlatformMerchantInfoService.deleteByWXAppId(authorizerAppid);
+						if(!"wx570bc396a51b8ff8".equals(authorizerAppid)){
+							wXopenPlatformMerchantInfoService.deleteByWXAppId(authorizerAppid);
+						}
 						return "授权公众号取消授权";
 					case "TESTCOMPONENT_MSG_TYPE_TEXT":
 						return "TESTCOMPONENT_MSG_TYPE_TEXT_callback";
@@ -247,7 +249,7 @@ public class OpenPlatformController {
 			throws AesException {
 		WXBizMsgCrypt pc = new WXBizMsgCrypt(token, encodingAesKey, appId);
 		String msgType = map.get("MsgType");
-		if ("wx570bc396a51b8ff8".equals(appId) || "wxd101a85aa106f53e".equals(appId)) {
+		if ("gh_3c884a361561".equals(map.get("ToUserName")) || "gh_8dad206e9538".equals(map.get("ToUserName"))) {
 			switch (msgType) {
 			case "event":
 				// 事件处理
@@ -268,7 +270,7 @@ public class OpenPlatformController {
 					//异步方法
 					String authorizationInfo = testService.apiQueryAuth(query_auth_code, appId, appsecret);
 					JSONObject jsono = JSONObject.parseObject(authorizationInfo);
-					WxMpKefuMessage wxMpKefuMessage = WxMpKefuMessage.TEXT().content(query_auth_code+"_from_api").toUser(map.get("ToUserName")).build();
+					WxMpKefuMessage wxMpKefuMessage = WxMpKefuMessage.TEXT().content(query_auth_code+"_from_api").toUser(map.get("FromUserName")).build();
 					keFuService.sendKefuMessage(jsono.getString("authorizer_access_token"), wxMpKefuMessage);
 					return "";
 				}
@@ -290,6 +292,7 @@ public class OpenPlatformController {
 		String msgSignature = request.getParameter("msg_signature");
 		String timestamp = request.getParameter("timestamp");
 		String nonce = request.getParameter("nonce");
+		logger.info("timestamp={},nonce={},msg_signature={},postData={}",timestamp,nonce,msgSignature,postData);
 		try {
 			WXBizMsgCrypt pc = new WXBizMsgCrypt(token, encodingAesKey, appId);
 			String resultXml = pc.decryptMsg(msgSignature, timestamp, nonce, postData);

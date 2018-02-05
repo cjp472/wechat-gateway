@@ -3,17 +3,17 @@ spring:
     prefix: classpath:/templates
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    username: wxb
-    password: wxbroot123456
-    url: jdbc:mysql://10.31.146.112:3306/wechat_gateway?characterEncoding=utf-8&useSSL=false
+    username: program
+    password: Lhs9LsVF
+    url: jdbc:mysql://mysql.wangxiaobao.cc:3306/wechat_gateway?characterEncoding=utf-8&useSSL=false
   jpa:
     show-sql: true
   jackson:
     default-property-inclusion: non-null
   redis:
-    host: 10.31.146.112
-    port: 8009
-    password: ceshi789
+    host: redis.wangcaibao.net
+    port: 6381
+    password: wangxiaobaoprogram!@#
     timeout: 0
 server:
   context-path: /wechatgateway
@@ -26,7 +26,7 @@ wechat:
     appid: wx545e2458a2b577e8
     appsecret: c9222a297364f15438cd90142dbc2a60
     redirectUrl: http://develop.source3g.com/codecmanagement
-    token: wxbtest
+    token: wxtest
     encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
   miniprogram:   
     requestdomain1: https://develop.source3g.com
@@ -47,7 +47,7 @@ wechat:
     userversion: V0.0.1
     templateMessageId: Tp1HMWtwcVuDLw4UaqxcmX_Ip87PGIxMVY2iQZ9emMU
 fleetingtime:
-  merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
-  merchantSnCount: http://develop.source3g.com:57567/fleetingtime/merchant/getSnCount
+  merchantInfoBySn: http://miniapp.source3g.com:57567/fleetingtime/tablecard/getBySn
+  merchantSnCount: http://miniapp.source3g.com:57567/fleetingtime/merchant/getSnCount
 push:
-  url: http://develop.source3g.com:57560/push/push
+  url: http://miniapp.source3g.com:57560/push/push
