@@ -47,21 +47,23 @@ public class OrganizationTemplateScheduled {
 						continue;
 					}
 					JSONObject auditJSON = openPlatformXiaochengxuService.getAuditstatus(organizeTemplate.getWxAppId(), organizeTemplate.getAuditid());
-					String errcode = auditJSON.getString("errcode");
+					String status = auditJSON.getString("status");
 					//审核成功，修改状态
-					if("0".equals(errcode)){
+					if("0".equals(status)){
 						log.info("模板小程序定时任务】品牌小程序模板{}审核成功",JSONObject.toJSONString(organizeTemplate));
 						organizeTemplate.setStatus(OrganizeTemplateStatusEnum.SUCCESS.getStatus());
 						organizeTemplateService.save(organizeTemplate);
 						openPlatformXiaochengxuService.release(organizeTemplate.getWxAppId());
 						organizeTemplateService.updateOrganizeTemplateIsOnline(organizeTemplate.getWxAppId(), "1");
-					}else if("0".equals(errcode)){
+					}else if("1".equals(status)){
 						log.info("模板小程序定时任务】品牌小程序模板{}审核失败",JSONObject.toJSONString(organizeTemplate));
 						organizeTemplate.setStatus(OrganizeTemplateStatusEnum.FAIL.getStatus());
 						organizeTemplate.setReason(auditJSON.getString("reason"));
 						organizeTemplateService.save(organizeTemplate);
+					}else if("2".equals(status)){
+						log.info("模板小程序定时任务】品牌小程序模板{}查询微信{}还在审核中",JSONObject.toJSONString(organizeTemplate),status);
 					}else{
-						log.info("模板小程序定时任务】品牌小程序模板{}查询微信异常{}",JSONObject.toJSONString(organizeTemplate),errcode);
+						log.info("模板小程序定时任务】品牌小程序模板{}查询微信异常{}",JSONObject.toJSONString(organizeTemplate),status);
 					}
 				}catch(Exception e){
 					log.info("模板小程序定时任务】品牌小程序模板{}运行异常，错误原因：{}",JSONObject.toJSONString(organizeTemplate),e);
