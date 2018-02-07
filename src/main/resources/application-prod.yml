@@ -47,7 +47,7 @@ wechat:
     userversion: V0.0.1
     templateMessageId: Tp1HMWtwcVuDLw4UaqxcmX_Ip87PGIxMVY2iQZ9emMU
 fleetingtime:
-  merchantInfoBySn: http://miniapp.source3g.com:57567/fleetingtime/tablecard/getBySn
-  merchantSnCount: http://miniapp.source3g.com:57567/fleetingtime/merchant/getSnCount
+  merchantInfoBySn: http://fleeting-time:8080/fleetingtime/tablecard/getBySn
+  merchantSnCount: http://fleeting-time:8080/fleetingtime/merchant/getSnCount
 push:
   url: http://miniapp.source3g.com:57560/push/push
