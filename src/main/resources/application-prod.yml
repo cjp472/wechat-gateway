@@ -15,12 +15,16 @@ spring:
     port: 6381
     password: wangxiaobaoprogram!@#
     timeout: 0
+  application:
+    name: wechatgateway  
 server:
   context-path: /wechatgateway
   port: 8080
 logging:
+  path: /logs/${spring.application.name}/${HOSTNAME:localhost}
+  file: ${spring.application.name}.log
   level:
-    root: debug
+    root: info
 wechat:
   openplatform:
     appid: wx545e2458a2b577e8
