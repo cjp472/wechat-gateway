@@ -681,9 +681,9 @@ public class OpenPlatformController {
 	public JsonResult unbindWxampunlink(String wxAppid, String xcxAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(wxAppid);
-		JSONObject resultJson = testService.bindWxamplink(xcxAppid,
+		String resultJson = testService.bindWxampunlink(xcxAppid,
 				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
-		return JsonResult.newInstance(resultJson.getString("errcode"), resultJson.getString("errmsg"));
+		return JsonResult.newInstanceDataSuccess(resultJson);
 	}
 
 	@RequestMapping("platform/auth/test")

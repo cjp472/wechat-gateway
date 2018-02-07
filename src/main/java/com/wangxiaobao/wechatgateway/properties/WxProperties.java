@@ -43,4 +43,6 @@ public class WxProperties {
 	private String wx_qrcode_qrcodejumpdelete_url;
 	//发布已设置的二维码规则
 	private String wx_qrcode_qrcodejumppublish_url;
+	//撤销小程序版本审核
+	private String wx_miniprogram_undocodeaudit_url;
 }

@@ -303,6 +303,24 @@ public static void main(String[] args) {
 		JSONObject result = restTemplate.postForObject(url, param.toJSONString(), JSONObject.class);
 		return result;
 	}
+	
+	/**
+	  * @methodName: undocodeaudit
+	  * @Description: TODO  小程序版本取消审核
+	  * @param wxAppid
+	  * @return JSONObject
+	  * @createUser: liping_max
+	  * @createDate: 2018年2月7日 上午11:28:19
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年2月7日 上午11:28:19
+	  * @throws
+	 */
+	public JSONObject undocodeaudit(String wxAppid){
+		String url = wxProperties.getWx_miniprogram_undocodeaudit_url() + wxPlatformMerchantInfoService
+				.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
+		JSONObject result = restTemplate.getForObject(url, JSONObject.class);
+		return result;
+	}
 
 	/**
 	  * @methodName: initXiaochengxu

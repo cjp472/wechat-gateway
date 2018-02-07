@@ -297,7 +297,24 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.bindTester(request.getWechatid(),request.getWxAppid()));
 	}
 	
-	
+	/**
+	  * @methodName: undocodeaudit
+	  * @Description: 小程序版本取消审核
+	  * @param wxAppid
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年2月7日 上午11:29:42
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年2月7日 上午11:29:42
+	  * @throws
+	 */
+	@RequestMapping("/miniprogram/undocodeaudit")
+	public JsonResult undocodeaudit(String wxAppid){
+		if(!StringUtils.hasText(wxAppid)){
+			return JsonResult.newInstanceMesFail("小程序appId必填");
+		}
+		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.undocodeaudit(wxAppid));
+	}
 
 	public static void main(String[] args) {
 		JSONObject json = new JSONObject();
