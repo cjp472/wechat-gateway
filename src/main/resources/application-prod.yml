@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: wechatgateway 
   thymeleaf:
     prefix: classpath:/templates
   datasource:
@@ -15,8 +17,6 @@ spring:
     port: 6381
     password: wangxiaobaoprogram!@#
     timeout: 0
-  application:
-    name: wechatgateway  
 server:
   context-path: /wechatgateway
   port: 8080
