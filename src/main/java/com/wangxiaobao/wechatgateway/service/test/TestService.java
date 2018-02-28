@@ -352,7 +352,7 @@ public class TestService {
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppId);
 		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_SEC_FORMAT);
 		MiniProgramAuthInfoResponse response = new MiniProgramAuthInfoResponse();
-		List<OrganizeTemplate> organizeTemplates = organizeTemplateRepository.findByorganizationAccountOrIsNew(wxInfo.getOrganizationAccount(), "1");
+		List<OrganizeTemplate> organizeTemplates = organizeTemplateRepository.findByorganizationAccountAndIsNew(wxInfo.getOrganizationAccount(), "1");
 		if (null != organizeTemplates && organizeTemplates.size() <= 0) {
 			return new JSONObject().toJSONString();
 		} else if (organizeTemplates.size() == 1) {

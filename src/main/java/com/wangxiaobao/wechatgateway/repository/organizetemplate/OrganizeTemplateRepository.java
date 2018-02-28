@@ -9,5 +9,5 @@ import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
 @Repository
 public interface OrganizeTemplateRepository extends JpaRepository<OrganizeTemplate, String>{
 
-	public List<OrganizeTemplate> findByorganizationAccountOrIsNew(String organizationAccount,String isNew);
+	public List<OrganizeTemplate> findByorganizationAccountAndIsNew(String organizationAccount,String isNew);
 }
