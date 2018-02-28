@@ -54,4 +54,4 @@ fleetingtime:
   merchantInfoBySn: http://fleeting-time:8080/fleetingtime/tablecard/getBySn
   merchantSnCount: http://fleeting-time:8080/fleetingtime/merchant/getSnCount
 push:
-  url: http://miniapp.source3g.com:57560/push/push
+  url: http://push-core:8080/push/push
