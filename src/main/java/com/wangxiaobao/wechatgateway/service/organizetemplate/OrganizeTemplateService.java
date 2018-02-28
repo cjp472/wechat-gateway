@@ -26,10 +26,6 @@ public class OrganizeTemplateService extends BaseService {
 		return organizeTemplateRepository.save(organizeTemplate);
 	}
 	
-	public List<OrganizeTemplate> selectOrganizeTemplateByorganizationAccount(String organizationAccount,String isNew){
-		return organizeTemplateRepository.findByorganizationAccountOrIsNew(organizationAccount, isNew);
-	}
-	
 	public OrganizeTemplate findOrganizeTemplateBy(OrganizeTemplate organizeTemplate){
 		Example<OrganizeTemplate> example = Example.of(organizeTemplate);
 		return organizeTemplateRepository.findOne(example);
