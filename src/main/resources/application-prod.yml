@@ -29,7 +29,7 @@ wechat:
   openplatform:
     appid: wx545e2458a2b577e8
     appsecret: c9222a297364f15438cd90142dbc2a60
-    redirectUrl: http://develop.source3g.com/codecmanagement
+    redirectUrl: https://miniapp.source3g.com/codecmanagement
     token: wxtest
     encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
   miniprogram:   
