@@ -47,7 +47,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	  * @updateDate: 2018年1月26日 上午11:11:48
 	  * @throws
 	 */
-	@RequestMapping("miniprogram/sendMessage")
+	@RequestMapping("miniprogram/template/sendMessage")
 	public JsonResult sendMessage(@Valid @RequestBody MiniprogramTemplateMessageRequest request,BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			log.error("发送商家活动结果通知异常【MiniprogramTemplateMessageRequest】{}",request);
@@ -77,7 +77,7 @@ public class MiniprogramTemplateMessageController extends BaseController{
 	  * @updateDate: 2018年1月26日 上午11:11:23
 	  * @throws
 	 */
-	@RequestMapping("miniprogram/sendCardVoucherDueMessage")
+	@RequestMapping("miniprogram/template/sendCardVoucherDueMessage")
 	public JsonResult sendCardVoucherDueMessage(@Valid @RequestBody MiniprogramTemplateCardVoucherDueMessageRequest request,BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			log.error("发送商家活动结果通知异常【MiniprogramTemplateMessageRequest】{}",request);
