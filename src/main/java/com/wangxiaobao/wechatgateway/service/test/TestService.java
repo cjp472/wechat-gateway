@@ -348,6 +348,27 @@ public class TestService {
 		return result;
 	}
 	
+	/**
+	  * @methodName: getWxampunlink
+	  * @Description: 获取商家公众号关联的小程序列表
+	  * @param wxAppid
+	  * @return String
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月7日 上午10:48:38
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月7日 上午10:48:38
+	  * @throws
+	 */
+	public String getWxampunlink(String wxAppid){
+		String url = "https://api.weixin.qq.com/cgi-bin/wxopen/wxamplinkget?access_token=";
+		url += wXopenPlatformMerchantInfoService
+				.getWXopenPlatformMerchantInfo(wxAppid).getAuthoriceAccessToken();
+		JSONObject params = new JSONObject();
+		params.put("appid", wxAppid);
+		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
+		return result;
+	}
+	
 	public String getMiniprogramAuthorizerInfo(String wxAppId){
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppId);
 		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_SEC_FORMAT);

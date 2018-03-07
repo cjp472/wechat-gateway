@@ -64,6 +64,7 @@ public class WXopenPlatformMerchantInfoService {
 	public WXopenPlatformMerchantInfo getByWXAppId(String wxAppId){
 		return wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppId);
 	}
+	
 	/**
 	  * @methodName: findByCondition
 	  * @Description: 根据条件查询
@@ -103,6 +104,10 @@ public class WXopenPlatformMerchantInfoService {
 	 */
 	public void deleteByorganizationAccountAndAuthType(WXopenPlatformMerchantInfoForm wxForm){
 		wXopenPlatformMerchantInfoMapper.deleteInBatch(wXopenPlatformMerchantInfoMapper.findByAuthTypeAndOrganizationAccount(wxForm.getAuthType(),wxForm.getOrganizationAccount()));
+	}
+	
+	public List<WXopenPlatformMerchantInfo> findByAuthType(String authType){
+		return wXopenPlatformMerchantInfoMapper.findByAuthType(authType);
 	}
 	/**
 	  * @methodName: update

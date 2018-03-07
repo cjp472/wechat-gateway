@@ -15,4 +15,6 @@ public interface WXopenPlatformMerchantInfoMapper extends JpaRepository<WXopenPl
 	public List<WXopenPlatformMerchantInfo> findByAuthTypeAndOrganizationAccount(String authType,String organizationAccount);
 
 	public WXopenPlatformMerchantInfo findByOrganizationAccountAndAuthType(String brandAccount,String authType);
+	
+	public List<WXopenPlatformMerchantInfo> findByAuthType(String authType);
 }
