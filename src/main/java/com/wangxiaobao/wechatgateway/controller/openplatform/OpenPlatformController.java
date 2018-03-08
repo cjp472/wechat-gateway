@@ -39,6 +39,7 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSONObject;
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
+import com.source3g.springboot.frame.backwidow.commom.BusinessException;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
@@ -375,6 +376,9 @@ public class OpenPlatformController {
 	// 组装授权和创建开放平台
 	public JsonResult buildingAuthorizer(String authorizationInfo, String authType, String organizationAccount) {
 		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
+		if(ObjectUtils.isEmpty(jsono.getString("authorizer_access_token"))||ObjectUtils.isEmpty(jsono.getString("authorizer_refresh_token"))){
+			return JsonResult.newInstanceAuthFail("获取商家公众号或小程序调用凭证异常{}"+authorizationInfo);
+		}
 		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService
 				.getByWXAppId(jsono.getString("authorizer_appid"));
 		// 换取了调用凭证，必须更新redis数据

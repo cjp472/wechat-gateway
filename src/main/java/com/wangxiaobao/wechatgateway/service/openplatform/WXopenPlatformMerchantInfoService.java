@@ -145,10 +145,15 @@ public class WXopenPlatformMerchantInfoService {
 			jsonO.put("authorizer_refresh_token", wxInfo.getAuthoriceRefreshToken());
 			String StrResult = HttpClientUtils.executeByJSONPOST(url, jsonO.toJSONString(), 5000);
 			JSONObject jsonResult = JSONObject.parseObject(StrResult);
-			wxInfo.setAuthoriceAccessToken(jsonResult.getString("authorizer_access_token"));
-			wxInfo.setAuthoriceRefreshToken(jsonResult.getString("authorizer_refresh_token"));
-			wXopenPlatformMerchantInfoMapper.save(wxInfo);
-			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + wxAppId, JSONObject.toJSONString(wxInfo),7000);
+			//如果刷新调用凭证接口出现异常，将不更新数据库和redis记录，保持原样，通过日志查询来排查问题
+			if(ObjectUtils.isEmpty(jsonResult.getString("authorizer_access_token"))||ObjectUtils.isEmpty(jsonResult.getString("authorizer_refresh_token"))){
+				log.error("刷新公众号或小程序{}调用凭证异常{}",wxAppId,StrResult);
+			}else{
+				wxInfo.setAuthoriceAccessToken(jsonResult.getString("authorizer_access_token"));
+				wxInfo.setAuthoriceRefreshToken(jsonResult.getString("authorizer_refresh_token"));
+				wXopenPlatformMerchantInfoMapper.save(wxInfo);
+				redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + wxAppId, JSONObject.toJSONString(wxInfo),7000);
+			}
 		}
 		return wxInfo;
 	}
