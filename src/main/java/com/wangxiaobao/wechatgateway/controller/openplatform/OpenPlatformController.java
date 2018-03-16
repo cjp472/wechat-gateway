@@ -214,7 +214,7 @@ public class OpenPlatformController {
 						return "success";
 					case "unauthorized":
 						logger.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
-						if (!"wx570bc396a51b8ff8".equals(authorizerAppid)) {
+						if (!"wx570bc396a51b8ff8".equals(authorizerAppid)&&!"wxd101a85aa106f53e".equals(authorizerAppid)) {
 							wXopenPlatformMerchantInfoService.deleteByWXAppId(authorizerAppid);
 						}
 						return "授权公众号取消授权";
