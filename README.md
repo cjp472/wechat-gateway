@@ -522,3 +522,66 @@ GET /wechatgateway/adDetail/getByAdId?adId=1234
 ``` 
 GET /wechatgateway/adDetail/delete?detailId=1516354826607934901
 ```
+
+
+<a name="17">拼图,口令游戏规则设置</a>
+### 查询拼图游戏规则设置
+
+```
+post /wechatgateway/constantcode/findConstantCodeByType
+```
+参数 key-value
+``` 
+type:time_limit_game_rule //必填(固定值)
+constantKey:jigsaw_game_rule  //必填（口令：speak_game_rule，拼图：jigsaw_game_rule）
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data": {
+        "constantCodeId": "7",
+        "type": "time_limit_game_rule",
+        "value": "{\"intervals\":[60,90,120,150,180],\"pictures\":[\"http://img.zcool.cn/community/014608582ae13ea84a0e282b0b2099.jpg@1280w_1l_2o_100sh.jpg\",\"http://img2.imgtn.bdimg.com/it/u=1057953037,1138962619&fm=27&gp=0.jpg\",\"http://pic23.nipic.com/20120826/10209170_183108669000_2.jpg\",\"http://pic4.nipic.com/20090901/515807_125042019142_2.jpg\"],\"theme\":\"http://img06.tooopen.com/images/20170720/tooopen_sy_217426757833.jpg\"}",
+        "name": "拼图游戏规则",
+        "status": "1",
+        "constantKey": "jigsaw_game_rule"
+    }
+}
+```
+
+<a name="18">修改拼图,口令游戏规则设置</a>
+### 修改拼图游戏规则设置
+
+```
+post /wechatgateway/constantcode/save
+```
+参数 json
+``` 
+    {
+        "constantCodeId": "7",
+        "type": "time_limit_game_rule",
+        "value": "{\"intervals\":[60,90,120,150,180],\"pictures\":[\"http://img.zcool.cn/community/014608582ae13ea84a0e282b0b2099.jpg@1280w_1l_2o_100sh.jpg\",\"http://img2.imgtn.bdimg.com/it/u=1057953037,1138962619&fm=27&gp=0.jpg\",\"http://pic23.nipic.com/20120826/10209170_183108669000_2.jpg\",\"http://pic4.nipic.com/20090901/515807_125042019142_2.jpg\"],\"theme\":\"http://img06.tooopen.com/images/20170720/tooopen_sy_217426757833.jpg\"}",
+        "name": "拼图游戏规则",
+        "status": "1",
+        "constantKey": "jigsaw_game_rule"
+    }
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data": {
+        "constantCodeId": "7",
+        "type": "time_limit_game_rule",
+        "value": "{\"intervals\":[60,90,120,150,180],\"pictures\":[\"http://img.zcool.cn/community/014608582ae13ea84a0e282b0b2099.jpg@1280w_1l_2o_100sh.jpg\",\"http://img2.imgtn.bdimg.com/it/u=1057953037,1138962619&fm=27&gp=0.jpg\",\"http://pic23.nipic.com/20120826/10209170_183108669000_2.jpg\",\"http://pic4.nipic.com/20090901/515807_125042019142_2.jpg\"],\"theme\":\"http://img06.tooopen.com/images/20170720/tooopen_sy_217426757833.jpg\"}",
+        "name": "拼图游戏规则",
+        "status": "1",
+        "constantKey": "jigsaw_game_rule"
+    }
+}
+```
