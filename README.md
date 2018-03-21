@@ -528,7 +528,7 @@ GET /wechatgateway/adDetail/delete?detailId=1516354826607934901
 ```
 
 
-<a name="17">拼图,口令游戏规则设置</a>
+<a name="18">拼图,口令游戏规则设置</a>
 ### 查询拼图游戏规则设置
 
 ```
@@ -556,7 +556,7 @@ constantKey:jigsaw_game_rule  //必填（口令：speak_game_rule，拼图：jig
 }
 ```
 
-<a name="18">修改拼图,口令游戏规则设置</a>
+<a name="19">修改拼图,口令游戏规则设置</a>
 ### 修改拼图游戏规则设置
 
 ```
