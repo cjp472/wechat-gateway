@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -91,7 +90,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	private ConstantCodeService constantCodeService;
 
 	/**
-	 * 查询可以绑定的小程序
+	 * 查询可以绑定的小程序,并且只返回一个，用于授权自动绑定
 	 * 
 	 * @return
 	 */
@@ -103,6 +102,21 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 			return null;
 		}
 		return openPlatformXiaochengxus.get(0);
+	}
+	
+	/**
+	  * @methodName: selectCanBindXiaochengxu
+	  * @Description: TODO 查询可以绑定的小程序列表
+	  * @return List<OpenPlatformXiaochengxu>
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月22日 下午2:40:38
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月22日 下午2:40:38
+	  * @throws
+	 */
+	public List<OpenPlatformXiaochengxu> selectCanBindXiaochengxu() {
+		 return openPlatformXiaochengxuRepository
+				.findByTopLimitAndIsValidateAndTypeOrderByCodeAsc("0", "1", "1");
 	}
 
 	/**

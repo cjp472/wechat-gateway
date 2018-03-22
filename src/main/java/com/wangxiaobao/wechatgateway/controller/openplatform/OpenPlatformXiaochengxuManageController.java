@@ -38,7 +38,17 @@ import lombok.extern.slf4j.Slf4j;
 public class OpenPlatformXiaochengxuManageController {
 	@Autowired
 	private OpenPlatformXiaochengxuService openPlatformXiaochengxuService;
-
+	/**
+	  * @methodName: selectOpenPlatformXiaochengxuByCondition
+	  * @Description: TODO  列表分页查询开放平台小程序
+	  * @param platformMiniprogramListRequest
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月22日 下午2:42:26
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月22日 下午2:42:26
+	  * @throws
+	 */
 	@RequestMapping("/selectByCondition")
 	public JsonResult selectOpenPlatformXiaochengxuByCondition(
 			@RequestBody PlatformMiniprogramListRequest platformMiniprogramListRequest) {
@@ -57,5 +67,22 @@ public class OpenPlatformXiaochengxuManageController {
 		}
 		openPlatformXiaochengxuService.saveOrUpdate(request);
 		return JsonResult.newInstanceSuccess();
+	}
+	
+	/**
+	  * @methodName: selectCanBindXiaochengxu
+	  * @Description: TODO 查询所有可以和商家公众号关联的平台小程序
+	  * @param request
+	  * @param bindingResult
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月22日 下午2:42:53
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月22日 下午2:42:53
+	  * @throws
+	 */
+	@RequestMapping("/selectCanBindXiaochengxu")
+	public JsonResult selectCanBindXiaochengxu(@Valid PlatformMiniprogramSaveRequest request,BindingResult bindingResult){
+		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.selectCanBindXiaochengxu());
 	}
 }

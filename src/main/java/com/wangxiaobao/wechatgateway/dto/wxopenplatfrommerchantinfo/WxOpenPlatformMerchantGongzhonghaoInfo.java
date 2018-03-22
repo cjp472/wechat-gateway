@@ -1,5 +1,8 @@
 package com.wangxiaobao.wechatgateway.dto.wxopenplatfrommerchantinfo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
+
 import lombok.Data;
 /**
   * @ProjectName: wechatgateway 
@@ -11,6 +14,7 @@ import lombok.Data;
   * @author liping_max
   * @date 2018年3月19日 上午11:25:59
  */
+@JsonSerialize(include=Inclusion.ALWAYS)
 @Data
 public class WxOpenPlatformMerchantGongzhonghaoInfo {
 	private String wxOpenPlatformId;
