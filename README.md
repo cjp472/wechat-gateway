@@ -589,3 +589,57 @@ post /wechatgateway/constantcode/save
     }
 }
 ```
+
+<a name="20">查询限时活动时间配置</a>
+### 查询限时活动时间配置
+
+```
+post /wechatgateway/constantcode/selectGameBaseConfig
+```
+参数 无
+``` 
+    
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data": {
+        "constantCodeId": "8",
+        "type": "game_base_config",
+        "value": "{\"preGameWait\":60,\"QRWait\":120,\"gameWait\":240,\"resultWait\":60,\"afterGameWait\":120,\"jigsawGameWait\":250,\"game_ background\":\"https://img.wangxiaobao.cc/%E5%8F%A3%E4%BB%A4%E6%B8%B8%E6%88%8F.png\"}",
+        "name": "口令游戏基础配置",
+        "status": "1",
+        "constantKey": "3"
+    }
+}
+```
+
+<a name="20">查询限时活动时间配置</a>
+### 查询限时活动时间配置
+
+```
+post /wechatgateway/constantcode/updateGameBaseConfig
+```
+参数 j'son
+``` 
+  {
+        "constantCodeId": "8",
+        "type": "game_base_config",
+        "value": "{\"preGameWait\":60,\"QRWait\":120,\"gameWait\":240,\"resultWait\":60,\"afterGameWait\":120,\"jigsawGameWait\":250,\"game_ background\":\"https://img.wangxiaobao.cc/%E5%8F%A3%E4%BB%A4%E6%B8%B8%E6%88%8F.png\"}",
+        "name": "口令游戏基础配置",
+        "status": "1",
+        "constantKey": "3"
+    }  
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data": 
+}
+```
