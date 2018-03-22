@@ -26,4 +26,8 @@ public class ConstantCodeService extends BaseService {
 		Example<ConstantCode> example = Example.of(constantCode);
 		return constantCodeRepository.findAll(example);
 	}
+	
+	public ConstantCode save(ConstantCode code){
+		return constantCodeRepository.save(code);
+	}
 }

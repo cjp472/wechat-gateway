@@ -283,7 +283,7 @@ public class TestService {
 		if ("0".equals(jsono.getString("errcode"))) {
 			return JsonResult.newInstanceDataSuccess(jsono);
 		} else {
-			return JsonResult.newInstanceMesFail(jsono.getString("errcode"));
+			return JsonResult.newInstance(jsono.getString("errcode"),jsono.getString("errmsg"));
 		}
 	}
 	

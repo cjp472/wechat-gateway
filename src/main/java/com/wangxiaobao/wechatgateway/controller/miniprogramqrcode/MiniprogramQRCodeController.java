@@ -145,13 +145,6 @@ public class MiniprogramQRCodeController extends BaseController {
 					bindingResult.getFieldError().getDefaultMessage());
 		}
 		String result = miniProgramQrCodeService.qrcodejumpdownload(request.getWxAppid());
-		JSONObject jsono = JSONObject.parseObject(result);
-		QrcodeUrlVerify qrcodeUrlVerify = new QrcodeUrlVerify();
-		qrcodeUrlVerify.setCreateDate(new Date());
-		qrcodeUrlVerify.setFileContent(jsono.getString("file_content"));
-		qrcodeUrlVerify.setFileName(jsono.getString("file_name"));
-		qrcodeUrlVerify.setWxAppid(request.getWxAppid());
-		qrcodeUrlVerifyService.save(qrcodeUrlVerify);
 		return JsonResult.newInstanceSuccess();
 	}
 	

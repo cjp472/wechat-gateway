@@ -21,7 +21,7 @@ import lombok.Data;
 @DynamicUpdate
 @Table(name = "t_base_openplatform_xiaochengxu")
 public class OpenPlatformXiaochengxu {
-	@Id
+
 	@Column(name = "app_id", nullable = false)
 	private String appId;
 	@Column(name = "app_secret")
@@ -51,6 +51,12 @@ public class OpenPlatformXiaochengxu {
 	/**
 	 * 小程序身份标记，由前端存入，识别是哪个小程序
 	 */
+	@Id
 	@Column(name = "code")
-	private String code;
+	private Integer code;
+	/**
+	 * 小程序名称
+	 */
+	@Column(name = "name")
+	private String name;
 }

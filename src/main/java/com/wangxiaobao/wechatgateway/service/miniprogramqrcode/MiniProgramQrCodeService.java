@@ -1,21 +1,27 @@
 package com.wangxiaobao.wechatgateway.service.miniprogramqrcode;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.wangxiaobao.wechatgateway.entity.qrcodeurlverify.QrcodeUrlVerify;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeAddForm;
 import com.wangxiaobao.wechatgateway.form.miniprogramqrcode.MiniprogramQrCodeRequest;
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
+import com.wangxiaobao.wechatgateway.service.qrcodeurlverify.QrcodeUrlVerifyService;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
 @Service
 public class MiniProgramQrCodeService extends BaseService {
 	@Autowired
 	private WXopenPlatformMerchantInfoService wxPlatformMerchantInfoService;
+	@Autowired
+	private QrcodeUrlVerifyService qrcodeUrlVerifyService;
 
 	public String qrcodejumpget(MiniprogramQrCodeRequest request){
 		String url = wxProperties.getWx_qrcode_qrcodejumpget_url()
@@ -100,6 +106,13 @@ public class MiniProgramQrCodeService extends BaseService {
 		if(!"0".equals(addJSON.getString("errcode"))){
 			throw new CommonException(Integer.parseInt(addJSON.getString("errcode")), addJSON.getString("errmsg"));
 		}
+		JSONObject jsono = JSONObject.parseObject(result);
+		QrcodeUrlVerify qrcodeUrlVerify = new QrcodeUrlVerify();
+		qrcodeUrlVerify.setCreateDate(new Date());
+		qrcodeUrlVerify.setFileContent(jsono.getString("file_content"));
+		qrcodeUrlVerify.setFileName(jsono.getString("file_name"));
+		qrcodeUrlVerify.setWxAppid(wxAppid);
+		qrcodeUrlVerifyService.save(qrcodeUrlVerify);
 		return result;
 	}
 }

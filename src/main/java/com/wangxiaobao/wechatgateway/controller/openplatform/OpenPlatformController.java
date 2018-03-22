@@ -214,7 +214,8 @@ public class OpenPlatformController {
 						return "success";
 					case "unauthorized":
 						logger.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
-						if (!"wx570bc396a51b8ff8".equals(authorizerAppid)&&!"wxd101a85aa106f53e".equals(authorizerAppid)) {
+						if (!"wx570bc396a51b8ff8".equals(authorizerAppid)
+								&& !"wxd101a85aa106f53e".equals(authorizerAppid)) {
 							wXopenPlatformMerchantInfoService.deleteByWXAppId(authorizerAppid);
 						}
 						return "授权公众号取消授权";
@@ -376,8 +377,9 @@ public class OpenPlatformController {
 	// 组装授权和创建开放平台
 	public JsonResult buildingAuthorizer(String authorizationInfo, String authType, String organizationAccount) {
 		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
-		if(ObjectUtils.isEmpty(jsono.getString("authorizer_access_token"))||ObjectUtils.isEmpty(jsono.getString("authorizer_refresh_token"))){
-			return JsonResult.newInstanceAuthFail("获取商家公众号或小程序调用凭证异常{}"+authorizationInfo);
+		if (ObjectUtils.isEmpty(jsono.getString("authorizer_access_token"))
+				|| ObjectUtils.isEmpty(jsono.getString("authorizer_refresh_token"))) {
+			return JsonResult.newInstanceAuthFail("获取商家公众号或小程序调用凭证异常{}" + authorizationInfo);
 		}
 		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService
 				.getByWXAppId(jsono.getString("authorizer_appid"));
@@ -616,17 +618,38 @@ public class OpenPlatformController {
 
 	/**
 	 * 商户公众号与开放平台绑定
-	 * 
+	 * 传了openAppid就用openAppid，没有openAppid就用传入的organizationAccount进行查询
 	 * @param wxAppid
 	 * @param openAppid
 	 * @return
 	 */
 	@RequestMapping("/gongzhonghao/bindOpen")
 	@ResponseBody
-	public JsonResult bindOpen(String wxAppid, String openAppid) {
+	public JsonResult bindOpen(String wxAppid, String openAppid, String organizationAccount) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(wxAppid);
-		return testService.bindOpen(wxAppid, openAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
+		if (ObjectUtils.isEmpty(wXopenPlatformMerchantInfo)) {
+			log.error("未查询到wxAppid={}对应的数据信息，无法完成绑定", wxAppid);
+			return JsonResult.newInstanceMesFail("未查询到对应的数据信息,无法完成绑定");
+		}
+		//在没有传入openAppid的情况下用organizationAccount进行openAppid的查询
+		if (!StringUtils.hasText(openAppid) && StringUtils.hasText(organizationAccount)) {
+			// 小程序授权
+			WXopenPlatformMerchantInfoSearchCondition wxCondition = new WXopenPlatformMerchantInfoSearchCondition(
+					Constants.AUTHORIZER_TYPE_GONGZHONGHAO, organizationAccount);
+			List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
+					.findByCondition(wxCondition);
+			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
+				return JsonResult.newInstanceAuthFail("授权小程序之前需要授权公众号");
+			}
+			openAppid = wxInfoResponses.get(0).getOpenAppid();
+		}
+		//最终得到openAppid则进行绑定操作，没有则直接返回无法完成绑定
+		if (StringUtils.hasText(openAppid)) {
+			return JsonResult.newInstanceDataSuccess(testService.bindOpen(wxAppid, openAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken()));
+		} else{
+			return JsonResult.newInstanceMesFail("未查询到可绑定的开放平台数据");
+		}
 	}
 
 	/**
@@ -640,6 +663,15 @@ public class OpenPlatformController {
 	public JsonResult unbindOpen(String wxAppid, String openAppid) {
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
 				.getWXopenPlatformMerchantInfo(wxAppid);
+		if (!StringUtils.hasText(openAppid)) {
+			JsonResult jsonResult = testService.getBindOpen(wxAppid,
+					wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
+			if (!"0".equals(jsonResult.getCode())) {
+				return JsonResult.newInstanceMesFail(jsonResult.getMessage());
+			}
+			JSONObject json = (JSONObject) jsonResult.getData();
+			openAppid = json.getString("open_appid");
+		}
 		JsonResult jsonResult = testService.unbindOpen(wxAppid, openAppid,
 				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 		return jsonResult;
@@ -692,9 +724,9 @@ public class OpenPlatformController {
 
 	/**
 	 * @methodName: wxamplinkget @Description: 查询商家公众号关联的小程序列表 @param
-	 * wxAppid @return JsonResult @createUser: liping_max @createDate: 2018年3月7日
-	 * 上午10:50:17 @updateUser: liping_max @updateDate: 2018年3月7日
-	 * 上午10:50:17 @throws
+	 *              wxAppid @return JsonResult @createUser:
+	 *              liping_max @createDate: 2018年3月7日 上午10:50:17 @updateUser:
+	 *              liping_max @updateDate: 2018年3月7日 上午10:50:17 @throws
 	 */
 	@RequestMapping("/gongzhonghao/wxamplinkget")
 	public @ResponseBody JsonResult wxamplinkget(String wxAppid) {
@@ -703,20 +735,14 @@ public class OpenPlatformController {
 	}
 
 	/**
-	  * @methodName: updateWxamplink
-	  * @Description: 更新商家公众号与小程序的关联关系
-	  * @param wxAppid
-	  * @param newXcxAppid
-	  * @param oldXcxAppid
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年3月7日 上午11:17:23
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年3月7日 上午11:17:23
-	  * @throws
+	 * @methodName: updateWxamplink @Description: 更新商家公众号与小程序的关联关系 @param
+	 *              wxAppid @param newXcxAppid @param oldXcxAppid @return
+	 *              JsonResult @createUser: liping_max @createDate: 2018年3月7日
+	 *              上午11:17:23 @updateUser: liping_max @updateDate: 2018年3月7日
+	 *              上午11:17:23 @throws
 	 */
 	@RequestMapping("/gongzhonghao/updateWxamplink")
-	public@ResponseBody JsonResult updateWxamplink(String wxAppid, String newXcxAppid, String oldXcxAppid) {
+	public @ResponseBody JsonResult updateWxamplink(String wxAppid, String newXcxAppid, String oldXcxAppid) {
 		log.info("更新商家公众号与小程序的关联关系请求参数wxAppid={},newXcxAppid={},oldXcxAppid={}", wxAppid, newXcxAppid, oldXcxAppid);
 		List<WXopenPlatformMerchantInfo> wXopenPlatformMerchantInfoList = new ArrayList<>();
 		if (ObjectUtils.isEmpty(wxAppid)) {

@@ -48,4 +48,9 @@ public class ConstantCode{
 		this.type = type;
 		this.constantKey=constantKey;
 	}
+
+	public ConstantCode(String type) {
+		super();
+		this.type = type;
+	}
 }

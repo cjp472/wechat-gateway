@@ -6,6 +6,20 @@ spring:
     username: devtest1
     password: dectest123
     url: jdbc:mysql://10.174.88.243:3306/wechat_gateway?characterEncoding=utf-8&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
   jpa:
     show-sql: true
   jackson:
@@ -25,6 +39,9 @@ logging:
   file: ${spring.application.name}.log
   level:
     root: info
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
 wechat:
   openplatform:
     appid: wx2faa58ec608c1d69
@@ -32,6 +49,7 @@ wechat:
     redirectUrl: http://develop.source3g.com/wechatgateway
     token: wxbtest
     encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
+    name: 旺小宝桌牌
   miniprogram:   
     requestdomain1: https://develop.source3g.com
     requestdomain2: https://preview.source3g.com

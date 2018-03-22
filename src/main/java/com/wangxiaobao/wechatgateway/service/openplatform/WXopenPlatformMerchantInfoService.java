@@ -157,4 +157,52 @@ public class WXopenPlatformMerchantInfoService {
 		}
 		return wxInfo;
 	}
+	
+	/**
+	  * @methodName: manualRefreshApiAuthorizerToken
+	  * @Description: TODO手动刷新公众号小程序的调用凭证
+	  * @param wxAppId
+	  * @return WXopenPlatformMerchantInfo
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月19日 下午3:04:40
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月19日 下午3:04:40
+	  * @throws
+	 */
+	public WXopenPlatformMerchantInfo manualRefreshApiAuthorizerToken(String wxAppId){
+		WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo();
+		wxInfo = getByWXAppId(wxAppId);
+		String url = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token="
+				+ testService.getApiComponentToken(appId,appsecret);
+		JSONObject jsonO = new JSONObject();
+		jsonO.put("component_appid", appId);
+		jsonO.put("authorizer_appid", wxAppId);
+		jsonO.put("authorizer_refresh_token", wxInfo.getAuthoriceRefreshToken());
+		String StrResult = HttpClientUtils.executeByJSONPOST(url, jsonO.toJSONString(), 5000);
+		JSONObject jsonResult = JSONObject.parseObject(StrResult);
+		//如果刷新调用凭证接口出现异常，将不更新数据库和redis记录，保持原样，通过日志查询来排查问题
+		if(ObjectUtils.isEmpty(jsonResult.getString("authorizer_access_token"))||ObjectUtils.isEmpty(jsonResult.getString("authorizer_refresh_token"))){
+			log.error("刷新公众号或小程序{}调用凭证异常{}",wxAppId,StrResult);
+		}else{
+			wxInfo.setAuthoriceAccessToken(jsonResult.getString("authorizer_access_token"));
+			wxInfo.setAuthoriceRefreshToken(jsonResult.getString("authorizer_refresh_token"));
+			wXopenPlatformMerchantInfoMapper.save(wxInfo);
+			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + wxAppId, JSONObject.toJSONString(wxInfo),7000);
+		}
+		return wxInfo;
+	}
+	/**
+	  * @methodName: selectWXopenPlatformMerchantInfoListByOrganizationAccounts
+	  * @Description: TODO根据品牌列表查询
+	  * @param organizationAccounts
+	  * @return List<WXopenPlatformMerchantInfo>
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月19日 上午11:06:32
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月19日 上午11:06:32
+	  * @throws
+	 */
+	public List<WXopenPlatformMerchantInfo> selectWXopenPlatformMerchantInfoListByOrganizationAccountsAndAuthType(List<String> organizationAccounts,String authType){
+		return wXopenPlatformMerchantInfoMapper.selectListByOrganizationAccounts(organizationAccounts,authType);
+	}
 }

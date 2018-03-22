@@ -13,9 +13,9 @@ public interface OpenPlatformXiaochengxuRepository extends JpaRepository<OpenPla
 	 * 查询还可以绑定的小程序的列表
 	 * @return
 	 */
-	public List<OpenPlatformXiaochengxu> findByTopLimitAndIsValidateAndType(String topLimit,String isValidate,String type);
+	public List<OpenPlatformXiaochengxu> findByTopLimitAndIsValidateAndTypeOrderByCodeAsc(String topLimit,String isValidate,String type);
 
-	public OpenPlatformXiaochengxu findByCode(String code);
+	public OpenPlatformXiaochengxu findByCode(int code);
 	
 	public OpenPlatformXiaochengxu findByAppId(String appId);
 }

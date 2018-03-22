@@ -1,8 +1,11 @@
 package com.wangxiaobao.wechatgateway.service.miniprogramtemplate;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTemplate;
@@ -31,5 +34,10 @@ public class WxMiniprogramTemplateService {
 	
 	public WxMiniprogramTemplate findByTemplateId(String templateId){
 		return wxMiniprogramTemplateRepository.findByTemplateId(templateId);
+	}
+	
+	public List<WxMiniprogramTemplate> selectWxMiniprogramTemplateByCondition(WxMiniprogramTemplate wxMiniprogramTemplate){
+		Example<WxMiniprogramTemplate> wxExample = Example.of(wxMiniprogramTemplate);
+		return wxMiniprogramTemplateRepository.findAll(wxExample);
 	}
 }

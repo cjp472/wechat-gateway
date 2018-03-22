@@ -43,7 +43,12 @@
 ## 活动规则设置 
 - <a href="#18">查询拼图,口令活动规则 </a>
 - <a href="#19">修改拼图,口令活动规则 </a>
+- <a href="#20">查询限时活动时间规则配置 </a>
+- <a href="#21">更新限时活动时间规则配置 </a>
 
+##平台小程序管理
+- <a href="#22">平台小程序列表</a>
+- <a href="#23">新增，修改平台小程序</a>
 
 
 <a name="1">品牌创建门店</a>
@@ -617,13 +622,13 @@ post /wechatgateway/constantcode/selectGameBaseConfig
 }
 ```
 
-<a name="20">查询限时活动时间配置</a>
-### 查询限时活动时间配置
+<a name="21">更新限时活动时间配置</a>
+### 更新限时活动时间配置
 
 ```
 post /wechatgateway/constantcode/updateGameBaseConfig
 ```
-参数 j'son
+参数 json
 ``` 
   {
         "constantCodeId": "8",
@@ -641,5 +646,144 @@ post /wechatgateway/constantcode/updateGameBaseConfig
     "code": "0",
     "message": "成功",
     "data": 
+}
+```
+
+<a name="22">平台小程序列表查询</a>
+### 平台小程序列表查询
+
+```
+post /wechatgateway/platformXiaoCXManage/selectByCondition
+```
+参数 json
+``` 
+  {
+	"page":1,  必填
+	"size":10, 必填 
+	"name":"123"  选填
+}
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data": {
+        "content": [
+            {
+                "appId": "wx55804dbb87a85288",
+                "appSecret": "e6d19d53683c06a6477e82e324653184",
+                "topLimit": "0",
+                "isValidate": "1",
+                "type": "1",
+                "createDate": 1516266183000,
+                "updateDate": 1521423104000,
+                "code": 129,
+                "name": "123"
+            }
+        ],
+        "last": true,
+        "totalPages": 1,
+        "totalElements": 1,
+        "size": 10,
+        "number": 0,
+        "sort": [
+            {
+                "direction": "DESC",
+                "property": "createDate",
+                "ignoreCase": false,
+                "nullHandling": "NATIVE",
+                "ascending": false,
+                "descending": true
+            }
+        ],
+        "first": true,
+        "numberOfElements": 1
+    }
+}
+```
+
+<a name="23">新增或编辑平台小程序</a>
+### 新增或编辑平台小程序
+
+```
+post /wechatgateway/platformXiaoCXManage/save
+```
+参数 json
+``` 
+  {
+	"appId":1,  必填
+	"appSecret":10, 必填 
+	"name":"name",  必填
+	"type":"1",    必填
+	"code":"123"   选填
+}
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data":
+}
+```
+
+<a name="24">商家公众号授权列表</a>
+### 商家公众号授权列表
+
+```
+post /wechatgateway/gongzhonghao/selectGongzhonghaoList
+```
+参数 json
+``` 
+  {
+	"page":1,  必填
+	"size":10, 必填 
+	"brandName":"清粥小菜",  选填
+}
+```
+
+返回
+``` 
+{
+    "code": "0",
+    "message": "成功",
+    "data": {
+        "count": 0,
+        "pageNum": 1,
+        "pageSize": 10,
+        "datas": [
+            {
+                "wxOpenPlatformId": "9dde98406c82423292d2802e9ce51b8e",
+                "wxAppid": "wxda9d306d97c24c8a",
+                "createDate": 1516346572000,
+                "authType": "1",
+                "organizationAccount": "WCBBJ",
+                "nickName": "旺小宝CRM",
+                "brandName": "旺小宝测试",
+                "openPlatformName": "旺小宝桌牌",
+                "status": "已授权"
+            },
+            {
+                "wxOpenPlatformId": "f5821bd4bd2f4a45b70946c5c1aeba33",
+                "wxAppid": "wx92be428ecdf227ab",
+                "createDate": 1516593706000,
+                "authType": "1",
+                "organizationAccount": "ygpp",
+                "nickName": "旺小宝会员",
+                "brandName": "养个啪啪",
+                "openPlatformName": "旺小宝桌牌",
+                "status": "已授权"
+            },
+            {
+                "organizationAccount": "liping1",
+                "brandName": "李平1",
+                "openPlatformName": "旺小宝桌牌",
+                "status": "未授权"
+            }
+        ]
+    }
 }
 ```

@@ -8,6 +8,21 @@ spring:
     username: program
     password: Lhs9LsVF
     url: jdbc:mysql://mysql.wangxiaobao.cc:3306/wechat_gateway?characterEncoding=utf-8&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
   jpa:
     show-sql: true
   jackson:
@@ -25,6 +40,9 @@ logging:
   file: ${spring.application.name}.log
   level:
     root: debug
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml    
 wechat:
   openplatform:
     appid: wx545e2458a2b577e8
@@ -32,6 +50,7 @@ wechat:
     redirectUrl: https://miniapp.source3g.com/codecmanagement
     token: wxbtest
     encodingAesKey: 1okj2shr3kfn1fnfs9fldnsche609dks8899sjqliye
+    name: 国盛第三方平台
   miniprogram:   
     requestdomain1: https://develop.source3g.com
     requestdomain2: https://preview.source3g.com

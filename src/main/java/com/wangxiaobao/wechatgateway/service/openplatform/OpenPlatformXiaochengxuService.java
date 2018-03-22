@@ -3,8 +3,13 @@ package com.wangxiaobao.wechatgateway.service.openplatform;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -21,12 +26,12 @@ import com.wangxiaobao.wechatgateway.enums.MiniprogramTemplateTypeEnum;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
+import com.wangxiaobao.wechatgateway.form.platformminiprogram.PlatformMiniprogramSaveRequest;
 import com.wangxiaobao.wechatgateway.repository.openplatform.OpenPlatformXiaochengxuRepository;
 import com.wangxiaobao.wechatgateway.service.base.BaseService;
 import com.wangxiaobao.wechatgateway.service.constantcode.ConstantCodeService;
 import com.wangxiaobao.wechatgateway.service.miniprogramtemplate.WxMiniprogramTemplateService;
 import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
-import com.wangxiaobao.wechatgateway.service.test.TestService;
 import com.wangxiaobao.wechatgateway.utils.Constants;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
@@ -92,7 +97,7 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	 */
 	public OpenPlatformXiaochengxu findCanBindXiaochengxu() {
 		List<OpenPlatformXiaochengxu> openPlatformXiaochengxus = openPlatformXiaochengxuRepository
-				.findByTopLimitAndIsValidateAndType("0", "1", "1");
+				.findByTopLimitAndIsValidateAndTypeOrderByCodeAsc("0", "1", "1");
 		if (null == openPlatformXiaochengxus || openPlatformXiaochengxus.size() <= 0) {
 			log.info("当前没有可以被商户公众号关联的小程序");
 			return null;
@@ -106,7 +111,8 @@ public class OpenPlatformXiaochengxuService extends BaseService {
 	 * @param code
 	 * @return
 	 */
-	public OpenPlatformXiaochengxu findXiaochengxuByCode(String code) {
+	public OpenPlatformXiaochengxu findXiaochengxuByCode(String codeStr) {
+		int code = Integer.parseInt(codeStr);
 		OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuRepository.findByCode(code);
 		return openPlatformXiaochengxu;
 	}
@@ -385,5 +391,40 @@ public static void main(String[] args) {
 		}
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplateService.save(organizeTemplate);
+	}
+	
+	/**
+	  * @methodName: selectOpenPlatformXiaochengxu
+	  * @Description: TODO 分页查询平台小程序
+	  * @param openPlatformXiaochengxu
+	  * @param pageable
+	  * @return Page<OpenPlatformXiaochengxu>
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月16日 下午4:32:44
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月16日 下午4:32:44
+	  * @throws
+	 */
+	public Page<OpenPlatformXiaochengxu> selectOpenPlatformXiaochengxu(OpenPlatformXiaochengxu openPlatformXiaochengxu,PageRequest pageRequest){
+		Example<OpenPlatformXiaochengxu> example = Example.of(openPlatformXiaochengxu);
+		return openPlatformXiaochengxuRepository.findAll(example, pageRequest);
+	}
+	
+	public void saveOrUpdate(PlatformMiniprogramSaveRequest request){
+		OpenPlatformXiaochengxu openPlatformXiaochengxu = new OpenPlatformXiaochengxu();
+		BeanUtils.copyProperties(request, openPlatformXiaochengxu);
+		//新增
+		if(0==request.getCode()){
+			openPlatformXiaochengxu.setCreateDate(new Date());
+			openPlatformXiaochengxu.setIsValidate(Constants.IS_VALIDATE+"");
+			openPlatformXiaochengxu.setTopLimit("0");
+			openPlatformXiaochengxuRepository.save(openPlatformXiaochengxu);
+		}else{//修改
+			OpenPlatformXiaochengxu openPlatformXiaochengxuOld = openPlatformXiaochengxuRepository.findByCode(request.getCode());
+			openPlatformXiaochengxuOld.setAppId(openPlatformXiaochengxu.getAppId());
+			openPlatformXiaochengxuOld.setAppSecret(openPlatformXiaochengxu.getAppSecret());
+			openPlatformXiaochengxuOld.setName(openPlatformXiaochengxu.getName());
+			openPlatformXiaochengxuRepository.save(openPlatformXiaochengxuOld);
+		}
 	}
 }
