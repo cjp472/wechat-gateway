@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
+
 import lombok.Data;
 
 /**
@@ -16,6 +20,7 @@ import lombok.Data;
  * @author liping_max
  *
  */
+@JsonSerialize(include=Inclusion.ALWAYS)
 @Entity
 @Data
 @DynamicUpdate
