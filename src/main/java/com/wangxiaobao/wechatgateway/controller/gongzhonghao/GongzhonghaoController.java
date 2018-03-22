@@ -62,7 +62,7 @@ public class GongzhonghaoController extends BaseController {
 				return organizationAccount;
 			}
 		}
-		List<Brand> brands = Arrays.asList(new Brand("旺小宝测试","WCBBJ"),new Brand("养个啪啪", "ygpp"),new Brand("李平1", "liping1"));
+		List<Brand> brands = Arrays.asList(new Brand("旺小宝测试","WCBBJ"),new Brand("养个啪啪", "ygpp"),new Brand("onlywww", "halley1"));
 		List<String> organizationAccounts = new ArrayList<>();
 		for (Brand brand : brands) {
 			organizationAccounts.add(brand.getOrganizationAccount());
