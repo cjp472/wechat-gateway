@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +16,7 @@ import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.entity.constantcode.ConstantCode;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
+import com.wangxiaobao.wechatgateway.form.constantcode.ConstantCodeRequest;
 import com.wangxiaobao.wechatgateway.form.constantcode.ConstantCodeWXAuthRequest;
 import com.wangxiaobao.wechatgateway.service.constantcode.ConstantCodeService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
@@ -47,6 +47,18 @@ public class ConstantCodeController extends BaseController {
 					bindingResult.getFieldError().getDefaultMessage());
 		}
 		ConstantCode constantCode = new ConstantCode(request.getType(), request.getConstantKey());
+		List<ConstantCode> constantCodeList = constantCodeService.selectConstantCode(constantCode);
+		return JsonResult.newInstanceDataSuccess(constantCodeList);
+	}
+	
+	@PostMapping("/constantcode/selectConstantCodeListByType")
+	public JsonResult selectConstantCodeListByType(@Valid ConstantCodeRequest request, BindingResult bindingResult){
+		if (bindingResult.hasErrors()) {
+			log.error("【根据type查询ConstantCode】参数不正确, ConstantCodeRequest={}", request);
+			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
+					bindingResult.getFieldError().getDefaultMessage());
+		}
+		ConstantCode constantCode = new ConstantCode(request.getType());
 		List<ConstantCode> constantCodeList = constantCodeService.selectConstantCode(constantCode);
 		return JsonResult.newInstanceDataSuccess(constantCodeList);
 	}
