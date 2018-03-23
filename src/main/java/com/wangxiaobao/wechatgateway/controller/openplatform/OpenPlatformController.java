@@ -784,4 +784,9 @@ public class OpenPlatformController {
 		model.addAttribute("authResult", "");
 		return "/authResult1";
 	}
+	
+	@RequestMapping("/gongzhonghao/getWXopenPlatformMerchantInfo")
+	public@ResponseBody JsonResult getWXopenPlatformMerchantInfo(String wxAppId){
+		return JsonResult.newInstanceDataSuccess(wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppId));
+	}
 }
