@@ -94,7 +94,7 @@ public class GongzhonghaoController extends BaseController {
 	public JsonResult refreshGongzhonghaoAuthInfo(String wxAppId){
 		//刷新调用凭证
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoService.manualRefreshApiAuthorizerToken(wxAppId);
-		if(StringUtils.hasText(wxInfo.getWxAppid())){
+		if(!StringUtils.hasText(wxInfo.getWxAppid())){
 			return JsonResult.newInstanceMesFail("更新操作失败");
 		}else{
 			return JsonResult.newInstanceDataSuccess(wxInfo);
