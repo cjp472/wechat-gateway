@@ -280,7 +280,7 @@ public class TestService {
 		params.put("appid", wxAppid);
 		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
 		JSONObject jsono = JSONObject.parseObject(result);
-		if ("0".equals(jsono.getString("errcode"))) {
+		if ("0".equals(jsono.getString("errcode"))||"89002".equals(jsono.getString("errcode"))) {
 			return JsonResult.newInstanceDataSuccess(jsono);
 		} else {
 			return JsonResult.newInstance(jsono.getString("errcode"),jsono.getString("errmsg"));
