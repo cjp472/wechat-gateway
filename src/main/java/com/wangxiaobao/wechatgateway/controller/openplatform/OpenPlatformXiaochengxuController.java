@@ -34,6 +34,7 @@ import com.wangxiaobao.wechatgateway.service.miniprogramtemplate.WxMiniprogramTe
 import com.wangxiaobao.wechatgateway.service.openplatform.OpenPlatformXiaochengxuService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
 import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
+import com.wangxiaobao.wechatgateway.utils.Constants;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 import com.wangxiaobao.wechatgateway.utils.KeyUtil;
 
@@ -64,7 +65,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		response.setComponentAppId(appId);
 		return JsonResult.newInstanceDataSuccess(response);
 	}
-	
+
 	@RequestMapping("/xiaochengxu/findXiaochengxuByAppId")
 	public JsonResult findXiaochengxuByAppId(String appId) {
 		if (StringUtils.isEmpty(appId)) {
@@ -116,9 +117,30 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		return JsonResult
-				.newInstanceDataSuccess(openPlatformXiaochengxuService.commit(miniProgramCommitRequest.getWxAppid(),
-						miniProgramCommitRequest.getTemplateId(), miniProgramCommitRequest.getOrganizationAccount()));
+		JSONObject resultJson = openPlatformXiaochengxuService.commit(miniProgramCommitRequest.getWxAppid(),
+				miniProgramCommitRequest.getTemplateId(), miniProgramCommitRequest.getOrganizationAccount());
+		// 将商家上传的版本记录到数据库
+		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		organizeTemplate.setCreateDate(new Date());
+		organizeTemplate.setTemplateId(miniProgramCommitRequest.getTemplateId());
+		organizeTemplate.setExtJson(resultJson.getString("ext_json"));
+		organizeTemplate.setMiniprogramTemplateId(KeyUtil.genUniqueKey());
+		organizeTemplate.setOrganizationAccount(miniProgramCommitRequest.getOrganizationAccount());
+		organizeTemplate.setWxAppId(miniProgramCommitRequest.getWxAppid());
+		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.UPLOAD.getStatus());
+		organizeTemplate.setIsOnline("0");
+		organizeTemplate.setIsNew("1");
+		// 设置当前为new为1，其它为0
+		organizeTemplateService.updateOrganizeTemplateIsNew(miniProgramCommitRequest.getWxAppid(), "0");
+		OrganizeTemplate organizeTemplateResult = organizeTemplateService.save(organizeTemplate);
+		if (null == organizeTemplateResult) {
+			log.error("将商家小程序{}版本{}提交审核失败", miniProgramCommitRequest.getWxAppid(),
+					miniProgramCommitRequest.getTemplateId());
+			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(),
+					"提交商家小程序" + miniProgramCommitRequest.getWxAppid() + "版本" + miniProgramCommitRequest.getTemplateId()
+							+ ",审核失败");
+		}
+		return JsonResult.newInstanceDataSuccess(resultJson);
 	}
 
 	/**
@@ -187,13 +209,13 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 				itemJson.put("tag", itemJson.getString("tag") + " " + tag);
 			}
 		}
-		JSONObject jsonResult= openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), submitauditparamJson);
+		JSONObject jsonResult = openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), submitauditparamJson);
 		// 将之前的发布设为旧
 		OrganizeTemplate orTemplate = new OrganizeTemplate();
 		orTemplate.setIsNew("1");
 		orTemplate.setOrganizationAccount(organizationAccount);
 		OrganizeTemplate organizeTemplateOld = organizeTemplateService.findOrganizeTemplateBy(orTemplate);
-		if(null!=organizeTemplateOld){
+		if (null != organizeTemplateOld) {
 			organizeTemplateOld.setIsNew("0");
 			organizeTemplateOld.setStatus(OrganizeTemplateStatusEnum.CANCEL.getStatus());
 			organizeTemplateService.save(organizeTemplateOld);
@@ -209,10 +231,10 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplate.setIsOnline("0");
 		organizeTemplate.setIsNew("1");
-		if(jsonResult.containsKey("auditid")){
+		if (jsonResult.containsKey("auditid")) {
 			organizeTemplate.setAuditid(jsonResult.getString("auditid"));
 		}
-		
+
 		organizeTemplateService.save(organizeTemplate);
 		return JsonResult.newInstanceSuccess();
 	}
@@ -223,15 +245,24 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	 *              liping_max @createDate: 2018年1月16日 下午7:31:09 @updateUser:
 	 *              liping_max @updateDate: 2018年1月16日 下午7:31:09 @throws
 	 */
-	@RequestMapping("/miniprogram/getAuditstatus")
+	@RequestMapping("/organizationTemplate/getAuditstatus")
 	public JsonResult getAuditstatus(@Valid MiniProgramGetAuditstatusRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			log.error("【查询某个指定版本的审核状态】参数不正确, MiniProgramSubmitAuditRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		return JsonResult
-				.newInstanceDataSuccess(openPlatformXiaochengxuService.getAuditstatus(request.getWxAppid(), request.getAuditid()));
+		JSONObject jsonResult = openPlatformXiaochengxuService.getAuditstatus(request.getWxAppid(),
+				request.getAuditid());
+		// 返回成功
+		if (ResultEnum.SUCCESS.getCode() == jsonResult.getIntValue("errcode")) {
+			OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+			organizeTemplate.setAuditid(jsonResult.getLong("auditid").toString());
+			OrganizeTemplate orTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
+			orTemplate.setStatus(jsonResult.getIntValue("auditid") + "");
+			return JsonResult.newInstanceDataSuccess(organizeTemplateService.save(orTemplate));
+		}
+		return JsonResult.newInstanceDataFail(jsonResult);
 	}
 
 	/**
@@ -276,17 +307,23 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 	 *              liping_max @createDate: 2018年1月16日 下午8:03:51 @updateUser:
 	 *              liping_max @updateDate: 2018年1月16日 下午8:03:51 @throws
 	 */
-	@RequestMapping("/miniprogram/release")
+	@RequestMapping("/organizationTemplate/release")
 	public JsonResult release(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			log.error("【设置最低基础库版本】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
+		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		organizeTemplate.setWxAppId(request.getWxAppid());
+		organizeTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
+		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.SUCCESS.getStatus());
+		organizeTemplateService.save(organizeTemplate);
+		openPlatformXiaochengxuService.release(organizeTemplate.getWxAppId());
+		organizeTemplateService.updateOrganizeTemplateIsOnline(organizeTemplate.getWxAppId(), "1");
 		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.release(request.getWxAppid()));
 	}
-	
-	
+
 	@RequestMapping("/miniprogram/bindTester")
 	public JsonResult bindTester(@Valid MiniProgramBindTesterRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -294,23 +331,19 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.bindTester(request.getWechatid(),request.getWxAppid()));
+		return JsonResult.newInstanceDataSuccess(
+				openPlatformXiaochengxuService.bindTester(request.getWechatid(), request.getWxAppid()));
 	}
-	
+
 	/**
-	  * @methodName: undocodeaudit
-	  * @Description: 小程序版本取消审核
-	  * @param wxAppid
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年2月7日 上午11:29:42
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年2月7日 上午11:29:42
-	  * @throws
+	 * @methodName: undocodeaudit @Description: 小程序版本取消审核 @param wxAppid @return
+	 *              JsonResult @createUser: liping_max @createDate: 2018年2月7日
+	 *              上午11:29:42 @updateUser: liping_max @updateDate: 2018年2月7日
+	 *              上午11:29:42 @throws
 	 */
 	@RequestMapping("/miniprogram/undocodeaudit")
-	public JsonResult undocodeaudit(String wxAppid){
-		if(!StringUtils.hasText(wxAppid)){
+	public JsonResult undocodeaudit(String wxAppid) {
+		if (!StringUtils.hasText(wxAppid)) {
 			return JsonResult.newInstanceMesFail("小程序appId必填");
 		}
 		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.undocodeaudit(wxAppid));
