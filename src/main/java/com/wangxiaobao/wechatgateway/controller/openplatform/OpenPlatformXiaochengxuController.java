@@ -254,6 +254,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		}
 		JSONObject jsonResult = openPlatformXiaochengxuService.getAuditstatus(request.getWxAppid(),
 				request.getAuditid());
+		log.info("刷新小程序版本审核状态微信返回信息：{}",jsonResult);
 		// 返回成功
 		if (ResultEnum.SUCCESS.getCode() == jsonResult.getIntValue("errcode")) {
 			OrganizeTemplate organizeTemplate = new OrganizeTemplate();
