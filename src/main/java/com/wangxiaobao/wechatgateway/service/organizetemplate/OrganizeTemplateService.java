@@ -91,4 +91,9 @@ public class OrganizeTemplateService extends BaseService {
 	public PageModel<OrganizeTemplateVO> selectOrganizeTemplateList(OrganizeTemplateListRequest request,PageModel<OrganizeTemplateVO> pageModel){
 		return orgranizeTemplateMapper.pageQueryForList("OrganizeTemplateMapper.selectOrganizeTemplateList", pageModel);
 	}
+	
+	public List<OrganizeTemplate> selectOrganizationCurrentTemplateList(OrganizeTemplate organizeTemplate){
+		Example<OrganizeTemplate> example = Example.of(organizeTemplate);
+		return organizeTemplateRepository.findAll(example);
+	}
 }

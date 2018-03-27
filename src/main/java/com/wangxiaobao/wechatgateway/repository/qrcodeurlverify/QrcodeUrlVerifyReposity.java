@@ -8,4 +8,6 @@ import com.wangxiaobao.wechatgateway.entity.qrcodeurlverify.QrcodeUrlVerify;
 public interface QrcodeUrlVerifyReposity extends JpaRepository<QrcodeUrlVerify, String> {
 
 	public QrcodeUrlVerify findByFileName(String fileName);
+	
+	public QrcodeUrlVerify findByWxAppid(String wxAppId);
 }

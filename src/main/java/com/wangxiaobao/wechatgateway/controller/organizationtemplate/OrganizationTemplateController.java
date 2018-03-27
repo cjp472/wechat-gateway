@@ -4,14 +4,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wangxiaobao.wechatgateway.VO.organizetemplate.OrganizeTemplateVO;
 import com.wangxiaobao.wechatgateway.entity.PageModel;
+import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
 import com.wangxiaobao.wechatgateway.form.organizetemplate.OrganizeTemplateListRequest;
 import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
@@ -44,5 +45,24 @@ public class OrganizationTemplateController {
 		pageModel.setParams(params);
 		return JsonResult
 				.newInstanceDataSuccess(organizeTemplateService.selectOrganizeTemplateList(request, pageModel));
+	}
+	
+	/**
+	  * @methodName: selectOrganizationWxAppIdCurrentTemplate
+	  * @Description: TODO  查询当前小程序的各个版本状态
+	  * @param organizeTemplate
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月27日 上午10:03:29
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月27日 上午10:03:29
+	  * @throws
+	 */
+	@RequestMapping("/selectCurrentTemplate")
+	public JsonResult selectOrganizationWxAppIdCurrentTemplate(@RequestBody OrganizeTemplate organizeTemplate){
+		if(!StringUtils.hasText(organizeTemplate.getWxAppId())){
+			return JsonResult.newInstanceMesFail("参数传递错误");
+		}
+		return JsonResult.newInstanceDataSuccess(organizeTemplateService.selectOrganizationCurrentTemplateList(organizeTemplate));
 	}
 }

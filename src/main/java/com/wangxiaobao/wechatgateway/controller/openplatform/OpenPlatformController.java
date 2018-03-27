@@ -42,6 +42,7 @@ import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 import com.source3g.springboot.frame.backwidow.commom.BusinessException;
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
+import com.wangxiaobao.wechatgateway.enums.OrganizationAuthType;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
@@ -619,6 +620,7 @@ public class OpenPlatformController {
 	/**
 	 * 商户公众号与开放平台绑定
 	 * 传了openAppid就用openAppid，没有openAppid就用传入的organizationAccount进行查询
+	 * 
 	 * @param wxAppid
 	 * @param openAppid
 	 * @return
@@ -632,7 +634,7 @@ public class OpenPlatformController {
 			log.error("未查询到wxAppid={}对应的数据信息，无法完成绑定", wxAppid);
 			return JsonResult.newInstanceMesFail("未查询到对应的数据信息,无法完成绑定");
 		}
-		//在没有传入openAppid的情况下用organizationAccount进行openAppid的查询
+		// 在没有传入openAppid的情况下用organizationAccount进行openAppid的查询
 		if (!StringUtils.hasText(openAppid) && StringUtils.hasText(organizationAccount)) {
 			// 小程序授权
 			WXopenPlatformMerchantInfoSearchCondition wxCondition = new WXopenPlatformMerchantInfoSearchCondition(
@@ -644,10 +646,11 @@ public class OpenPlatformController {
 			}
 			openAppid = wxInfoResponses.get(0).getOpenAppid();
 		}
-		//最终得到openAppid则进行绑定操作，没有则直接返回无法完成绑定
+		// 最终得到openAppid则进行绑定操作，没有则直接返回无法完成绑定
 		if (StringUtils.hasText(openAppid)) {
-			return JsonResult.newInstanceDataSuccess(testService.bindOpen(wxAppid, openAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken()));
-		} else{
+			return JsonResult.newInstanceDataSuccess(
+					testService.bindOpen(wxAppid, openAppid, wXopenPlatformMerchantInfo.getAuthoriceAccessToken()));
+		} else {
 			return JsonResult.newInstanceMesFail("未查询到可绑定的开放平台数据");
 		}
 	}
@@ -660,21 +663,58 @@ public class OpenPlatformController {
 	 */
 	@RequestMapping("/gongzhonghao/unbindOpen")
 	@ResponseBody
-	public JsonResult unbindOpen(String wxAppid, String openAppid) {
+	public JsonResult unbindOpen(@RequestBody WXopenPlatformMerchantInfoSearchCondition wxMerchantInfoSearchCondition) {
+		if (!StringUtils.hasText(wxMerchantInfoSearchCondition.getAuthType())
+				|| !"1".equals(wxMerchantInfoSearchCondition.getAuthType())
+				|| !"2".equals(wxMerchantInfoSearchCondition.getAuthType())) {
+			return JsonResult.newInstanceMesFail("参数传递错误");
+		}
+		// 查询公众号是否存在数据库中
 		WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo = wXopenPlatformMerchantInfoService
-				.getWXopenPlatformMerchantInfo(wxAppid);
-		if (!StringUtils.hasText(openAppid)) {
-			JsonResult jsonResult = testService.getBindOpen(wxAppid,
+				.getWXopenPlatformMerchantInfo(wxMerchantInfoSearchCondition.getWxAppid());
+		// 公众号不存在与数据库中则调用微信接口查询公众号所绑定的开放平台
+		if (!StringUtils.hasText(wxMerchantInfoSearchCondition.getOpenAppid())) {
+			JsonResult jsonResult = testService.getBindOpen(wxMerchantInfoSearchCondition.getWxAppid(),
 					wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
 			if (!"0".equals(jsonResult.getCode())) {
 				return JsonResult.newInstanceMesFail(jsonResult.getMessage());
 			}
 			JSONObject json = (JSONObject) jsonResult.getData();
-			openAppid = json.getString("open_appid");
+			wxMerchantInfoSearchCondition.setOpenAppid(json.getString("open_appid"));
 		}
-		JsonResult jsonResult = testService.unbindOpen(wxAppid, openAppid,
-				wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
-		return jsonResult;
+		// 公众号没有绑定开放平台则直接返回成功
+		if (!StringUtils.hasText(wxMerchantInfoSearchCondition.getOpenAppid())) {
+			return JsonResult.newInstanceSuccess();
+		}
+		// 小程序已绑定公众号所创建的开放平台，则无法进行解绑操作
+		if (canCreatOpenAppId(wxMerchantInfoSearchCondition.getOpenAppid(),
+				wxMerchantInfoSearchCondition.getAuthType())) {
+			JsonResult jsonResult = testService.unbindOpen(wxMerchantInfoSearchCondition.getWxAppid(),
+					wxMerchantInfoSearchCondition.getOpenAppid(), wXopenPlatformMerchantInfo.getAuthoriceAccessToken());
+			return jsonResult;
+		} else {
+			return JsonResult.newInstanceMesFail("当前状态不能够进行解绑操作");
+		}
+	}
+
+	// 判断是否可以创建开放平台
+	private boolean canCreatOpenAppId(String openAppId, String authType) {
+		boolean tag = true;
+		// 公众号操作解绑，需要判断是否已绑定了小程序，如果已绑定则不能进行解绑
+		if (OrganizationAuthType.GONGZHONGHAOAUTH.getType().equals(authType)) {
+			WXopenPlatformMerchantInfoSearchCondition wxMerchantInfoSearchCondition = new WXopenPlatformMerchantInfoSearchCondition();
+			wxMerchantInfoSearchCondition.setOpenAppid(openAppId);
+			wxMerchantInfoSearchCondition.setAuthType(OrganizationAuthType.MINIPROGRAMAUTH.getType());
+			List<WXopenPlatformMerchantInfo> infos = wXopenPlatformMerchantInfoService
+					.findListBy(wxMerchantInfoSearchCondition);
+			for (WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo2 : infos) {
+				if (wxMerchantInfoSearchCondition.getOpenAppid().equals(wXopenPlatformMerchantInfo2.getOpenAppid())) {
+					tag = false;
+					break;
+				}
+			}
+		}
+		return tag;
 	}
 
 	/**
@@ -784,9 +824,10 @@ public class OpenPlatformController {
 		model.addAttribute("authResult", "");
 		return "/authResult1";
 	}
-	
+
 	@RequestMapping("/gongzhonghao/getWXopenPlatformMerchantInfo")
-	public@ResponseBody JsonResult getWXopenPlatformMerchantInfo(String wxAppId){
-		return JsonResult.newInstanceDataSuccess(wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppId));
+	public @ResponseBody JsonResult getWXopenPlatformMerchantInfo(String wxAppId) {
+		return JsonResult
+				.newInstanceDataSuccess(wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppId));
 	}
 }

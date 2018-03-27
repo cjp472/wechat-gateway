@@ -28,4 +28,8 @@ public class QrcodeUrlVerifyService extends BaseService {
 	public QrcodeUrlVerify findByFileName(String fileName){
 		return qrcodeUrlVerifyReposity.findByFileName(fileName);
 	}
+	
+	public QrcodeUrlVerify findByWxAppId(String wxAppId){
+		return qrcodeUrlVerifyReposity.findByWxAppid(wxAppId);
+	}
 }

@@ -1,5 +1,7 @@
 package com.wangxiaobao.wechatgateway.form.openplatform;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
@@ -12,7 +14,7 @@ public class WXopenPlatformMerchantInfoSearchCondition{
 	private String createUser;
 	private java.util.Date createDate;
 	private String updateUser;
-	private Integer updateDate;
+	private Date updateDate;
 	//公众号创建的开放平台的appId
 	private String openAppid;
 	//授权账号类型：1：公众号；2小程序
@@ -24,8 +26,15 @@ public class WXopenPlatformMerchantInfoSearchCondition{
 		this.authType = authType;
 		this.organizationAccount = organizationAccount;
 	}
+	
 	public WXopenPlatformMerchantInfoSearchCondition() {
 		super();
+	}
+	private WXopenPlatformMerchantInfoSearchCondition(String openAppid, String authType, String organizationAccount) {
+		super();
+		this.openAppid = openAppid;
+		this.authType = authType;
+		this.organizationAccount = organizationAccount;
 	}
 	
 }

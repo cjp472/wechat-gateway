@@ -11,4 +11,5 @@ public class OrganizeTemplateListRequest {
 	private String isOnline;
 	private String status;
 	private String notStatus;
+	private String wxAppId;
 }

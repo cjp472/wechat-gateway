@@ -2,8 +2,10 @@ package com.wangxiaobao.wechatgateway.service.openplatform;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -78,6 +80,13 @@ public class WXopenPlatformMerchantInfoService {
 	 */
 	public List<WXopenPlatformMerchantInfo> findByCondition(WXopenPlatformMerchantInfoSearchCondition wxCondition){
 		return wXopenPlatformMerchantInfoMapper.findByAuthTypeAndOrganizationAccount(wxCondition.getAuthType(),wxCondition.getOrganizationAccount());
+	}
+	
+	public List<WXopenPlatformMerchantInfo> findListBy(WXopenPlatformMerchantInfoSearchCondition wxCondition){
+		WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo();
+		BeanUtils.copyProperties(wxCondition, wxInfo);
+		Example<WXopenPlatformMerchantInfo> example = Example.of(wxInfo);
+		return wXopenPlatformMerchantInfoMapper.findAll(example);
 	}
 	/**
 	  * @methodName: deleteByWXAppId
