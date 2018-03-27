@@ -258,9 +258,9 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 		// 返回成功
 		if (ResultEnum.SUCCESS.getCode() == jsonResult.getIntValue("errcode")) {
 			OrganizeTemplate organizeTemplate = new OrganizeTemplate();
-			organizeTemplate.setAuditid(jsonResult.getLong("auditid").toString());
+			organizeTemplate.setAuditid(request.getAuditid());
 			OrganizeTemplate orTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
-			orTemplate.setStatus(jsonResult.getIntValue("auditid") + "");
+			orTemplate.setStatus(jsonResult.getIntValue("status") + "");
 			return JsonResult.newInstanceDataSuccess(organizeTemplateService.save(orTemplate));
 		}
 		return JsonResult.newInstanceDataFail(jsonResult);
