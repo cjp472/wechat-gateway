@@ -260,7 +260,7 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 			OrganizeTemplate organizeTemplate = new OrganizeTemplate();
 			organizeTemplate.setAuditid(request.getAuditid());
 			OrganizeTemplate orTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
-			orTemplate.setStatus(jsonResult.getIntValue("status") + "");
+			orTemplate.setStatus(OrganizeTemplateStatusEnum.getStatusByWeixinStatus(jsonResult.getIntValue("status")).getStatus());
 			return JsonResult.newInstanceDataSuccess(organizeTemplateService.save(orTemplate));
 		}
 		return JsonResult.newInstanceDataFail(jsonResult);
@@ -315,14 +315,13 @@ public class OpenPlatformXiaochengxuController extends BaseController {
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
-		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
-		organizeTemplate.setWxAppId(request.getWxAppid());
-		organizeTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
-		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.SUCCESS.getStatus());
-		organizeTemplateService.save(organizeTemplate);
-		openPlatformXiaochengxuService.release(organizeTemplate.getWxAppId());
-		organizeTemplateService.updateOrganizeTemplateIsOnline(organizeTemplate.getWxAppId(), "1");
-		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.release(request.getWxAppid()));
+//		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+//		organizeTemplate.setWxAppId(request.getWxAppid());
+//		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.SUCCESS.getStatus());
+//		organizeTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
+		openPlatformXiaochengxuService.release(request.getWxAppid());
+		organizeTemplateService.updateOrganizeTemplateIsOnline(request.getWxAppid(), "1");
+		return JsonResult.newInstanceSuccess();
 	}
 
 	@RequestMapping("/miniprogram/bindTester")
