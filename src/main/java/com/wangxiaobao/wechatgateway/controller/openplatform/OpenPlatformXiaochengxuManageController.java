@@ -61,7 +61,7 @@ public class OpenPlatformXiaochengxuManageController {
 	}
 	
 	@RequestMapping("/save")
-	public JsonResult saveOpenPlatformXiaochengxu(@Valid PlatformMiniprogramSaveRequest request,BindingResult bindingResult){
+	public JsonResult saveOpenPlatformXiaochengxu(@Valid @RequestBody PlatformMiniprogramSaveRequest request,BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),bindingResult.getFieldError().getDefaultMessage());
 		}
