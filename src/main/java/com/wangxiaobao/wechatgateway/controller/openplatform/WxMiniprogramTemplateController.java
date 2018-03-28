@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
   * @ProjectName: wechatgateway 
   * @PackageName: com.wangxiaobao.wechatgateway.controller.openplatform 
   * @ClassName: WxMiniprogramTemplateController
-  * @Description: 平台小程序管理
+  * @Description: 平台小程序模板管理
   * @Copyright: Copyright (c) 2018  ALL RIGHTS RESERVED.
   * @Company:成都国胜天丰技术有限责任公司
   * @author liping_max

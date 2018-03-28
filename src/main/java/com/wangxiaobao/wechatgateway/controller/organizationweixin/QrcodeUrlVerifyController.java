@@ -1,4 +1,4 @@
-package com.wangxiaobao.wechatgateway.controller.qrcodeurlverify;
+package com.wangxiaobao.wechatgateway.controller.organizationweixin;
 
 import javax.validation.Valid;
 

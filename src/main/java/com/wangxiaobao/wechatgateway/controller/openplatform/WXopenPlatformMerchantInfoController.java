@@ -10,12 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoResponse;
 import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInfoSearchCondition;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
-import com.wangxiaobao.wechatgateway.service.test.TestService;
+import com.wangxiaobao.wechatgateway.service.weixinapi.WXApiService;
+import com.wangxiaobao.wechatgateway.service.wxauth.WXAuthService;
 import com.wangxiaobao.wechatgateway.utils.CreateUUID;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 
@@ -31,7 +31,7 @@ public class WXopenPlatformMerchantInfoController {
 	@Value("${wechat.openplatform.appsecret}")
 	String appsecret;
 	@Autowired
-	private TestService testService;
+	private WXAuthService wXAuthService;
 	
 	@RequestMapping("/wxopenplatform/save")
 	@ResponseBody
@@ -63,7 +63,7 @@ public class WXopenPlatformMerchantInfoController {
 			WXopenPlatformMerchantInfoResponse wXopenPlatformMerchantInfoResponse = new WXopenPlatformMerchantInfoResponse();
 			BeanUtils.copyProperties(wxList.get(0), wXopenPlatformMerchantInfoResponse);
 			wXopenPlatformMerchantInfoResponse.setComponentAppid(appId);
-			wXopenPlatformMerchantInfoResponse.setComponentAccessToken(testService.getApiComponentToken(appId,appsecret));
+			wXopenPlatformMerchantInfoResponse.setComponentAccessToken(wXAuthService.getApiComponentToken(appId,appsecret));
 			return JsonResult.newInstanceDataSuccess(wXopenPlatformMerchantInfoResponse);
 		}
 		return JsonResult.newInstanceSuccess();

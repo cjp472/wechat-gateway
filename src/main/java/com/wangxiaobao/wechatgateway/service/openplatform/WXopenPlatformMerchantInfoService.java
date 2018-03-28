@@ -19,7 +19,7 @@ import com.wangxiaobao.wechatgateway.form.openplatform.WXopenPlatformMerchantInf
 import com.wangxiaobao.wechatgateway.repository.openplatform.WXopenPlatformMerchantInfoMapper;
 import com.wangxiaobao.wechatgateway.service.organizetemplate.OrganizeTemplateService;
 import com.wangxiaobao.wechatgateway.service.redis.RedisService;
-import com.wangxiaobao.wechatgateway.service.test.TestService;
+import com.wangxiaobao.wechatgateway.service.wxauth.WXAuthService;
 import com.wangxiaobao.wechatgateway.utils.Constants;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
 
@@ -35,11 +35,11 @@ public class WXopenPlatformMerchantInfoService {
 	@Autowired
 	RedisService redisService;
 	@Autowired
-	TestService testService;
-	@Autowired
 	private WXopenPlatformMerchantInfoMapper wXopenPlatformMerchantInfoMapper;
 	@Autowired
 	private OrganizeTemplateService organizeTemplateService;
+	@Autowired
+	private WXAuthService wXAuthService;
 	
 	public void save(WXopenPlatformMerchantInfo wXopenPlatformMerchantInfo){
 		wXopenPlatformMerchantInfoMapper.save(wXopenPlatformMerchantInfo);
@@ -147,7 +147,7 @@ public class WXopenPlatformMerchantInfoService {
 		} else {
 			wxInfo = getByWXAppId(wxAppId);
 			String url = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token="
-					+ testService.getApiComponentToken(appId,appsecret);
+					+ wXAuthService.getApiComponentToken(appId,appsecret);
 			JSONObject jsonO = new JSONObject();
 			jsonO.put("component_appid", appId);
 			jsonO.put("authorizer_appid", wxAppId);
@@ -182,7 +182,7 @@ public class WXopenPlatformMerchantInfoService {
 		WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo();
 		wxInfo = getByWXAppId(wxAppId);
 		String url = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token="
-				+ testService.getApiComponentToken(appId,appsecret);
+				+ wXAuthService.getApiComponentToken(appId,appsecret);
 		JSONObject jsonO = new JSONObject();
 		jsonO.put("component_appid", appId);
 		jsonO.put("authorizer_appid", wxAppId);

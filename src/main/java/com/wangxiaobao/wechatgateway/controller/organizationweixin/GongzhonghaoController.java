@@ -1,4 +1,4 @@
-package com.wangxiaobao.wechatgateway.controller.gongzhonghao;
+package com.wangxiaobao.wechatgateway.controller.organizationweixin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wangxiaobao.wechatgateway.controller.base.BaseController;
@@ -21,7 +22,7 @@ import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.gongzhonghao.gongzhonghaoListResquest;
 import com.wangxiaobao.wechatgateway.service.gongzhonghao.GongzhonghaoService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
-import com.wangxiaobao.wechatgateway.service.test.TestService;
+import com.wangxiaobao.wechatgateway.service.weixinapi.WXApiService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 @RestController
 public class GongzhonghaoController extends BaseController {
@@ -29,8 +30,6 @@ public class GongzhonghaoController extends BaseController {
 	private GongzhonghaoService gongzhonghaoService;
 	@Autowired
 	private WXopenPlatformMerchantInfoService wXopenPlatformMerchantInfoService; 
-	@Autowired
-	private TestService testService;
 	@Value("${wechat.openplatform.name}")
 	private String openPlatformName;
 	
@@ -102,5 +101,11 @@ public class GongzhonghaoController extends BaseController {
 		}else{
 			return JsonResult.newInstanceDataSuccess(wxInfo);
 		}
+	}
+
+	@RequestMapping("/gongzhonghao/getWXopenPlatformMerchantInfo")
+	public @ResponseBody JsonResult getWXopenPlatformMerchantInfo(String wxAppId) {
+		return JsonResult
+				.newInstanceDataSuccess(wXopenPlatformMerchantInfoService.getWXopenPlatformMerchantInfo(wxAppId));
 	}
 }

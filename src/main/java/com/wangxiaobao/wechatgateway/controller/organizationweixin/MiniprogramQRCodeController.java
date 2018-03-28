@@ -1,6 +1,4 @@
-package com.wangxiaobao.wechatgateway.controller.miniprogramqrcode;
-
-import java.util.Date;
+package com.wangxiaobao.wechatgateway.controller.organizationweixin;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.entity.qrcodeurlverify.QrcodeUrlVerify;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
