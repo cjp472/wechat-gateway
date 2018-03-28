@@ -435,9 +435,9 @@ public static void main(String[] args) {
 			openPlatformXiaochengxuRepository.save(openPlatformXiaochengxu);
 		}else{//修改
 			OpenPlatformXiaochengxu openPlatformXiaochengxuOld = openPlatformXiaochengxuRepository.findByCode(request.getCode());
-			openPlatformXiaochengxuOld.setAppId(openPlatformXiaochengxu.getAppId());
 			openPlatformXiaochengxuOld.setAppSecret(openPlatformXiaochengxu.getAppSecret());
 			openPlatformXiaochengxuOld.setName(openPlatformXiaochengxu.getName());
+			openPlatformXiaochengxuOld.setType(request.getType());
 			openPlatformXiaochengxuRepository.save(openPlatformXiaochengxuOld);
 		}
 	}
