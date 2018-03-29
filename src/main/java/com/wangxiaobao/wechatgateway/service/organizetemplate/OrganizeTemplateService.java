@@ -57,6 +57,7 @@ public class OrganizeTemplateService extends BaseService {
 	public void updateOrganizeTemplateIsOnline(String wxAppid,String isOnline){
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppid);
 		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		organizeTemplate.setWxAppId(wxAppid);
 		organizeTemplate.setOrganizationAccount(wxInfo.getOrganizationAccount());
 		organizeTemplate.setIsNew("1");
 		OrganizeTemplate organizeTemplate2 = findOrganizeTemplateBy(organizeTemplate);
@@ -67,6 +68,7 @@ public class OrganizeTemplateService extends BaseService {
 	public void updateOrganizeTemplateIsNew(String wxAppid,String isNew){
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppid);
 		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		organizeTemplate.setWxAppId(wxAppid);
 		organizeTemplate.setOrganizationAccount(wxInfo.getOrganizationAccount());
 		organizeTemplate.setIsNew("1");
 		OrganizeTemplate organizeTemplate2 = findOrganizeTemplateBy(organizeTemplate);
