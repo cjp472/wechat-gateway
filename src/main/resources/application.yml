@@ -74,3 +74,5 @@ fleetingtime:
   merchantSnCount: http://fleeting-time:8080/fleetingtime/merchant/getSnCount
 push:
   url: http://push-core:8080/push/push
+organization:
+  findLikeOrgName: http://idevelop.source3g.com:57557/userLogon/findLikeOrgName

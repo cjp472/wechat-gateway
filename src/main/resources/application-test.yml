@@ -63,3 +63,5 @@ fleetingtime:
   merchantInfoBySn: http://develop.source3g.com:57567/fleetingtime/tablecard/getBySn
 push:
   url: http://develop.source3g.com:57560/push/push
+organization:
+  findLikeOrgName: http://idevelop.source3g.com:57557/userLogon/findLikeOrgName  

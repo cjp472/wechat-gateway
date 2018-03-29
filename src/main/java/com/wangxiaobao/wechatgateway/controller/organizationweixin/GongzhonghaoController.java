@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wangxiaobao.wechatgateway.controller.base.BaseController;
 import com.wangxiaobao.wechatgateway.dto.wxopenplatfrommerchantinfo.WxOpenPlatformMerchantGongzhonghaoInfo;
 import com.wangxiaobao.wechatgateway.entity.PageModel;
@@ -22,6 +24,7 @@ import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.form.gongzhonghao.gongzhonghaoListResquest;
 import com.wangxiaobao.wechatgateway.service.gongzhonghao.GongzhonghaoService;
 import com.wangxiaobao.wechatgateway.service.openplatform.WXopenPlatformMerchantInfoService;
+import com.wangxiaobao.wechatgateway.service.store.BrandInfoService;
 import com.wangxiaobao.wechatgateway.service.weixinapi.WXApiService;
 import com.wangxiaobao.wechatgateway.utils.JsonResult;
 @RestController
@@ -30,8 +33,12 @@ public class GongzhonghaoController extends BaseController {
 	private GongzhonghaoService gongzhonghaoService;
 	@Autowired
 	private WXopenPlatformMerchantInfoService wXopenPlatformMerchantInfoService; 
+	@Autowired
+	private BrandInfoService brandInfoService;
 	@Value("${wechat.openplatform.name}")
 	private String openPlatformName;
+	@Value("${organization.findLikeOrgName}")
+	private String findLikeOrgNameUrl;
 	
 	@RequestMapping("/gongzhonghao/getAuthAccessToken")
 	public JsonResult getAuthAccessToken(String appId){
@@ -42,10 +49,10 @@ public class GongzhonghaoController extends BaseController {
 	}
 	
 	@RequestMapping("/gongzhonghao/selectGongzhonghaoList")
-	public JsonResult selectGongzhonghaoList(@RequestBody gongzhonghaoListResquest resquest){
+	public JsonResult selectGongzhonghaoList(@RequestBody gongzhonghaoListResquest request) throws Exception{
 		PageModel<WxOpenPlatformMerchantGongzhonghaoInfo> pageModel = new PageModel<WxOpenPlatformMerchantGongzhonghaoInfo>();
-		pageModel.setPageNum(resquest.getPage());
-		pageModel.setPageSize(resquest.getSize());
+		pageModel.setPageNum(request.getPage());
+		pageModel.setPageSize(request.getSize());
 		class Brand{
 			private String name;
 			private String organizationAccount;
@@ -61,15 +68,22 @@ public class GongzhonghaoController extends BaseController {
 				return organizationAccount;
 			}
 		}
-		List<Brand> brands = Arrays.asList(new Brand("旺小宝测试","WCBBJ"),new Brand("养个啪啪", "halley2"),new Brand("onlywww", "halley1"));
+		JSONObject JSONResult = JSONObject.parseObject(brandInfoService.findLikeOrgName(request, findLikeOrgNameUrl));
+		JSONObject JSONData = JSONResult.getJSONObject("data");
+		pageModel.setCount(JSONData.getLongValue("count"));
+		JSONArray JSONAData = JSONData.getJSONArray("datas");
+		List<Brand> brands = new ArrayList<>();
 		List<String> organizationAccounts = new ArrayList<>();
-		for (Brand brand : brands) {
-			organizationAccounts.add(brand.getOrganizationAccount());
+		for(int i=0;i<JSONAData.size();i++){
+			JSONObject JSONOorg = JSONAData.getJSONObject(i);
+			Brand brand = new Brand(JSONOorg.getString("orgName"), JSONOorg.getString("orgAccount"));
+			brands.add(brand);
+			organizationAccounts.add(JSONOorg.getString("orgAccount"));
 		}
-		if(!StringUtils.hasText(resquest.getAuthType())){
-			resquest.setAuthType("1");
+		if(!StringUtils.hasText(request.getAuthType())){
+			request.setAuthType("1");
 		}
-		List<WXopenPlatformMerchantInfo> wxInfos = wXopenPlatformMerchantInfoService.selectWXopenPlatformMerchantInfoListByOrganizationAccountsAndAuthType(organizationAccounts, resquest.getAuthType());
+		List<WXopenPlatformMerchantInfo> wxInfos = wXopenPlatformMerchantInfoService.selectWXopenPlatformMerchantInfoListByOrganizationAccountsAndAuthType(organizationAccounts, request.getAuthType());
 		List<WxOpenPlatformMerchantGongzhonghaoInfo> wxGongzhonghaoInfos = new ArrayList<>();
 		for (Brand brand : brands) {
 			WxOpenPlatformMerchantGongzhonghaoInfo wxOpenPlatformMerchantGongzhonghaoInfo = new WxOpenPlatformMerchantGongzhonghaoInfo();
