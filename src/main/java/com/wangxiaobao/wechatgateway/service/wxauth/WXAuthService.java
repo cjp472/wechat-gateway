@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wangxiaobao.wechatgateway.enums.ResultEnum;
+import com.wangxiaobao.wechatgateway.exception.CommonException;
 import com.wangxiaobao.wechatgateway.properties.WxProperties;
 import com.wangxiaobao.wechatgateway.service.redis.RedisService;
 import com.wangxiaobao.wechatgateway.utils.Constants;
 import com.wangxiaobao.wechatgateway.utils.HttpClientUtils;
+import com.wangxiaobao.wechatgateway.utils.JsonResult;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,9 +62,12 @@ public class WXAuthService {
 		jsonO.put("authorization_code", authCode);
 		String StrResult = HttpClientUtils.executeByJSONPOST(url, jsonO.toJSONString(), 5000);
 		JSONObject jsonResult = JSONObject.parseObject(StrResult);
-
-		// TODO
 		String authorizationInfo = jsonResult.getString("authorization_info");
+		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
+		if (ObjectUtils.isEmpty(jsono.getString("authorizer_access_token"))
+				|| ObjectUtils.isEmpty(jsono.getString("authorizer_refresh_token"))) {
+			throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), "获取商家公众号或小程序调用凭证异常:"+authorizationInfo);
+		}
 		return authorizationInfo;
 	}
 

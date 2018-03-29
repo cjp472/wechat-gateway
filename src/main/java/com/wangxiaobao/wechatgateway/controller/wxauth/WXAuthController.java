@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
+import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
@@ -155,7 +156,8 @@ public class WXAuthController {
 						String authorizationCode = map.get("AuthorizationCode");
 						log.info("返回的授权code：" + authorizationCode);
 						String authorizationInfo = wXAuthService.apiQueryAuth(authorizationCode, appId, appsecret);
-						wXApiService.buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+						WXopenPlatformMerchantInfo wXInfo = wXApiService.saveOrUpdateWxopenPlatformMerchantInfoFromAuth(authorizationInfo, authType, organizationAccount);
+						wXApiService.buildingAuthorizer(wXInfo.getWxAppid(), authType, organizationAccount);
 						return "success";
 					case "unauthorized":
 						log.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
@@ -209,7 +211,8 @@ public class WXAuthController {
 		String authType = request.getParameter("authType");
 		log.info("返回的授权code：" + authCode + ",authType=" + authType);
 		String authorizationInfo = wXAuthService.apiQueryAuth(authCode, appId, appsecret);
-		JsonResult jsonResult = wXApiService.buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+		WXopenPlatformMerchantInfo wXInfo = wXApiService.saveOrUpdateWxopenPlatformMerchantInfoFromAuth(authorizationInfo, authType, organizationAccount);
+		JsonResult jsonResult = wXApiService.buildingAuthorizer(wXInfo.getWxAppid(), authType, organizationAccount);
 		log.info("授权返回结果{}", JSONObject.toJSONString(jsonResult));
 		model.addAttribute("authResult", jsonResult.getMessage());
 		model.addAttribute("authReason", jsonResult.getData());

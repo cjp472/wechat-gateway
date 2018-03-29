@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,6 +28,7 @@ import com.wangxiaobao.wechatgateway.entity.miniprogramtemplate.WxMiniprogramTem
 import com.wangxiaobao.wechatgateway.entity.openplatform.OpenPlatformXiaochengxu;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
+import com.wangxiaobao.wechatgateway.enums.OrganizationAuthType;
 import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.enums.ResultEnum;
 import com.wangxiaobao.wechatgateway.exception.CommonException;
@@ -262,8 +264,9 @@ public class WXApiService {
 		params.put("show_profile", "1");
 		String result = HttpClientUtils.executeByJSONPOST(url, params.toJSONString(), 50000);
 		JSONObject jsonO = JSONObject.parseObject(result);
-		if (!"0".equals(jsonO.getString("errcode")) && !"89010".equals(jsonO.getString("errcode"))) {
-			log.error("授权失败,绑定第三方平台小程序失败");
+		if (!"0".equals(jsonO.getString("errcode")) && !"89010".equals(jsonO.getString("errcode"))
+				&& !"89015".equals(jsonO.getString("errcode"))) {
+			log.error("授权失败,关联第三方平台小程序失败");
 			throw new CommonException(jsonO.getInteger("errcode"), "授权失败:" + jsonO.getString("errmsg"));
 		}
 		jsonO.put("errcode", "0");
@@ -366,107 +369,104 @@ public class WXApiService {
 		return JSONObject.toJSONString(response);
 	}
 
-	// 组装授权和创建开放平台
-	public JsonResult buildingAuthorizer(String authorizationInfo, String authType, String organizationAccount) {
-		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
-		if (ObjectUtils.isEmpty(jsono.getString("authorizer_access_token"))
-				|| ObjectUtils.isEmpty(jsono.getString("authorizer_refresh_token"))) {
-			return JsonResult.newInstanceAuthFail("获取商家公众号或小程序调用凭证异常{}" + authorizationInfo);
+	public boolean isCanAuth(String wxAppId, String organizationAccount, String authType) {
+		boolean isCanAuth = true;
+		WXopenPlatformMerchantInfoSearchCondition wxCondition = new WXopenPlatformMerchantInfoSearchCondition(
+				OrganizationAuthType.MINIPROGRAMAUTH.getType(), organizationAccount);
+		List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
+				.findByCondition(wxCondition);
+		// 公众号授权需要判断品牌下是否已有公众号
+		if (OrganizationAuthType.GONGZHONGHAOAUTH.getType().equals(authType)) {
+			// 当前公众号没有绑定小程序，可以跟换公众号
+			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
+				wxCondition.setAuthType(OrganizationAuthType.GONGZHONGHAOAUTH.getType());
+				List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
+						.findByCondition(wxCondition);
+				// 更新微信公众号需要将之前的删除
+				if (null != wxInfoList && !wxInfoList.get(0).getWxAppid().equals(wxAppId)) {
+					wXopenPlatformMerchantInfoService.deleteByWXAppId(wxInfoList.get(0).getWxAppid());
+				}
+			} else {
+				log.info("当前品牌{}已有授权小程序,不能更换公众号{}", organizationAccount, wxAppId);
+				throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), "当前品牌已有授权小程序,无法更换公众号,请联系服务提供方!");
+			}
+		} else if (OrganizationAuthType.MINIPROGRAMAUTH.getType().equals(authType)) {
+			// 小程序授权
+			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
+				throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), "授权小程序之前需要授权公众号");
+			}
+			/*
+			 * else if (null != oldWxInfo &&
+			 * !oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"
+			 * ))) { return
+			 * JsonResult.newInstanceAuthFail("更换小程序可能造成用户数据丢失,请联系【旺小宝】更换"); }
+			 */
 		}
+		return isCanAuth;
+	}
+
+	/**
+	 * @methodName: saveOrUpdateWxopenPlatformMerchantInfoFromAuth @Description:
+	 *              TODO 品牌公众号和小程序管理员扫码授权回调之后立即将授权信息存储到数据库，
+	 *              这样在后续授权流程异常的情况下就不再需要管理员再次扫码授权 @param
+	 *              authorizationInfo @param authType @param
+	 *              organizationAccount @return
+	 *              WXopenPlatformMerchantInfo @createUser:
+	 *              liping_max @createDate: 2018年3月28日 下午4:05:07 @updateUser:
+	 *              liping_max @updateDate: 2018年3月28日 下午4:05:07 @throws
+	 */
+	public WXopenPlatformMerchantInfo saveOrUpdateWxopenPlatformMerchantInfoFromAuth(String authorizationInfo,
+			String authType, String organizationAccount) {
+		JSONObject jsono = JSONObject.parseObject(authorizationInfo);
+		isCanAuth(jsono.getString("authorizer_appid"), organizationAccount, authType);
 		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService
 				.getByWXAppId(jsono.getString("authorizer_appid"));
-		// 换取了调用凭证，必须更新redis数据
+		// 重复授权
 		if (null != oldWxInfo && !StringUtils.isEmpty(oldWxInfo.getWxAppid())) {
 			oldWxInfo.setAuthoriceAccessToken(jsono.getString("authorizer_access_token"));
 			oldWxInfo.setAuthoriceRefreshToken(jsono.getString("authorizer_refresh_token"));
 			wXopenPlatformMerchantInfoService.save(oldWxInfo);
 			redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + oldWxInfo.getWxAppid(),
 					JSONObject.toJSONString(oldWxInfo), 7000);
-		} else {
-			redisService.del(Constants.MERCHANT_WX_OPENPLATFORM_KEY + jsono.getString("authorizer_appid"));
+		} else {// 新授权
+			// 获取平台调用凭证
+			String component_access_token = wXAuthService.getApiComponentToken(appId, appsecret);
+			// 获取授权方的详细信息
+			String authorizerStr = getAuthorizerInfo(appId, jsono.getString("authorizer_appid"),
+					component_access_token);
+			JSONObject authorizerJson = JSONObject.parseObject(authorizerStr);
+			JSONObject authorizerInfoJson = authorizerJson.getJSONObject("authorizer_info");
+			oldWxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(), jsono.getString("authorizer_appid"), null,
+					jsono.getString("authorizer_access_token"), jsono.getString("authorizer_refresh_token"),
+					"createUser", new Date(), "updateUser", new Date(), null, authType, organizationAccount,
+					authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
+					authorizerInfoJson.getString("verify_type_info"), authorizerInfoJson.getString("user_name"));
+			wXopenPlatformMerchantInfoService.save(oldWxInfo);
 		}
-		// 获取平台调用凭证
-		String component_access_token = wXAuthService.getApiComponentToken(appId, appsecret);
-		// 获取授权方的详细信息
-		String authorizerStr = getAuthorizerInfo(appId, jsono.getString("authorizer_appid"), component_access_token);
-		JSONObject authorizerJson = JSONObject.parseObject(authorizerStr);
-		JSONObject authorizerInfoJson = authorizerJson.getJSONObject("authorizer_info");
+		redisService.set(Constants.MERCHANT_WX_OPENPLATFORM_KEY + oldWxInfo.getWxAppid(),
+				JSONObject.toJSONString(oldWxInfo), 7000);
+		return oldWxInfo;
+	}
+
+	// 组装授权和创建开放平台
+	public JsonResult buildingAuthorizer(String wxAppId, String authType, String organizationAccount) {
+		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppId);
 		if (Constants.AUTHORIZER_TYPE_GONGZHONGHAO.equals(authType)) {
-			if (null == oldWxInfo || StringUtils.isEmpty(oldWxInfo.getWxAppid())) {
-				// 创建商户公众号的开放平台
-				JsonResult result = createOpen(jsono.getString("authorizer_appid"),
-						jsono.getString("authorizer_access_token"));
-				if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
-					WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(),
-							jsono.getString("authorizer_appid"), null, jsono.getString("authorizer_access_token"),
-							jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser",
-							new Date(), result.getData().toString(), authType, organizationAccount,
-							authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
-							authorizerInfoJson.getString("verify_type_info"),
-							authorizerInfoJson.getString("user_name"));
-					wXopenPlatformMerchantInfoService.save(wxInfo);
-					// 关联我们的小程序和商家的
-					OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService
-							.findCanBindXiaochengxu();
-					if (null == openPlatformXiaochengxu) {
-						return JsonResult.newInstanceAuthFail("平台黄页小程序不存在");
-					}
-					JSONObject resultJson = bindWxamplink(openPlatformXiaochengxu.getAppId(),
-							jsono.getString("authorizer_access_token"));
-					JsonResult jsonResult = JsonResult.newInstance(resultJson.getString("errcode"),
-							resultJson.getString("errmsg"));
-					if (!JsonResult.APP_RETURN_SUCCESS.equals(jsonResult.getCode())) {
-						return JsonResult.newInstanceAuthFail("绑定第三方平台小程序失败");
-					}
-					return JsonResult.newInstanceAuthSuccess("授权成功");
-				} else {
-					return JsonResult.newInstanceAuthFail("创建公众号开放平台失败");
+			// 创建商户公众号的开放平台
+			JsonResult result = createOpen(wxAppId, oldWxInfo.getAuthoriceAccessToken());
+			if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
+				oldWxInfo.setOpenAppid(result.getData().toString());
+				wXopenPlatformMerchantInfoService.save(oldWxInfo);
+				// 关联我们的小程序和商家的
+				OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService
+						.findCanBindXiaochengxu();
+				if (null == openPlatformXiaochengxu) {
+					return JsonResult.newInstanceAuthFail("更新授权，平台黄页小程序不存在");
 				}
+				bindWxamplink(openPlatformXiaochengxu.getAppId(), oldWxInfo.getAuthoriceAccessToken());
+				return JsonResult.newInstanceAuthSuccess("授权成功");
 			} else {
-				// 更新权限
-				WXopenPlatformMerchantInfoSearchCondition wxCondition = new WXopenPlatformMerchantInfoSearchCondition(
-						Constants.AUTHORIZER_TYPE_XIAOCHENGXU, organizationAccount);
-				List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
-						.findByCondition(wxCondition);
-				// 当前公众号没有绑定小程序，可以跟换公众号
-				if (null == wxInfoResponses) {
-					wxCondition.setAuthType(Constants.AUTHORIZER_TYPE_GONGZHONGHAO);
-					List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
-							.findByCondition(wxCondition);
-					// 更新微信公众号需要将之前的删除
-					if (null != wxInfoList
-							&& !wxInfoList.get(0).getWxAppid().equals(jsono.getString("authorizer_appid"))) {
-						wXopenPlatformMerchantInfoService.deleteByWXAppId(wxInfoList.get(0).getWxAppid());
-					}
-					// 创建商户公众号的开放平台
-					JsonResult result = createOpen(jsono.getString("authorizer_appid"),
-							jsono.getString("authorizer_access_token"));
-					if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
-						WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(),
-								jsono.getString("authorizer_appid"), null, jsono.getString("authorizer_access_token"),
-								jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser",
-								new Date(), result.getData().toString(), authType, organizationAccount,
-								authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
-								authorizerInfoJson.getString("verify_type_info"),
-								authorizerInfoJson.getString("user_name"));
-						wXopenPlatformMerchantInfoService.save(wxInfo);
-						// 关联我们的小程序和商家的
-						OpenPlatformXiaochengxu openPlatformXiaochengxu = openPlatformXiaochengxuService
-								.findCanBindXiaochengxu();
-						if (null == openPlatformXiaochengxu) {
-							return JsonResult.newInstanceAuthFail("更新授权，平台黄页小程序不存在");
-						}
-						bindWxamplink(openPlatformXiaochengxu.getAppId(), jsono.getString("authorizer_access_token"));
-						return JsonResult.newInstanceAuthSuccess("授权成功");
-					} else {
-						return JsonResult.newInstanceAuthFail("创建公众号开放平台失败");
-					}
-				} else if (oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"))) {
-					// 当前已绑定小程序，只能更新权限，不能更改公众号
-					return JsonResult.newInstanceAuthSuccess("更新公众号授权成功");
-				} else {
-					return JsonResult.newInstanceAuthFail("更换公众号有可能造成数据丢失，请联系【旺小宝】更换");
-				}
+				return JsonResult.newInstanceAuthFail("创建公众号开放平台失败");
 			}
 		} else {
 			// 小程序授权
@@ -474,32 +474,17 @@ public class WXApiService {
 					Constants.AUTHORIZER_TYPE_GONGZHONGHAO, organizationAccount);
 			List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
 					.findByCondition(wxCondition);
-			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
-				return JsonResult.newInstanceAuthFail("授权小程序之前需要授权公众号");
-			} else if (null != oldWxInfo && !oldWxInfo.getWxAppid().equals(jsono.getString("authorizer_appid"))) {
-				return JsonResult.newInstanceAuthFail("更换小程序可能造成用户数据丢失,请联系【旺小宝】更换");
-			}
-			JsonResult result = bindOpen(jsono.getString("authorizer_appid"), wxInfoResponses.get(0).getOpenAppid(),
-					jsono.getString("authorizer_access_token"));
+			JsonResult result = bindOpen(wxAppId, wxInfoResponses.get(0).getOpenAppid(),
+					oldWxInfo.getAuthoriceAccessToken());
 			if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
-				String wxAppid = "";
-				if (null == oldWxInfo) {
-					WXopenPlatformMerchantInfo wxInfo = new WXopenPlatformMerchantInfo(CreateUUID.getUuid(),
-							jsono.getString("authorizer_appid"), null, jsono.getString("authorizer_access_token"),
-							jsono.getString("authorizer_refresh_token"), "createUser", new Date(), "updateUser",
-							new Date(), wxInfoResponses.get(0).getOpenAppid(), authType, organizationAccount,
-							authorizerInfoJson.getString("nick_name"), authorizerInfoJson.getString("head_img"),
-							authorizerInfoJson.getString("verify_type_info"),
-							authorizerInfoJson.getString("user_name"));
-					wXopenPlatformMerchantInfoService.save(wxInfo);
-					wxAppid = wxInfo.getWxAppid();
-				} else {
-					wxAppid = oldWxInfo.getWxAppid();
-				}
-				openPlatformXiaochengxuService.initXiaochengxu(wxAppid, "add", organizationAccount,
-						authorizerInfoJson.getString("nick_name"));
+				oldWxInfo.setOpenAppid(wxInfoResponses.get(0).getOpenAppid());
+				wXopenPlatformMerchantInfoService.save(oldWxInfo);
+				openPlatformXiaochengxuService.initXiaochengxu(oldWxInfo.getWxAppid(), "add", organizationAccount,
+						oldWxInfo.getUserName());
+				return result;
+			} else {
+				return JsonResult.newInstanceAuthFail("小程序绑定开放平台失败");
 			}
-			return result;
 		}
 	}
 }

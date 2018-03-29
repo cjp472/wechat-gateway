@@ -354,7 +354,7 @@ public static void main(String[] args) {
 	  * @updateDate: 2018年1月17日 下午7:43:33
 	  * @throws
 	 */
-	public void initXiaochengxu(String wxAppid, String action, String organizationAccount,String userName) {
+	public void initXiaochengxu(String wxAppid, String action, String organizationAccount,String uerName) {
 		// 1，设置小程序服务器域名---code为0或者85017都算成功
 		modifyDomain(wxAppid, action);
 		// 2，设置小程序业务域名
