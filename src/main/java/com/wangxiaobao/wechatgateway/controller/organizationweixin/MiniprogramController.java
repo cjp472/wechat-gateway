@@ -187,6 +187,9 @@ public class MiniprogramController extends BaseController {
 			}
 		}
 		JSONObject jsonResult = openPlatformXiaochengxuService.submitAudit(request.getWxAppid(), submitauditparamJson);
+		if(!JsonResult.APP_RETURN_SUCCESS.equals(jsonResult.getString("errcode"))){
+			return JsonResult.newInstanceMesFail(jsonResult.getString("errmsg"));
+		}
 		// 将之前的发布设为旧
 		OrganizeTemplate orTemplate = new OrganizeTemplate();
 		orTemplate.setIsNew("1");
