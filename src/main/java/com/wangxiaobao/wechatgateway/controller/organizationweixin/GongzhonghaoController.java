@@ -83,7 +83,10 @@ public class GongzhonghaoController extends BaseController {
 		if(!StringUtils.hasText(request.getAuthType())){
 			request.setAuthType("1");
 		}
-		List<WXopenPlatformMerchantInfo> wxInfos = wXopenPlatformMerchantInfoService.selectWXopenPlatformMerchantInfoListByOrganizationAccountsAndAuthType(organizationAccounts, request.getAuthType());
+		List<WXopenPlatformMerchantInfo> wxInfos = new ArrayList<>();
+		if(!organizationAccounts.isEmpty()){
+			wxInfos = wXopenPlatformMerchantInfoService.selectWXopenPlatformMerchantInfoListByOrganizationAccountsAndAuthType(organizationAccounts, request.getAuthType());
+		}
 		List<WxOpenPlatformMerchantGongzhonghaoInfo> wxGongzhonghaoInfos = new ArrayList<>();
 		for (Brand brand : brands) {
 			WxOpenPlatformMerchantGongzhonghaoInfo wxOpenPlatformMerchantGongzhonghaoInfo = new WxOpenPlatformMerchantGongzhonghaoInfo();

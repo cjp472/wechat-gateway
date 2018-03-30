@@ -9,6 +9,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -96,7 +97,7 @@ public class HttpClientUtils {
 	}
 	
 	public static String executeByPOST(String url, List<NameValuePair> params) throws Exception {
-        logger.info("http请求地址："+url);
+		logger.info("http请求地址："+url);
         HttpClient httpclient = getHttpClient();
         HttpPost post = new HttpPost(url);
 
@@ -104,20 +105,7 @@ public class HttpClientUtils {
         String responseJson = null;
         try {
             if (params != null) {
-                StringBuilder result = new StringBuilder();
-                for (final NameValuePair parameter : params) {
-                    if (result.length() > 0) {
-                        result.append("&");
-                    }
-                    result.append(parameter.getName());
-                    if (parameter.getValue() != null) {
-                        result.append("=");
-                        result.append(parameter.getValue());
-                    }
-                }
-                StringEntity stringEntity = new StringEntity(result.toString());
-                stringEntity.setContentType("application/x-www-form-urlencoded");
-                post.setEntity(stringEntity);
+                post.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
             }
             responseJson = httpclient.execute(post, responseHandler);
             logger.info("HttpClient POST请求结果：" + responseJson);
