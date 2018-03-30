@@ -376,13 +376,13 @@ public class WXApiService {
 				OrganizationAuthType.MINIPROGRAMAUTH.getType(), organizationAccount);
 		List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
 				.findByCondition(wxCondition);
+		wxCondition.setAuthType(OrganizationAuthType.GONGZHONGHAOAUTH.getType());
+		List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
+				.findByCondition(wxCondition);
 		// 公众号授权需要判断品牌下是否已有公众号
 		if (OrganizationAuthType.GONGZHONGHAOAUTH.getType().equals(authType)) {
 			// 当前公众号没有绑定小程序，可以跟换公众号
 			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
-				wxCondition.setAuthType(OrganizationAuthType.GONGZHONGHAOAUTH.getType());
-				List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
-						.findByCondition(wxCondition);
 				// 更新微信公众号需要将之前的删除
 				if (!ObjectUtils.isEmpty(wxInfoList) && !wxInfoList.get(0).getWxAppid().equals(wxAppId)) {
 					wXopenPlatformMerchantInfoService.deleteByWXAppId(wxInfoList.get(0).getWxAppid());
@@ -393,7 +393,7 @@ public class WXApiService {
 			}
 		} else if (OrganizationAuthType.MINIPROGRAMAUTH.getType().equals(authType)) {
 			// 小程序授权
-			if (null == wxInfoResponses || wxInfoResponses.size() <= 0) {
+			if (null == wxInfoList || wxInfoList.size() <= 0) {
 				throw new CommonException(ResultEnum.RETURN_ERROR.getCode(), "授权小程序之前需要授权公众号");
 			}
 			/*
