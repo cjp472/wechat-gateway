@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -160,18 +161,18 @@ public class MiniprogramController extends BaseController {
 	 *              liping_max @updateDate: 2018年1月16日 下午4:54:36 @throws
 	 */
 	@RequestMapping("/miniprogram/submitaudit")
-	public JsonResult submitAudit(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult,
-			String organizationAccount) {
+	public JsonResult submitAudit(@Valid MiniProgramGetCategoryRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			log.error("【将第三方提交的代码包提交审核】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
 					bindingResult.getFieldError().getDefaultMessage());
 		}
+		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		BeanUtils.copyProperties(request, organizeTemplate);
+		organizeTemplate = organizeTemplateService.findOrganizeTemplateBy(organizeTemplate);
 		// 获取商家小程序账号需要配置的address和类目
 		ConstantCode constantCode = new ConstantCode("templatePage", "yellowpages");
 		constantCode = constantCodeService.findConstantCode(constantCode);
-		WxMiniprogramTemplate wxMiniprogramTemplate = wxMiniprogramTemplateService
-				.findWxMiniprogramTemplateDefaultByType(MiniprogramTemplateTypeEnum.PLATFORM_PAGE_TEMPLATE.getType());
 		JSONObject submitauditparamJson = JSONObject.parseObject(constantCode.getValue());
 		// 设置tag，将小程序名字设置到tag里面
 		WXopenPlatformMerchantInfo wxInfo = wxPlatformMerchantInfoService.getByWXAppId(request.getWxAppid());
@@ -189,7 +190,7 @@ public class MiniprogramController extends BaseController {
 		// 将之前的发布设为旧
 		OrganizeTemplate orTemplate = new OrganizeTemplate();
 		orTemplate.setIsNew("1");
-		orTemplate.setOrganizationAccount(organizationAccount);
+		orTemplate.setOrganizationAccount(organizeTemplate.getOrganizationAccount());
 		OrganizeTemplate organizeTemplateOld = organizeTemplateService.findOrganizeTemplateBy(orTemplate);
 		if (null != organizeTemplateOld) {
 			organizeTemplateOld.setIsNew("0");
@@ -197,13 +198,6 @@ public class MiniprogramController extends BaseController {
 			organizeTemplateService.save(organizeTemplateOld);
 		}
 		// 保存新的商户模板信息
-		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
-		organizeTemplate.setCreateDate(new Date());
-		organizeTemplate.setTemplateId(wxMiniprogramTemplate.getTemplateId());
-		organizeTemplate.setExtJson("");
-		organizeTemplate.setMiniprogramTemplateId(KeyUtil.genUniqueKey());
-		organizeTemplate.setOrganizationAccount(organizationAccount);
-		organizeTemplate.setWxAppId(request.getWxAppid());
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplate.setIsOnline("0");
 		organizeTemplate.setIsNew("1");

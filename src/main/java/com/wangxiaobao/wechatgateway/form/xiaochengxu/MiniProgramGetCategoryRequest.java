@@ -12,4 +12,6 @@ public class MiniProgramGetCategoryRequest {
 	 */
 	@NotEmpty(message="商家小程序Appid必填")
 	private String wxAppid;
+	//商户模板记录id
+	private String miniprogramTemplateId;
 }
