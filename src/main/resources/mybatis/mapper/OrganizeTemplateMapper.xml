@@ -21,4 +21,21 @@
 		</where>
 	</select>
 
+	<select id="countOrganizeTemplateList" parameterType="java.util.Map"
+		resultType="INTEGER">
+		select
+		count(*)
+		from t_base_organize_template t left join
+		t_base_wx_open_platform_merchant_info i
+		on t.wx_app_id=i.wx_appid left
+		join brand_info bi on
+		t.organization_account=bi.org_account
+		<where>
+			<if test="orgName !=null and orgName !='' ">and bi.org_name=#{orgName}</if>
+			<if test="isOnline !=null and isOnline !='' "> and t.is_online=#{isOnline}</if>
+			<if test="status !=null and status !='' "> and t.status=#{status}</if>
+			<if test="notStatus !=null and notStatus !='' "> and t.status != #{notStatus}</if>
+		</where>
+	</select>
+
 </mapper>

@@ -1,6 +1,7 @@
 package com.wangxiaobao.wechatgateway.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,4 +70,8 @@ public abstract class BaseRespository {
         return sqlSession.selectOne(nameSpace, parameter);
     }
 
+	public Integer getCountBy(Map<String, Object> param, String nameSpace) {
+//		System.out.println(getSqlName(sql));
+		return sqlSession.selectOne(nameSpace, param);
+	}
 }

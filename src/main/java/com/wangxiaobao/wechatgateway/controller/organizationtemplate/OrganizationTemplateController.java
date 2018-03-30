@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.assertj.core.internal.cglib.beans.BeanMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,47 +23,44 @@ import com.wangxiaobao.wechatgateway.utils.JsonResult;
 public class OrganizationTemplateController {
 	@Autowired
 	private OrganizeTemplateService organizeTemplateService;
+
 	/**
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
-	  * @methodName: selectOrganizeTemplateList
-	  * @Description: TODO分页查询商家小程序提交模板记录列表
-	  * @param request
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年3月20日 下午3:03:20
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年3月20日 下午3:03:20
-	  * @throws
+	 * @throws InvocationTargetException @throws
+	 * IllegalAccessException @methodName:
+	 * selectOrganizeTemplateList @Description: TODO分页查询商家小程序提交模板记录列表 @param
+	 * request @return JsonResult @createUser: liping_max @createDate:
+	 * 2018年3月20日 下午3:03:20 @updateUser: liping_max @updateDate: 2018年3月20日
+	 * 下午3:03:20 @throws
 	 */
 	@RequestMapping("/selectOrganizeTemplateList")
-	public JsonResult selectOrganizeTemplateList(@RequestBody OrganizeTemplateListRequest request) throws IllegalAccessException, InvocationTargetException {
+	public JsonResult selectOrganizeTemplateList(@RequestBody OrganizeTemplateListRequest request)
+			throws IllegalAccessException, InvocationTargetException {
 		PageModel<OrganizeTemplateVO> pageModel = new PageModel<>();
 		pageModel.setPageSize(request.getSize());
 		pageModel.setPageNum(request.getPage());
-		Map<String,Object> params = new HashMap<String, Object>();
-		org.apache.commons.beanutils.BeanUtils.populate(request, params);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("orgName", request.getOrgName());
+		params.put("isOnline", request.getIsOnline());
+		params.put("status", request.getStatus());
+		params.put("notStatus", request.getNotStatus());
+		params.put("wxAppId", request.getWxAppId());
 		pageModel.setParams(params);
 		return JsonResult
 				.newInstanceDataSuccess(organizeTemplateService.selectOrganizeTemplateList(request, pageModel));
 	}
-	
+
 	/**
-	  * @methodName: selectOrganizationWxAppIdCurrentTemplate
-	  * @Description: TODO  查询当前小程序的各个版本状态
-	  * @param organizeTemplate
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年3月27日 上午10:03:29
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年3月27日 上午10:03:29
-	  * @throws
+	 * @methodName: selectOrganizationWxAppIdCurrentTemplate @Description: TODO
+	 * 查询当前小程序的各个版本状态 @param organizeTemplate @return JsonResult @createUser:
+	 * liping_max @createDate: 2018年3月27日 上午10:03:29 @updateUser:
+	 * liping_max @updateDate: 2018年3月27日 上午10:03:29 @throws
 	 */
 	@RequestMapping("/selectCurrentTemplate")
-	public JsonResult selectOrganizationWxAppIdCurrentTemplate(@RequestBody OrganizeTemplate organizeTemplate){
-		if(!StringUtils.hasText(organizeTemplate.getWxAppId())){
+	public JsonResult selectOrganizationWxAppIdCurrentTemplate(@RequestBody OrganizeTemplate organizeTemplate) {
+		if (!StringUtils.hasText(organizeTemplate.getWxAppId())) {
 			return JsonResult.newInstanceMesFail("参数传递错误");
 		}
-		return JsonResult.newInstanceDataSuccess(organizeTemplateService.selectOrganizationCurrentTemplateList(organizeTemplate));
+		return JsonResult.newInstanceDataSuccess(
+				organizeTemplateService.selectOrganizationCurrentTemplateList(organizeTemplate));
 	}
 }

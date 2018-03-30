@@ -91,7 +91,10 @@ public class OrganizeTemplateService extends BaseService {
 	  * @throws
 	 */
 	public PageModel<OrganizeTemplateVO> selectOrganizeTemplateList(OrganizeTemplateListRequest request,PageModel<OrganizeTemplateVO> pageModel){
+		Integer count = orgranizeTemplateMapper.getCountBy(pageModel.getParams(),"OrganizeTemplateMapper.countOrganizeTemplateList");
+		pageModel.setCount(count.longValue());
 		return orgranizeTemplateMapper.pageQueryForList("OrganizeTemplateMapper.selectOrganizeTemplateList", pageModel);
+		
 	}
 	
 	public List<OrganizeTemplate> selectOrganizationCurrentTemplateList(OrganizeTemplate organizeTemplate){
