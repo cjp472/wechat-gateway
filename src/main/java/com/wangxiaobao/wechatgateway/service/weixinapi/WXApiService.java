@@ -449,9 +449,9 @@ public class WXApiService {
 	}
 
 	// 组装授权和创建开放平台
-	public JsonResult buildingAuthorizer(String wxAppId, String authType, String organizationAccount) {
+	public JsonResult buildingAuthorizer(String wxAppId) {
 		WXopenPlatformMerchantInfo oldWxInfo = wXopenPlatformMerchantInfoService.getByWXAppId(wxAppId);
-		if (Constants.AUTHORIZER_TYPE_GONGZHONGHAO.equals(authType)) {
+		if (Constants.AUTHORIZER_TYPE_GONGZHONGHAO.equals(oldWxInfo.getAuthType())) {
 			// 创建商户公众号的开放平台
 			JsonResult result = createOpen(wxAppId, oldWxInfo.getAuthoriceAccessToken());
 			if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
@@ -471,7 +471,7 @@ public class WXApiService {
 		} else {
 			// 小程序授权
 			WXopenPlatformMerchantInfoSearchCondition wxCondition = new WXopenPlatformMerchantInfoSearchCondition(
-					Constants.AUTHORIZER_TYPE_GONGZHONGHAO, organizationAccount);
+					Constants.AUTHORIZER_TYPE_GONGZHONGHAO, oldWxInfo.getOrganizationAccount());
 			List<WXopenPlatformMerchantInfo> wxInfoResponses = wXopenPlatformMerchantInfoService
 					.findByCondition(wxCondition);
 			JsonResult result = bindOpen(wxAppId, wxInfoResponses.get(0).getOpenAppid(),
@@ -479,7 +479,7 @@ public class WXApiService {
 			if (JsonResult.APP_RETURN_SUCCESS.equals(result.getCode())) {
 				oldWxInfo.setOpenAppid(wxInfoResponses.get(0).getOpenAppid());
 				wXopenPlatformMerchantInfoService.save(oldWxInfo);
-				openPlatformXiaochengxuService.initXiaochengxu(oldWxInfo.getWxAppid(), "add", organizationAccount,
+				openPlatformXiaochengxuService.initXiaochengxu(oldWxInfo.getWxAppid(), "add", oldWxInfo.getOrganizationAccount(),
 						oldWxInfo.getUserName());
 				return result;
 			} else {

@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
@@ -157,7 +158,7 @@ public class WXAuthController {
 						log.info("返回的授权code：" + authorizationCode);
 						String authorizationInfo = wXAuthService.apiQueryAuth(authorizationCode, appId, appsecret);
 						WXopenPlatformMerchantInfo wXInfo = wXApiService.saveOrUpdateWxopenPlatformMerchantInfoFromAuth(authorizationInfo, authType, organizationAccount);
-						wXApiService.buildingAuthorizer(wXInfo.getWxAppid(), authType, organizationAccount);
+						wXApiService.buildingAuthorizer(wXInfo.getWxAppid());
 						return "success";
 					case "unauthorized":
 						log.info("授权公众号取消授权：AuthorizerAppid=" + authorizerAppid);
@@ -191,7 +192,7 @@ public class WXAuthController {
 		} else {
 			log.info("返回的授权code：" + authCode);
 			String authorizationInfo = wXAuthService.apiQueryAuth(authCode, appId, appsecret);
-			wXApiService.buildingAuthorizer(authorizationInfo, authType, organizationAccount);
+			wXApiService.buildingAuthorizer(authorizationInfo);
 			return "success";
 		}
 	}
@@ -212,7 +213,7 @@ public class WXAuthController {
 		log.info("返回的授权code：" + authCode + ",authType=" + authType);
 		String authorizationInfo = wXAuthService.apiQueryAuth(authCode, appId, appsecret);
 		WXopenPlatformMerchantInfo wXInfo = wXApiService.saveOrUpdateWxopenPlatformMerchantInfoFromAuth(authorizationInfo, authType, organizationAccount);
-		JsonResult jsonResult = wXApiService.buildingAuthorizer(wXInfo.getWxAppid(), authType, organizationAccount);
+		JsonResult jsonResult = wXApiService.buildingAuthorizer(wXInfo.getWxAppid());
 		log.info("授权返回结果{}", JSONObject.toJSONString(jsonResult));
 		model.addAttribute("authResult", jsonResult.getMessage());
 		model.addAttribute("authReason", jsonResult.getData());
@@ -320,5 +321,21 @@ public class WXAuthController {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	  * @methodName: continueAuth
+	  * @Description: 微信授权回调之后流程出错，可调用此接口继续后续流程
+	  * @param wxAppId
+	  * @return JsonResult
+	  * @createUser: liping_max
+	  * @createDate: 2018年3月30日 上午9:54:11
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年3月30日 上午9:54:11
+	  * @throws
+	 */
+	@RequestMapping("platform/auth/continueAuth")
+	public JsonResult continueAuth(@RequestParam(value="wxAppId") String wxAppId){
+		return wXApiService.buildingAuthorizer(wxAppId);
 	}
 }
