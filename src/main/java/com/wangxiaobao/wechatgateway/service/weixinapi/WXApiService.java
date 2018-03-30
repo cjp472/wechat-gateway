@@ -2,6 +2,7 @@ package com.wangxiaobao.wechatgateway.service.weixinapi;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -383,7 +384,7 @@ public class WXApiService {
 				List<WXopenPlatformMerchantInfo> wxInfoList = wXopenPlatformMerchantInfoService
 						.findByCondition(wxCondition);
 				// 更新微信公众号需要将之前的删除
-				if (null != wxInfoList && !wxInfoList.get(0).getWxAppid().equals(wxAppId)) {
+				if (!ObjectUtils.isEmpty(wxInfoList) && !wxInfoList.get(0).getWxAppid().equals(wxAppId)) {
 					wXopenPlatformMerchantInfoService.deleteByWXAppId(wxInfoList.get(0).getWxAppid());
 				}
 			} else {
