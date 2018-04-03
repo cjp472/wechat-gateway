@@ -51,6 +51,38 @@
 - <a href="#23">新增，修改平台小程序</a>
 
 
+## 商家公众号授权列表
+- <a name="24">商家公众号/小程序授权列表</a>
+- <a name="25">商家公众号发起授权</a>
+- <a name="26">查询商家公众号/小程序基本信息</a>
+- <a name="27">刷新公众号/小程序调用凭证</a>
+- <a name="28">查询公众号/小程序绑定的开放平台</a>
+- <a name="29">解绑公众号绑定的开放平台</a>
+- <a name="30">获取公众号关联的小程序</a>
+- <a name="31">公众号取消小程序关联</a>
+- <a name="32">公众号关联小程序</a>
+
+
+## 商家小程序授权列表
+- <a name="33">获取小程序类目</a>
+- <a name="34">查询小程序模板</a>
+- <a name="35">上传小程序模板</a>
+- <a name="37">创建效验文件</a>
+- <a name="36">获取效验文件</a>
+- <a name="38">获取小程序当前版本</a>
+
+## 提交商家小程序列表
+- <a name="39">提交商家小程序列表</a>
+- <a name="41">提交审核</a>
+- <a name="40">取消审核</a>
+- <a name="42">刷新审核状态</a>
+
+## 发布商户小程序列表
+- <a name="43">发布商户小程序列表</a>
+- <a name="44">发布小程序代码</a>
+
+
+
 <a name="1">品牌创建门店</a>
 ### 品牌创建门店
 ```
@@ -730,7 +762,7 @@ post /wechatgateway/platformXiaoCXManage/save
 }
 ```
 
-<a name="24">商家公众号授权列表</a>
+<a name="24">商家公众号/小程序授权列表</a>
 ### 商家公众号授权列表
 
 ```
@@ -742,6 +774,7 @@ post /wechatgateway/gongzhonghao/selectGongzhonghaoList
 	"page":1,  必填
 	"size":10, 必填 
 	"brandName":"清粥小菜",  选填
+	"authType":"1"      (1:公众号；2：小程序)
 }
 ```
 
@@ -786,4 +819,881 @@ post /wechatgateway/gongzhonghao/selectGongzhonghaoList
         ]
     }
 }
+```
+
+<a name="25">商家公众号发起授权</a>
+### 商家公众号发起授权
+
+```
+get /wechatgateway/index/wx/getAuthUrl
+```
+参数 无
+``` 
+  
+```
+返回
+``` 
+	跳转到微信授权页面
+```
+
+<a name="26">查询商家公众号/小程序基本信息</a>
+### 查询商家公众号基本信息
+
+```
+get /wechatgateway/gongzhonghao/getWXopenPlatformMerchantInfo
+```
+参数 key-value
+``` 
+  wxAppId 公众号appid  必填
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": {
+        "wxOpenPlatformId": "b847610d104a43fcb5239f9b02c21484", 
+        "wxAppid": "wx38968167ae9030cc", 
+        "authoriceAccessToken": "8_UgWsdMlBEHLKpCkqPEOKSJvsFKX8-hW8dJZY3c3gylCJBRQ50_G4PioL0hDBQNHDuSfSdzRPVHNgCCRGmzHPFdZpGtLYZ56pbdQLMZB6Ji0J-dYbilMceI-GOf-IxuDkxEfwsdzRqZBf8ngULIRaAJDCZI", 
+        "authoriceRefreshToken": "refreshtoken@@@LgRB3t04VeYpCSny7A3GuQ7uGGD4srL1fMu1GwfyVLA", 
+        "createUser": "createUser", 
+        "createDate": 1522377549000, 
+        "updateUser": "updateUser", 
+        "updateDate": 1522635019000, 
+        "openAppid": "wx98aa51a56286ed49", 
+        "authType": "1", 
+        "organizationAccount": "BJAYPTSYDJT_GROUP", 
+        "nickName": "旺小宝同城", 
+        "headImg": "http://wx.qlogo.cn/mmopen/qf9UScA0OLe68y3WCmSesKoj5nG4EWsjp2n7ZM9106u0SEk3LgIqUPY3XtsgZicLsuaNTfGes2OwP34Z7ZTy0vzY1kZ8oiajrP/0", 
+        "verifyTypeInfo": "{\"id\":0}", 
+        "userName": "gh_14bc2c38e83f"
+    }
+}
+```
+
+
+<a name="27">刷新公众号/小程序调用凭证</a>
+### 刷新公众号调用凭证
+
+```
+get /wechatgateway/gongzhonghao/refreshAuthInfo
+```
+参数 key-value
+``` 
+  wxAppId 公众号appid  必填
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": {
+        "wxOpenPlatformId": "b847610d104a43fcb5239f9b02c21484", 
+        "wxAppid": "wx38968167ae9030cc", 
+        "authoriceAccessToken": "8_hQa3Xz4sW8zWRycae6-JzAU_HarVPbgePT1QN6G54ak9bqQFd9feegunyZ4kg22bilA-WlgB2LUnNdnZ5d2rEw4cW2PW1kd1U1TIjIk_mp18Ks3b1ZI9GFPHdNH61QtdGhLLXc_nIHTajxplQKHiALDFZW", 
+        "authoriceRefreshToken": "refreshtoken@@@LgRB3t04VeYpCSny7A3GuQ7uGGD4srL1fMu1GwfyVLA", 
+        "createUser": "createUser", 
+        "createDate": 1522377549000, 
+        "updateUser": "updateUser", 
+        "updateDate": 1522736176000, 
+        "openAppid": "wx98aa51a56286ed49", 
+        "authType": "1", 
+        "organizationAccount": "BJAYPTSYDJT_GROUP", 
+        "nickName": "旺小宝同城", 
+        "headImg": "http://wx.qlogo.cn/mmopen/qf9UScA0OLe68y3WCmSesKoj5nG4EWsjp2n7ZM9106u0SEk3LgIqUPY3XtsgZicLsuaNTfGes2OwP34Z7ZTy0vzY1kZ8oiajrP/0", 
+        "verifyTypeInfo": "{\"id\":0}", 
+        "userName": "gh_14bc2c38e83f"
+    }
+}
+```
+
+
+
+<a name="28">查询公众号/小程序绑定的开放平台</a>
+### 查询公众号绑定的开放平台
+
+```
+get /wechatgateway/gongzhonghao/getBindOpen
+```
+参数 key-value
+``` 
+  wxAppid appid  必填
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": {
+        "errcode": 0, 
+        "open_appid": "wx98aa51a56286ed49", 
+        "errmsg": "ok"
+    }
+}
+```
+
+
+<a name="29">解绑公众号绑定的开放平台</a>
+### 解绑公众号绑定的开放平台
+
+```
+get /wechatgateway/gongzhonghao/unbindOpen
+```
+参数 json
+``` 
+  {
+  	"authType":"1",    授权类型（1：公众号；2:小程序）   必填   
+  	"wxAppid":"",	   appid					   必填
+  	"openAppid":""	   开放平台appid				   选填	
+  }
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": 
+}
+```
+
+
+
+<a name="30">获取公众号关联的小程序</a>
+### 获取公众号关联的小程序
+
+```
+get /wechatgateway/gongzhonghao/wxamplinkget
+```
+参数 wxAppid
+``` 
+  	wxAppid	   公众号appid			 必填
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": "{\"errcode\":0,\"errmsg\":\"ok\",\"wxopens\":{\"items\":[{\"nickname\":\"旺小宝会员\",\"headimg_url\":\"http:\\/\\/mmbiz.qpic.cn\\/mmbiz_png\\/7GwXNMx62jTAAomRf3Xpn6ibxm4r3cNP9VRJTdBaOmDyxFoJXePE6C3T5SiakbvlybKYJapdBVTibmCAicVPglPmibA\\/0?wx_fmt=png\",\"status\":1,\"source\":\"SOURCE_WXSTORE\",\"func_infos\":[{\"id\":1,\"status\":0,\"name\":\"微信认证\"},{\"id\":2,\"status\":0,\"name\":\"微信支付\"}],\"selected\":0,\"username\":\"gh_a5b4e20534b0\",\"email\":\"\",\"nearby_display_status\":0,\"copy_verify_status\":0,\"released\":1},{\"nickname\":\"国盛桌牌\",\"headimg_url\":\"http:\\/\\/mmbiz.qpic.cn\\/mmbiz_png\\/WLb6lOSMmLFXs4tXdIQZDQX7AVAL0Ndw4wficcnKvcANSa0VpWKhBTeJEPdnGia9hyobgE5f69FEDJGjzCf5T8eg\\/0?wx_fmt=png\",\"status\":1,\"source\":\"SOURCE_NORMAL\",\"func_infos\":[{\"id\":1,\"status\":1,\"name\":\"微信认证\"},{\"id\":2,\"status\":0,\"name\":\"微信支付\"}],\"selected\":0,\"username\":\"gh_18abf6623b12\",\"email\":\"shenwei@guoshengtianfeng.com\",\"nearby_display_status\":0,\"copy_verify_status\":3,\"released\":0},{\"nickname\":\"点餐指南\",\"headimg_url\":\"http:\\/\\/mmbiz.qpic.cn\\/mmbiz_png\\/rVpAJceTEDHe8LHuOnY9bv2ysCpGlibibISRQf4y0WgTnYephpcWN0ial2FJAfpPfxgq4MVBumvZiaicVRIY0Ga7Azg\\/0?wx_fmt=png\",\"status\":1,\"source\":\"SOURCE_FASTREGISTER\",\"func_infos\":[{\"id\":1,\"status\":1,\"name\":\"微信认证\"},{\"id\":2,\"status\":0,\"name\":\"微信支付\"}],\"selected\":0,\"username\":\"gh_7912b98d9a50\",\"email\":\"vaio292@gmail.com\",\"nearby_display_status\":0,\"copy_verify_status\":0,\"released\":0},{\"nickname\":\"旺小宝互动\",\"headimg_url\":\"http:\\/\\/mmbiz.qpic.cn\\/mmbiz_png\\/cCgpcLIucaEicUSSXqJL9kkBbJVqBiaQgRSV3K6eOreFfzTqaOibnDc0L3WXcDhOYicYs07E7UeZk6pPYH2VCvkDdg\\/0?wx_fmt=png\",\"status\":4,\"source\":\"SOURCE_COMPONENT_API\",\"func_infos\":[]}]}}"
+}
+```
+
+
+
+<a name="31">公众号取消小程序关联</a>
+### 公众号取消小程序关联
+
+```
+get /wechatgateway/gongzhonghao/unbindWxampunlink
+```
+参数 wxAppid
+``` 
+  	wxAppid	   公众号appid			 必填
+  	xcxAppid   小程序appid            必填
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": ""
+}
+```
+
+
+
+<a name="32">公众号关联小程序</a>
+### 公众号关联小程序
+
+```
+get /wechatgateway/gongzhonghao/bindWxamplink
+```
+参数 wxAppid
+``` 
+  	wxAppid	   公众号appid			 必填
+  	xcxAppid   小程序appid            必填
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": ""
+}
+```
+
+
+<a name="33">获取小程序类目</a>
+### 公众号关联小程序
+
+```
+get /wechatgateway/miniprogram/getcategory
+```
+参数 
+``` 
+  	wxAppid	   appid			 必填
+  	
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": {
+        "errcode": 0, 
+        "category_list": [
+            {
+                "first_class": "餐饮", 
+                "second_class": "点评与推荐", 
+                "first_id": 220, 
+                "second_id": 221
+            }, 
+            {
+                "first_class": "餐饮", 
+                "second_class": "菜谱", 
+                "first_id": 220, 
+                "second_id": 225
+            }
+        ], 
+        "errmsg": "ok"
+    }
+}
+
+```
+
+
+
+
+<a name="34">查询小程序模板</a>
+### 查询小程序模板
+
+```
+post /wechatgateway/wxMinprogramTemplate/selectList
+```
+参数 json
+``` 
+  	type	   "1" 固定值			 必填
+  	
+```
+返回
+``` 
+	{
+    "code": "0", 
+    "message": "成功", 
+    "data": [
+        {
+            "templateId": "68", 
+            "draftId": "0", 
+            "userVersion": "V0.0.1", 
+            "userDesc": "第四版", 
+            "wxCreateTime": 1516070846000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1516157254000, 
+            "updateDate": 1519869760000
+        }, 
+        {
+            "templateId": "54", 
+            "draftId": "1", 
+            "userVersion": "V0.0.2", 
+            "userDesc": "第二版", 
+            "wxCreateTime": 1519809446000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1519809457000, 
+            "updateDate": 1519809462000
+        }, 
+        {
+            "templateId": "67", 
+            "draftId": "2", 
+            "userVersion": "V0.0.2", 
+            "userDesc": "第三版", 
+            "wxCreateTime": 1519809483000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1519809490000, 
+            "updateDate": 1519809499000
+        }, 
+        {
+            "templateId": "3", 
+            "draftId": "3", 
+            "userVersion": "v0.0.3", 
+            "userDesc": "第四版", 
+            "wxCreateTime": 1519869748000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1519869761000, 
+            "updateDate": 1520241219000
+        }, 
+        {
+            "templateId": "4", 
+            "draftId": "4", 
+            "userVersion": "V0.0.4", 
+            "userDesc": "第五版", 
+            "wxCreateTime": 1520241210000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1520241213000, 
+            "updateDate": 1520301272000
+        }, 
+        {
+            "templateId": "5", 
+            "draftId": "5", 
+            "userVersion": "V0.0.5", 
+            "userDesc": "第6版", 
+            "wxCreateTime": 1520301262000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1520301273000, 
+            "updateDate": 1520503065000
+        }, 
+        {
+            "templateId": "6", 
+            "draftId": "6", 
+            "userVersion": "V0.0.6", 
+            "userDesc": "第七版", 
+            "wxCreateTime": 1520503055000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1520503067000, 
+            "updateDate": 1520565668000
+        }, 
+        {
+            "templateId": "7", 
+            "draftId": "7", 
+            "userVersion": "V0.0.7", 
+            "userDesc": "第八版", 
+            "wxCreateTime": 1520564123000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1520564130000, 
+            "updateDate": 1520565671000
+        }, 
+        {
+            "templateId": "8", 
+            "draftId": "8", 
+            "userVersion": "V0.0.7", 
+            "userDesc": "最新版", 
+            "wxCreateTime": 1520565658000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1520565675000, 
+            "updateDate": 1520833882000
+        }, 
+        {
+            "templateId": "9", 
+            "draftId": "9", 
+            "userVersion": "V0.0.9", 
+            "userDesc": "第九版", 
+            "wxCreateTime": 1522115150000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1522115093000, 
+            "updateDate": 1522115153000
+        }, 
+        {
+            "templateId": "10", 
+            "draftId": "10", 
+            "userVersion": "V0.1.0", 
+            "userDesc": "第十版", 
+            "wxCreateTime": 1522115155000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1522115100000, 
+            "updateDate": 1522115157000
+        }, 
+        {
+            "templateId": "11", 
+            "draftId": "11", 
+            "userVersion": "V0.1.1", 
+            "userDesc": "第十一版", 
+            "wxCreateTime": 1522115159000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1522115106000, 
+            "updateDate": 1522115161000
+        }, 
+        {
+            "templateId": "13", 
+            "draftId": "13", 
+            "userVersion": "V0.1.3", 
+            "userDesc": "第十一版", 
+            "wxCreateTime": 1522115163000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1522115231000, 
+            "updateDate": 1522115234000
+        }, 
+        {
+            "templateId": "14", 
+            "draftId": "14", 
+            "userVersion": "V0.1.4", 
+            "userDesc": "第十一版", 
+            "wxCreateTime": 1521798489000, 
+            "type": "1", 
+            "isDefault": "0", 
+            "createDate": 1521798493000, 
+            "updateDate": 1522289719000
+        }, 
+        {
+            "templateId": "15", 
+            "draftId": "15", 
+            "userVersion": "V0.1.5", 
+            "userDesc": "第十五版", 
+            "wxCreateTime": 1522289708000, 
+            "type": "1", 
+            "isDefault": "1", 
+            "createDate": 1522289724000, 
+            "updateDate": 1522289720000
+        }
+    ]
+}
+
+```
+
+
+
+<a name="35">上传小程序模板</a>
+### 上传小程序模板
+
+```
+post /wechatgateway/miniprogram/commit
+```
+参数 key-value
+``` 
+  	templateId	   模板id		 必填
+  	wxAppid        小程序appid    必填
+  	organizationAccount  品牌account  必填
+  	
+```
+返回
+``` 
+	{"code":"0","message":"成功","data":{"errcode":0,"errmsg":"ok"}}
+
+```
+
+
+<a name="36">获取效验文件</a>
+### 获取效验文件
+
+```
+get /wechatgateway/qrcode/findQrcodeFile
+```
+参数 key-value
+``` 
+  	wxAppId        小程序appid    必填
+  	
+```
+返回
+``` 
+	{"code":"0","message":"成功","data":"2e55135cf4adaa89dce61c2cb3acb20f"}
+
+```
+
+
+
+<a name="37">创建效验文件</a>
+### 创建效验文件
+
+```
+get /wechatgateway/miniprogramqrcode/qrcodejumpdownload
+```
+参数 key-value
+``` 
+  	wxAppid        小程序appid    必填
+  	
+```
+返回
+``` 
+	{"code":"0","message":"成功","data":"2e55135cf4adaa89dce61c2cb3acb20f"}
+
+```
+
+<a name="38">获取小程序当前版本</a>
+### 获取小程序当前版本
+
+```
+post /wechatgateway/organizationTemplate/selectCurrentTemplate
+```
+参数 json
+``` 
+  	wxAppId        小程序appid    必填
+  	
+```
+返回
+``` 
+{
+    "code": "0", 
+    "message": "成功", 
+    "data": [
+        {
+            "miniprogramTemplateId": "1522379592996684573", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "15", 
+            "createDate": 1522379593000, 
+            "updateDate": 1522389455000, 
+            "status": "2", 
+            "isOnline": "0", 
+            "isNew": "0", 
+            "auditid": "446520568"
+        }, 
+        {
+            "miniprogramTemplateId": "1522389455249410873", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "5", 
+            "createDate": 1522389455000, 
+            "updateDate": 1522402522000, 
+            "status": "2", 
+            "isOnline": "0", 
+            "isNew": "0"
+        }, 
+        {
+            "miniprogramTemplateId": "1522389978433354915", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "6", 
+            "createDate": 1522389978000, 
+            "updateDate": 1522401542000, 
+            "status": "-1", 
+            "isOnline": "0", 
+            "isNew": "0"
+        }, 
+        {
+            "miniprogramTemplateId": "1522402522028217634", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "15", 
+            "createDate": 1522402522000, 
+            "updateDate": 1522721866000, 
+            "status": "2", 
+            "isOnline": "0", 
+            "isNew": "0"
+        }, 
+        {
+            "miniprogramTemplateId": "1522721866498920628", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "5", 
+            "createDate": 1522721866000, 
+            "updateDate": 1522721869000, 
+            "status": "1", 
+            "isOnline": "0", 
+            "isNew": "0"
+        }, 
+        {
+            "miniprogramTemplateId": "1522721869604239016", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "6", 
+            "createDate": 1522721870000, 
+            "updateDate": 1522739113000, 
+            "status": "1", 
+            "isOnline": "0", 
+            "isNew": "0"
+        }, 
+        {
+            "miniprogramTemplateId": "1522739113084514103", 
+            "wxAppId": "wx7a6dadfed46e6db8", 
+            "organizationAccount": "BJAYPTSYDJT_GROUP", 
+            "templateId": "3", 
+            "createDate": 1522739113000, 
+            "status": "1", 
+            "isOnline": "0", 
+            "isNew": "1"
+        }
+    ]
+}
+
+```
+
+
+
+
+<a name="39">提交商家小程序列表</a>
+### 获取小程序当前版本
+
+```
+post /wechatgateway/organizationTemplate/selectOrganizeTemplateList
+
+```
+参数 json
+``` 
+  	{
+    "page": 2, 
+    "size": 10, 
+    "orgName": ""
+}
+  	
+```
+返回
+``` 
+{
+    "code": "0", 
+    "message": "成功", 
+    "data": {
+        "count": 11, 
+        "pageNum": 2, 
+        "pageSize": 10, 
+        "datas": [
+            {
+                "miniprogramTemplateId": "1520235234482886318", 
+                "wxAppId": "wx9282e5fd404b09d4", 
+                "organizationAccount": "halley1", 
+                "templateId": "3", 
+                "createDate": 1520235234000, 
+                "updateDate": 1521798694000, 
+                "status": "3", 
+                "reason": null, 
+                "auditid": "429058440", 
+                "nickName": "onlywww", 
+                "orgName": "Halley"
+            }, 
+            {
+                "miniprogramTemplateId": "1522031347971340667", 
+                "wxAppId": "wx9282e5fd404b09d4", 
+                "organizationAccount": "halley1", 
+                "templateId": "14", 
+                "createDate": 1522031348000, 
+                "updateDate": 1522306185000, 
+                "status": "3", 
+                "reason": null, 
+                "auditid": "429338933", 
+                "nickName": "onlywww", 
+                "orgName": "Halley"
+            }, 
+            {
+                "miniprogramTemplateId": "1522306185256615834", 
+                "wxAppId": "wx9282e5fd404b09d4", 
+                "organizationAccount": "halley1", 
+                "templateId": "15", 
+                "createDate": 1522306185000, 
+                "updateDate": 1522395208000, 
+                "status": "1", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "onlywww", 
+                "orgName": "Halley"
+            }, 
+            {
+                "miniprogramTemplateId": "1521798693872513500", 
+                "wxAppId": "wx379dac703ad213f5", 
+                "organizationAccount": "halley1", 
+                "templateId": "14", 
+                "createDate": 1521798694000, 
+                "updateDate": 1522401661000, 
+                "status": "3", 
+                "reason": null, 
+                "auditid": "439651488", 
+                "nickName": "旺小宝演示", 
+                "orgName": "Halley"
+            }, 
+            {
+                "miniprogramTemplateId": "1522379592996684573", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "15", 
+                "createDate": 1522379593000, 
+                "updateDate": 1522389455000, 
+                "status": "2", 
+                "reason": null, 
+                "auditid": "446520568", 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }, 
+            {
+                "miniprogramTemplateId": "1522389455249410873", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "5", 
+                "createDate": 1522389455000, 
+                "updateDate": 1522402522000, 
+                "status": "2", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }, 
+            {
+                "miniprogramTemplateId": "1522389978433354915", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "6", 
+                "createDate": 1522389978000, 
+                "updateDate": 1522401542000, 
+                "status": "-1", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }, 
+            {
+                "miniprogramTemplateId": "1522402522028217634", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "15", 
+                "createDate": 1522402522000, 
+                "updateDate": 1522721866000, 
+                "status": "2", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }, 
+            {
+                "miniprogramTemplateId": "1522721866498920628", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "5", 
+                "createDate": 1522721866000, 
+                "updateDate": 1522721869000, 
+                "status": "1", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }, 
+            {
+                "miniprogramTemplateId": "1522721869604239016", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "6", 
+                "createDate": 1522721870000, 
+                "updateDate": 1522739113000, 
+                "status": "1", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }, 
+            {
+                "miniprogramTemplateId": "1522739113084514103", 
+                "wxAppId": "wx7a6dadfed46e6db8", 
+                "organizationAccount": "BJAYPTSYDJT_GROUP", 
+                "templateId": "3", 
+                "createDate": 1522739113000, 
+                "updateDate": null, 
+                "status": "1", 
+                "reason": null, 
+                "auditid": null, 
+                "nickName": "李平商家测试", 
+                "orgName": null
+            }
+        ]
+    }
+}
+
+```
+
+
+<a name="40">取消审核</a>
+### 取消审核
+
+```
+get /wechatgateway/miniprogram/undocodeaudit
+
+```
+参数 key-value
+``` 
+  	wxAppid      小程序appid
+  	
+```
+返回
+``` 
+{
+    "code": "0", 
+    "message": "成功", 
+    "data": 
+}
+
+```
+
+
+
+
+
+<a name="41">提交审核</a>
+### 提交审核
+
+```
+get /wechatgateway/miniprogram/submitaudit
+
+```
+参数 key-value
+``` 
+  	wxAppid      小程序appid
+  	miniprogramTemplateId     模板id主键
+  	
+```
+返回
+``` 
+{
+    "code": "0", 
+    "message": "成功", 
+    "data": 
+}
+
+```
+
+
+
+<a name="42">刷新审核状态</a>
+### 刷新审核状态
+
+```
+get /wechatgateway/organizationTemplate/getAuditstatus
+
+```
+参数 key-value
+``` 
+  	auditid      审核id      必填
+  	wxAppid      小程序id    必填
+  	
+```
+返回
+``` 
+{
+    "code": "0", 
+    "message": "成功", 
+    "data": 
+}
+
+```
+
+
+
+<a name="43">发布商户小程序列表</a>
+### 发布商户小程序列表
+
+```
+get 同提交商户小程序列表
+
+```
+参数 
+``` 
+  	
+  	
+```
+返回
+``` 
+
+```
+
+
+
+<a name="44">发布小程序代码</a>
+### 发布小程序代码
+
+```
+get /wechatgateway/organizationTemplate/release
+
+```
+参数 key-value
+``` 
+  	wxAppid     小程序appid
+  	
+```
+返回
+``` 
+
 ```
