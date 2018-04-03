@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -67,7 +68,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	  * @throws
 	 */
 	@RequestMapping("/miniprogramqrcode/qrcodejumpadd")
-	public JsonResult qrcodejumpadd(@Valid MiniprogramQrCodeAddRequest request, BindingResult bindingResult){
+	public JsonResult qrcodejumpadd(@Valid @RequestBody MiniprogramQrCodeAddRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
 			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
@@ -114,7 +115,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	  * @throws
 	 */
 	@RequestMapping("/miniprogramqrcode/qrcodejumpdelete")
-	public JsonResult qrcodejumpdelete(@Valid MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
+	public JsonResult qrcodejumpdelete(@Valid  @RequestBody MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
 			log.error("【删除二维码规则】参数不正确, MiniProgramGetCategoryRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
@@ -158,7 +159,7 @@ public class MiniprogramQRCodeController extends BaseController {
 	  * @throws
 	 */
 	@RequestMapping("/miniprogramqrcode/qrcodejumppublish")
-	public JsonResult qrcodejumppublish(@Valid MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
+	public JsonResult qrcodejumppublish(@Valid @RequestBody MiniprogramQrCodeDeleteRequest request, BindingResult bindingResult){
 		if (bindingResult.hasErrors()) {
 			log.error("【发布已设置的二维码规则】参数不正确, MiniprogramQrCodeDeleteRequest={}", request);
 			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
