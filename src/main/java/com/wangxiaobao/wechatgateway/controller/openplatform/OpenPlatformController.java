@@ -262,8 +262,8 @@ public class OpenPlatformController {
 	@ResponseBody
 	public JsonResult unbindOpen(WXopenPlatformMerchantInfoSearchCondition wxMerchantInfoSearchCondition) {
 		if (!StringUtils.hasText(wxMerchantInfoSearchCondition.getAuthType())
-				|| !"1".equals(wxMerchantInfoSearchCondition.getAuthType())
-				|| !"2".equals(wxMerchantInfoSearchCondition.getAuthType())) {
+				&& (!"1".equals(wxMerchantInfoSearchCondition.getAuthType())
+				|| !"2".equals(wxMerchantInfoSearchCondition.getAuthType()))) {
 			return JsonResult.newInstanceMesFail("参数传递错误");
 		}
 		// 查询公众号是否存在数据库中
