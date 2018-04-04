@@ -260,7 +260,7 @@ public class OpenPlatformController {
 	 */
 	@RequestMapping("/gongzhonghao/unbindOpen")
 	@ResponseBody
-	public JsonResult unbindOpen(@RequestBody WXopenPlatformMerchantInfoSearchCondition wxMerchantInfoSearchCondition) {
+	public JsonResult unbindOpen(WXopenPlatformMerchantInfoSearchCondition wxMerchantInfoSearchCondition) {
 		if (!StringUtils.hasText(wxMerchantInfoSearchCondition.getAuthType())
 				|| !"1".equals(wxMerchantInfoSearchCondition.getAuthType())
 				|| !"2".equals(wxMerchantInfoSearchCondition.getAuthType())) {
