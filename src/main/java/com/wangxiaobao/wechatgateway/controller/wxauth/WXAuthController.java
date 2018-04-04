@@ -335,7 +335,7 @@ public class WXAuthController {
 	  * @throws
 	 */
 	@RequestMapping("platform/auth/continueAuth")
-	public JsonResult continueAuth(@RequestParam(value="wxAppId") String wxAppId){
+	public@ResponseBody JsonResult continueAuth(@RequestParam(value="wxAppId") String wxAppId){
 		return wXApiService.buildingAuthorizer(wxAppId);
 	}
 }
