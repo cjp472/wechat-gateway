@@ -19,6 +19,7 @@
 			<if test="params.status !=null and params.status !='' "> and t.status=#{params.status}</if>
 			<if test="params.notStatus !=null and params.notStatus !='' "> and t.status != #{params.notStatus}</if>
 		</where>
+		limit #{params.startPage},#{params.endPage}
 	</select>
 
 	<select id="countOrganizeTemplateList" parameterType="java.util.Map"
