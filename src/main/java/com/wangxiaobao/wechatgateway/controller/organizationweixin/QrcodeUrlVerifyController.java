@@ -3,6 +3,7 @@ package com.wangxiaobao.wechatgateway.controller.organizationweixin;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +44,9 @@ public class QrcodeUrlVerifyController extends BaseController {
 			return JsonResult.newInstanceMesFail("参数传递错误");
 		}
 		QrcodeUrlVerify qrcodeUrlVerify = qrcodeUrlVerifyService.findByWxAppId(wxAppId);
+		if(ObjectUtils.isEmpty(qrcodeUrlVerify)){
+			return JsonResult.newInstanceSuccess();
+		}
 		return JsonResult.newInstanceDataSuccess(qrcodeUrlVerify.getFileContent());
 	}
 }
