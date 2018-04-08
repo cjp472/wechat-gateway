@@ -313,6 +313,10 @@ public class MiniprogramController extends BaseController {
 		if (!StringUtils.hasText(wxAppid)) {
 			return JsonResult.newInstanceMesFail("小程序appId必填");
 		}
-		return JsonResult.newInstanceDataSuccess(openPlatformXiaochengxuService.undocodeaudit(wxAppid));
+		JSONObject JSONResult = openPlatformXiaochengxuService.undocodeaudit(wxAppid);
+		if(0==JSONResult.getIntValue("errcode")){
+			organizeTemplateService.updateOrganizeTemplatesStatusBatch(wxAppid, OrganizeTemplateStatusEnum.AUDITING.getStatus(), OrganizeTemplateStatusEnum.CANCEL.getStatus());
+		}
+		return JsonResult.newInstance(JSONResult.getIntValue("errcode")+"", JSONResult.getString("errmsg"));
 	}
 }
