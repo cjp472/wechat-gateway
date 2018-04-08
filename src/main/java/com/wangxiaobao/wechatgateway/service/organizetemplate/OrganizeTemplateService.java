@@ -64,6 +64,32 @@ public class OrganizeTemplateService extends BaseService {
 		save(organizeTemplate2);
 	}
 	
+	/**
+	  * @methodName: updateOrganizeTemplatesStatus
+	  * @Description: TODO批量更新
+	  * @param wxAppid
+	  * @param status
+	  * @param newStatus void
+	  * @createUser: liping_max
+	  * @createDate: 2018年4月8日 下午4:57:06
+	  * @updateUser: liping_max
+	  * @updateDate: 2018年4月8日 下午4:57:06
+	  * @throws
+	 */
+	public void updateOrganizeTemplatesStatusBatch(String wxAppid,String status,String newStatus){
+		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppid);
+		OrganizeTemplate organizeTemplate = new OrganizeTemplate();
+		organizeTemplate.setWxAppId(wxAppid);
+		organizeTemplate.setOrganizationAccount(wxInfo.getOrganizationAccount());
+		organizeTemplate.setStatus(status);
+		List<OrganizeTemplate> organizeTemplates = findOrganizeTemplateListBy(organizeTemplate);
+		for (OrganizeTemplate organizeTemplate2 : organizeTemplates) {
+			organizeTemplate2.setStatus(newStatus);
+			organizeTemplate2.setIsNew("0");
+			save(organizeTemplate2);
+		}
+	}
+	
 	public void updateOrganizeTemplateIsNew(String wxAppid,String isNew){
 		WXopenPlatformMerchantInfo wxInfo = wXopenPlatformMerchantInfoMapper.findByWxAppid(wxAppid);
 		OrganizeTemplate organizeTemplate = new OrganizeTemplate();

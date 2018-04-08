@@ -43,7 +43,7 @@ public class OrganizationTemplateController {
 		params.put("status", request.getStatus());
 		params.put("notStatus", request.getNotStatus());
 		params.put("wxAppId", request.getWxAppId());
-		params.put("startPage", (request.getPage()-1)*request.getSize()>0?(request.getPage()-1)*request.getSize():1);
+		params.put("startPage", (request.getPage()-1)*request.getSize()>0?(request.getPage()-1)*request.getSize():0);
 		params.put("endPage", request.getPage()*request.getSize());
 		
 		pageModel.setParams(params);

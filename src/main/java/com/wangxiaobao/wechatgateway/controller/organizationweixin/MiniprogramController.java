@@ -106,9 +106,9 @@ public class MiniprogramController extends BaseController {
 		organizeTemplate.setWxAppId(miniProgramCommitRequest.getWxAppid());
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.UPLOAD.getStatus());
 		organizeTemplate.setIsOnline("0");
-		organizeTemplate.setIsNew("1");
+		organizeTemplate.setIsNew("0");
 		// 设置当前为new为1，其它为0
-		organizeTemplateService.updateOrganizeTemplateIsNew(miniProgramCommitRequest.getWxAppid(), "0");
+//		organizeTemplateService.updateOrganizeTemplateIsNew(miniProgramCommitRequest.getWxAppid(), "0");
 		OrganizeTemplate organizeTemplateResult = organizeTemplateService.save(organizeTemplate);
 		if (null == organizeTemplateResult) {
 			log.error("将商家小程序{}版本{}提交审核失败", miniProgramCommitRequest.getWxAppid(),
@@ -190,24 +190,16 @@ public class MiniprogramController extends BaseController {
 		if(!JsonResult.APP_RETURN_SUCCESS.equals(jsonResult.getString("errcode"))){
 			return JsonResult.newInstanceMesFail(jsonResult.getString("errmsg"));
 		}
-		// 将之前的发布设为旧
-		OrganizeTemplate orTemplate = new OrganizeTemplate();
-		orTemplate.setIsNew("1");
-		orTemplate.setOrganizationAccount(organizeTemplate.getOrganizationAccount());
-		OrganizeTemplate organizeTemplateOld = organizeTemplateService.findOrganizeTemplateBy(orTemplate);
-		if (null != organizeTemplateOld) {
-			organizeTemplateOld.setIsNew("0");
-			organizeTemplateOld.setStatus(OrganizeTemplateStatusEnum.CANCEL.getStatus());
-			organizeTemplateService.save(organizeTemplateOld);
-		}
+		// 将之前的提交审核设为取消
+		organizeTemplateService.updateOrganizeTemplatesStatusBatch(request.getWxAppid(),OrganizeTemplateStatusEnum.AUDITING.getStatus(),OrganizeTemplateStatusEnum.CANCEL.getStatus());
 		// 保存新的商户模板信息
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
 		organizeTemplate.setIsOnline("0");
 		organizeTemplate.setIsNew("1");
+		organizeTemplateService.save(organizeTemplate);
 		if (jsonResult.containsKey("auditid")) {
 			organizeTemplate.setAuditid(jsonResult.getString("auditid"));
 		}
-
 		organizeTemplateService.save(organizeTemplate);
 		return JsonResult.newInstanceSuccess();
 	}

@@ -374,9 +374,8 @@ public static void main(String[] args) {
 		organizeTemplate.setWxAppId(wxAppid);
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.UPLOAD.getStatus());
 		organizeTemplate.setIsOnline("0");
-		organizeTemplate.setIsNew("1");
-		//设置当前为new为1，其它为0
-		organizeTemplateService.updateOrganizeTemplateIsNew(wxAppid,"0");
+		organizeTemplate.setIsNew("0");
+		
 		OrganizeTemplate organizeTemplateResult = organizeTemplateService.save(organizeTemplate);
 		if (null == organizeTemplateResult) {
 			log.error("将商家小程序{}版本上传的版本记录到数据库失败", wxAppid);
@@ -403,7 +402,10 @@ public static void main(String[] args) {
 		if(resultJson.containsKey("auditid")){
 			organizeTemplate.setAuditid(resultJson.getString("auditid"));
 		}
+		organizeTemplateService.updateOrganizeTemplatesStatusBatch(wxAppid,OrganizeTemplateStatusEnum.AUDITING.getStatus(),OrganizeTemplateStatusEnum.CANCEL.getStatus());
 		organizeTemplate.setStatus(OrganizeTemplateStatusEnum.AUDITING.getStatus());
+		organizeTemplate.setIsNew("1");
+		organizeTemplate.setIsOnline("0");
 		organizeTemplateService.save(organizeTemplate);
 	}
 	
