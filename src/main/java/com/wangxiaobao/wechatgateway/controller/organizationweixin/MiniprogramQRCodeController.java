@@ -78,29 +78,6 @@ public class MiniprogramQRCodeController extends BaseController {
 		BeanUtils.copyProperties(request, miniprogramQrCodeAddForm);
 		return JsonResult.newInstanceDataSuccess(miniProgramQrCodeService.qrcodejumpadd(miniprogramQrCodeAddForm, request.getWxAppid()));
 	}
-	/**
-	  * @methodName: qrcodejumpadd
-	  * @Description: TODO完整设置发布二维码规则
-	  * @param request
-	  * @param bindingResult
-	  * @return JsonResult
-	  * @createUser: liping_max
-	  * @createDate: 2018年1月25日 下午6:41:21
-	  * @updateUser: liping_max
-	  * @updateDate: 2018年1月25日 下午6:41:21
-	  * @throws
-	 */
-	@RequestMapping("/miniprogramqrcode/qrcodejumpaddAndPublish")
-	public JsonResult qrcodejumpaddAndPublish(@Valid MiniprogramQrCodeAddRequest request, BindingResult bindingResult){
-		if (bindingResult.hasErrors()) {
-			log.error("【增加或修改二维码规则】参数不正确, MiniprogramQrCodeAddRequest={}", request);
-			throw new CommonException(ResultEnum.PARAM_ERROR.getCode(),
-					bindingResult.getFieldError().getDefaultMessage());
-		}
-		MiniprogramQrCodeAddForm miniprogramQrCodeAddForm = new MiniprogramQrCodeAddForm();
-		BeanUtils.copyProperties(request, miniprogramQrCodeAddForm);
-		return JsonResult.newInstanceDataSuccess(miniProgramQrCodeService.qrcodejumpaddAndPush(miniprogramQrCodeAddForm, request.getWxAppid()));
-	}
 	
 	/**
 	  * @methodName: qrcodejumpdelete
