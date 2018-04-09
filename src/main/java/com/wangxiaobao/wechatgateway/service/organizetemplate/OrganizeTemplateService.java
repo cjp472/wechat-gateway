@@ -12,6 +12,7 @@ import com.wangxiaobao.wechatgateway.VO.organizetemplate.OrganizeTemplateVO;
 import com.wangxiaobao.wechatgateway.entity.PageModel;
 import com.wangxiaobao.wechatgateway.entity.openplatform.WXopenPlatformMerchantInfo;
 import com.wangxiaobao.wechatgateway.entity.organizetemplate.OrganizeTemplate;
+import com.wangxiaobao.wechatgateway.enums.OrganizeTemplateStatusEnum;
 import com.wangxiaobao.wechatgateway.form.organizetemplate.OrganizeTemplateListRequest;
 import com.wangxiaobao.wechatgateway.repository.openplatform.WXopenPlatformMerchantInfoMapper;
 import com.wangxiaobao.wechatgateway.repository.organizetemplate.OrganizeTemplateRepository;
@@ -61,6 +62,7 @@ public class OrganizeTemplateService extends BaseService {
 		organizeTemplate.setIsNew("1");
 		OrganizeTemplate organizeTemplate2 = findOrganizeTemplateBy(organizeTemplate);
 		organizeTemplate2.setIsOnline(isOnline);
+		organizeTemplate2.setStatus(OrganizeTemplateStatusEnum.ONLINE.getStatus());
 		save(organizeTemplate2);
 	}
 	
