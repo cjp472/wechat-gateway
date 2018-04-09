@@ -7,7 +7,7 @@
 		resultType="com.wangxiaobao.wechatgateway.VO.organizetemplate.OrganizeTemplateVO">
 		select
 		t.miniprogram_template_id,t.wx_app_id,t.organization_account,t.template_id,t.create_date,
-		t.update_date,t.`status`,t.reason,t.auditid,i.nick_name,bi.org_name
+		t.update_date,t.`status`,t.reason,t.auditid,t.is_online,i.nick_name,bi.org_name
 		from t_base_organize_template t left join
 		t_base_wx_open_platform_merchant_info i
 		on t.wx_app_id=i.wx_appid left

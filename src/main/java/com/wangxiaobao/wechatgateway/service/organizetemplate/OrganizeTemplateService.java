@@ -62,7 +62,6 @@ public class OrganizeTemplateService extends BaseService {
 		organizeTemplate.setIsNew("1");
 		OrganizeTemplate organizeTemplate2 = findOrganizeTemplateBy(organizeTemplate);
 		organizeTemplate2.setIsOnline(isOnline);
-		organizeTemplate2.setStatus(OrganizeTemplateStatusEnum.ONLINE.getStatus());
 		save(organizeTemplate2);
 	}
 	

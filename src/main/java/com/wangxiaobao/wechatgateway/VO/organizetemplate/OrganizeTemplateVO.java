@@ -20,4 +20,5 @@ public class OrganizeTemplateVO {
 	private String auditid;
 	private String nickName;
 	private String orgName;
+	private String isOnline;
 }
