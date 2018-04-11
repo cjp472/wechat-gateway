@@ -49,6 +49,8 @@
 ## 平台小程序管理
 - <a href="#22">平台小程序列表</a>
 - <a href="#23">新增，修改平台小程序</a>
+- <a href="#saveqrcodeverify">保存平台小程序二维码校验文件</a>
+- <a href="#findqrcodeverify">查询平台小程序二维码校验文件</a>
 
 
 ## 商家公众号授权列表
@@ -1696,4 +1698,41 @@ get /wechatgateway/organizationTemplate/release
 返回
 ``` 
 
+```
+
+- <a href="#saveqrcodeverify">保存平台小程序二维码校验文件</a>
+```
+POST /wechatgateway/qrcode/saveQrcodeFile
+
+参数说明：
+wxAppid //appid
+fileName //文件名称
+fileContent //文件内容
+
+
+返回:
+{
+    "code": "0",
+    "message": "成功",
+    "data": {
+        "wxAppid": "1111111",
+        "fileName": "434343122211",
+        "fileContent": "rtrtrtert112221",
+        "createDate": 1523416353000
+    }
+}
+```
+
+- <a href="#findqrcodeverify">查询平台小程序二维码校验文件</a>
+```
+GET /wechatgateway/qrcode/findQrcodeFile
+
+参数说明：
+wxAppid //appid
+返回:
+{
+    "code": "0",
+    "message": "成功",
+    "data": "rtrtrtert112221"
+}
 ```
